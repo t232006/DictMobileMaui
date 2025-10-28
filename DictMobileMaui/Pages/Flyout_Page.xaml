@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.Flyout_Page"
+             xmlns:pages="clr-namespace:IndDictionary">
+    <FlyoutPage.Flyout>
+        <ContentPage Title="Dictionary">
+            <ContentPage.Resources>
+                <ResourceDictionary>
+                    <x:Array x:Key="SectionsArray" Type="{x:Type x:String}">
+                        <x:String>Word</x:String>
+                        <x:String>Translation</x:String>
+                    </x:Array>
+                </ResourceDictionary>
+            </ContentPage.Resources>
+            <ListView x:Name="Sections" 
+                      ItemsSource="{StaticResource Key=SectionsArray}"
+                      ItemSelected="onSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout>
+                                <Label Text="{Binding }" FontSize="Large" TextColor="Black" Padding="30,0"/>
+                            </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </ContentPage>
+    </FlyoutPage.Flyout>
+</FlyoutPage>

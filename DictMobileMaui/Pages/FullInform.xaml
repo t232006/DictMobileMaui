@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:IndDictionary.Converters"
+             xmlns:inddictionary="clr-namespace:IndDictionary"
+             xmlns:res="clr-namespace:IndDictionary.addition"
+             x:Class="IndDictionary.FullInform">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="Medium"/>
+                <Setter Property="Margin" Value="10, 7, 2, 10"/>
+            </Style>
+            <Style x:Key="forEntrys" TargetType="Entry" >
+                <Setter Property="FontSize" Value="Large"/>
+                <Setter Property="Margin" Value="10, 7, 10, 10"/>
+                <!--Setter Property="HeightRequest" Value="300"/-->
+            </Style>
+            <Style x:Key="forFlex" TargetType="FlexLayout">
+                <Setter Property="Direction" Value="Row"/>
+                <Setter Property="Wrap" Value="Wrap"/>
+                <Setter Property="JustifyContent" Value="SpaceBetween"/>
+            </Style>
+            <Style x:Key="MainSpace" TargetType="Entry" BasedOn="{StaticResource forEntrys}">
+                <Setter Property="TextColor" Value="DarkBlue"/>
+            </Style>
+            <loc:BoolConverter x:Key="boolConverter"/>
+            <loc:CheckBoxToString x:Key="checkBoxToString"/>
+            <loc:stringToDate x:Key="StringToDate"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid x:Name="BaseLayout" BackgroundColor="Beige">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <inddictionary:ExtSwitch x:Name="EditBox" IsVisible="false" Grid.Column="0" Grid.Row="0"/>
+            <FlexLayout x:Name="TopControls"
+                        Style="{StaticResource forFlex}"
+                        Grid.Column="0" Grid.Row="0">
+                <Picker x:Name="TopicSpace" Margin="10, 10, 2, 4" HeightRequest="35"
+                        IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled}" />
+
+                <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Reference TopicSpace}, Path=SelectedItem}"
+                            IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled,
+                            Converter={StaticResource boolConverter}}"/>
+                <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"
+                    Margin="10,7,10,20"     />
+            </FlexLayout>
+            <Editor x:Name="WordSpace" Text="{Binding Word}" Style="{StaticResource MainSpace}" 
+                    Placeholder="Слово"
+                    IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled, 
+                                 Converter={StaticResource boolConverter}}"  
+                    Grid.Row="1" Grid.Column="0"/>
+            <Editor x:Name="TransSpace" Text="{Binding Translation}" Style="{StaticResource forEntrys}" 
+                         Placeholder="Translation"
+                        IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled,
+                    Converter={StaticResource boolConverter}}"
+                    Grid.Row="2" Grid.Column="0"/>
+            <FlexLayout x:Name="LabelSpace" Style="{StaticResource forFlex}"
+                        Grid.Row="3" Grid.Column="0">
+                <Label x:Name="RelSpace" Text="{Binding Relevation, StringFormat='Открывалось {0} раз'}"/>
+                <Label x:Name="GradeSpace" Text="{Binding Grade, StringFormat='Оценка {0}'}" Margin="5,10,50,20"/>
+            </FlexLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

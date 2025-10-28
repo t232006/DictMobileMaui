@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.DateTopicForm"
+             xmlns:res="clr-namespace:IndDictionary.addition"
+             Title="Select the dates or topics">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Clicked="onApplyPress"        
+             IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.ok.png}"
+             x:Name="EditBut"/>
+        <!--ToolbarItem Text="Cancel" Clicked="OnCancel" Priority="1" Order="Primary"/-->
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            
+            <ListView x:Name="DataList" RowHeight="40" Margin="10" SeparatorColor="Red" ItemTapped="onSelect" ItemsSource="{Binding}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <SwitchCell Text="{Binding DaOrTo}" On="{Binding Spoted, Mode=TwoWay}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

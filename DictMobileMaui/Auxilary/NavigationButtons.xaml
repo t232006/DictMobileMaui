@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.NavigationButtons">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="NavButSt" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="SlateBlue"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HeightRequest" Value="45"/>
+            </Style>
+            <Style x:Key="NavButActive" TargetType="Button" BasedOn="{StaticResource NavButSt}">
+                <Setter Property="BackgroundColor" Value="RoyalBlue"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <ContentView.Content>
+      
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Text="Dictionary" Pressed="DictOpen" Grid.Column="0" Style="{StaticResource NavButActive}"/>
+            <Button Text="Tools" Pressed="ToolsOpen" Grid.Column="1" Style="{StaticResource NavButSt}"/>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

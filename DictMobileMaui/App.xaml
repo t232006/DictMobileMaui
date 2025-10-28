@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+            <Style x:Key="LabelStyle" TargetType="Label">
+                <Setter Property="Margin" Value="10,5,0,0"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="10,10,30,0"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+            <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Margin" Value="10,10,3,0"/>
+                <Setter Property="WidthRequest" Value="81"/>
+                <Setter Property="HeightRequest" Value="81"/>
+                <Setter Property="BackgroundColor" Value="DeepSkyBlue"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="BorderWidth" Value="0"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>    
+</Application>

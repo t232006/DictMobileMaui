@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:res="clr-namespace:IndDictionary.addition"
+             x:Class="IndDictionary.Pages.FilesList">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Header" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
+            <Style x:Key="Body" TargetType="Label">
+                <Setter Property="Padding" Value="15,0,15,0"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout>
+        <Grid BackgroundColor="Silver">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width=".30*"/>
+                <ColumnDefinition Width=".2*"/>
+                <ColumnDefinition Width=".20*"/>
+                <ColumnDefinition Width=".15*"/>
+                <ColumnDefinition Width=".15*"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="Filename" Grid.Column="0" Style="{StaticResource Header}"/>
+            <Label Text="Total words" Grid.Column="1" Style="{StaticResource Header}"/>
+            <Label Text="Last record" Grid.Column="2" Style="{StaticResource Header}"/>
+        </Grid>
+        <ListView x:Name="FList" ItemsSource="{Binding Items}" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+
+                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".2*"/>
+                                    <ColumnDefinition Width=".2*"/>
+                                    <ColumnDefinition Width=".15*"/>
+                                    <ColumnDefinition Width=".15*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding filename}" Grid.Column="0" Style="{StaticResource Body}"/>
+                                <Label Text="{Binding wordsCount}"  Grid.Column="1" Style="{StaticResource Body}"/>
+                                <Label Text="{Binding lastDate}"  Grid.Column="2" Style="{StaticResource Body}"/>
+                                <Button Text="Del" 
+                                        Grid.Column="3" 
+                                        Clicked="OnDelete" 
+                                        BackgroundColor="Silver"
+                                        CommandParameter="{Binding .}" 
+                                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.trash_bin_small.png}"
+                                        ContentLayout="top,10"/>
+                                <Button Text="Open" 
+                                        Grid.Column="4" 
+                                        Clicked="OnOpen" 
+                                        BackgroundColor="Silver"
+                                        CommandParameter="{Binding .}" 
+                                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.play_small.png}"
+                                        ContentLayout="top,10"/>
+                            </Grid>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </StackLayout>
+
+      
+</ContentPage>

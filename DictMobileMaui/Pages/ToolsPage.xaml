@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:IndDictionary"
+             xmlns:res="clr-namespace:IndDictionary.addition"
+             x:Class="IndDictionary.ToolsPage"
+             Title="Tools">
+    
+    <StackLayout BackgroundColor="#454955" >
+        <StackLayout >
+            <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
+                <CheckBox x:Name="ShowSelected" CheckedChanged="OnChecking"/>
+                <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
+            </StackLayout>
+            <Label Text="Show" Style="{StaticResource LabelStyle}"/>
+            <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
+            <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords"/>
+            <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
+            <Label Text="Select" Style="{StaticResource LabelStyle}"/>
+            <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
+            <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
+            <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <Button Text="Download" 
+                        Style="{StaticResource SmallButton}"
+                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloudFrom.png}"
+                        ContentLayout="Top, 10"
+                        Pressed="OnSynchr"/>
+                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.folder_small.png}" 
+                         Text="Open library"  
+                         Style="{StaticResource SmallButton}" 
+                         Pressed="OpenLibrary"
+                         ContentLayout="Top, 10"/>
+                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloudTo.png}"
+                         Text="Upload"
+                         Style="{StaticResource SmallButton}"
+                         ContentLayout="Top, 10"
+                         />
+            </StackLayout>
+            <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>
+            <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
+        </StackLayout>
+        <StackLayout x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
+    </StackLayout>
+</ContentPage>
