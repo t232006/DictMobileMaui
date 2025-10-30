@@ -82,10 +82,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\dictionaryCut.db" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="Resources\Images\add.png" />
 	  <EmbeddedResource Include="Resources\Images\add1.png" />
 	  <EmbeddedResource Include="Resources\Images\arrow_right_from.png" />
@@ -123,11 +119,6 @@
 	  <Reference Include="GoogleDriveManipulation">
 	    <HintPath>..\..\GoogleDriveApplictaions\GoogleDriveSaver\bin\Release\net9.0\GoogleDriveManipulation.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
-
-
-	<ItemGroup>
-	  <Resource Include="Resources\dictionaryCut.db" />
 	</ItemGroup>
 
 </Project>

@@ -22,13 +22,14 @@ namespace IndDictionary
 					databasename = Preferences.Get("current", "");
 				else
 				{
-					databasename = "dictionaryCut.db";
+					databasename = Path.Combine(APPFOLDER, DEFAULTDATABASENAME); 
 					Preferences.Set("current", databasename);
 				}
 		}
 		
 		private static void LoadDBFirstTime(string dbPath)
 		{
+			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
 			//for first open to write information about database
 			if (Preferences.ContainsKey(databasename))
@@ -44,25 +45,6 @@ namespace IndDictionary
 				App.Database.saveRecD(d);
 			}
 		}
-
-		
-		/*public static void copyFiles(string fromPath, string toPath)
-		{
-			//
-			//if (!File.Exists(toPath))
-			{
-				using (FileStream source = new FileStream(fromPath, FileMode.Open)) //
-				{
-					using (FileStream dest = new FileStream(toPath, FileMode.OpenOrCreate))
-					{
-						source.CopyTo(dest);
-						dest.Flush();
-					}
-				}
-			}
-			
-		}*/
-
 		public static baseManipulation Database
 		{
 			get
@@ -70,11 +52,9 @@ namespace IndDictionary
 				if ((database == null) || (database.toReboot))
 				{
 					if (database!=null) SetDatabasename();
-					string dbPath = Path.Combine(APPFOLDER, databasename);
+					string dbPath = databasename;
 					if (!File.Exists(dbPath))
 					{
-						//App.Current.Properties.Remove("current");
-						dbPath = Path.Combine(APPFOLDER, DEFAULTDATABASENAME);	
 						using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{DEFAULTDATABASENAME}"))
 						{
 							using (FileStream dest = new FileStream(dbPath, FileMode.OpenOrCreate))
@@ -85,7 +65,7 @@ namespace IndDictionary
 						}
 					}
 					LoadDBFirstTime(dbPath);
-					database = new baseManipulation(dbPath);
+					//database = new baseManipulation(dbPath);
 					//RefreshAllForms();
 				}
 				return database;

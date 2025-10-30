@@ -108,8 +108,10 @@ namespace IndDictionary
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
 			string currentDB = Preferences.Get("current","");
-			string DBName = Path.GetFileName(currentDB.ToString());
-			await SyncCloud.SaveToCloud("client_secret.json", currentDB.ToString(), DBName);
+			string DBName = Path.GetFileName(currentDB);
+			string DBPath = Path.GetDirectoryName(currentDB);
+			App.Database.dispose();
+			await SyncCloud.SaveToCloud("client_secret.json", DBPath, DBName);
 		}
 		
 		protected async void OnSynchr(object sender, EventArgs e)

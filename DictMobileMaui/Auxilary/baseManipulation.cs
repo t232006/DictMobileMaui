@@ -21,6 +21,10 @@ namespace IndDictionary
 			itemsD = database.Table<dict>().ToList();
 			itemsT = database.Table<topic>().ToList();
 		}
+		public void dispose()
+		{
+			database.Dispose();
+		}
 
 		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
 		{
