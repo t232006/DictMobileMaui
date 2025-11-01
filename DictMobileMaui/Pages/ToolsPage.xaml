@@ -9,7 +9,7 @@
     <StackLayout BackgroundColor="#454955" >
         <StackLayout >
             <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                <CheckBox x:Name="ShowSelected" CheckedChanged="OnChecking"/>
+                <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
                 <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
             </StackLayout>
             <Label Text="Show" Style="{StaticResource LabelStyle}"/>
@@ -20,7 +20,7 @@
             <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
             <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
-            <StackLayout Orientation="Horizontal" Spacing="5">
+            <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
                 <Button Text="Download" 
                         Style="{StaticResource SmallButton}"
                         ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_from.png}"

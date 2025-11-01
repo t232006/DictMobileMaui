@@ -60,7 +60,12 @@ namespace IndDictionary.Pages
 			if (Path.GetFileName(o) == filename)
 				DisplayAlert("Unable to delete current database. Select another one.", "Error", "Ok");
 			else
+			{
 				File.Delete(Path.Combine(App.APPFOLDER,filename));
+				Preferences.Remove(Path.Combine(App.APPFOLDER, filename));
+			}
+				
+
 			PageRefresh();
 		}
 

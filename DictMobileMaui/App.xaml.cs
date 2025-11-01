@@ -32,11 +32,11 @@ namespace IndDictionary
 			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
 			//for first open to write information about database
-			if (Preferences.ContainsKey(databasename))
-			{
-				string baseInfo = $"{database.getInfo(1)}.{database.getInfo(2)}";
-				Preferences.Set(databasename, baseInfo);
-			}
+			//if (Preferences.ContainsKey(databasename))
+			
+			string baseInfo = $"{database.getInfo(1)}.{database.getInfo(2)}";
+			Preferences.Set(databasename, baseInfo);
+			
 
 
 			foreach (dict d in database.showTableDict(true, WhatToShow.alltogether))
