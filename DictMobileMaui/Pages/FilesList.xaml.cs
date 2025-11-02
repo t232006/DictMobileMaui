@@ -44,7 +44,11 @@ namespace IndDictionary.Pages
 				if (Preferences.ContainsKey(myKey))
 				{
 					string[] ss = Preferences.Get(myKey,"").Split('.');
-					Item.wordsCount = ss[0]; Item.lastDate = ss[1]; Item.filename = s;
+					Item.wordsCount = ss[0];
+					if (ss[1].Length < 3)
+						Item.lastDate = $"{ss[1]}.{ss[2]}.{ss[3]}"; else
+						Item.lastDate = ss[1];  
+					Item.filename = s;
 				}
 				Items.Add(Item);
 			}
@@ -64,11 +68,8 @@ namespace IndDictionary.Pages
 				File.Delete(Path.Combine(App.APPFOLDER,filename));
 				Preferences.Remove(Path.Combine(App.APPFOLDER, filename));
 			}
-				
-
 			PageRefresh();
 		}
-
 		protected void OnOpen(Object Sender, EventArgs e)
 		{
 			Button button = (Button)Sender;
@@ -79,18 +80,6 @@ namespace IndDictionary.Pages
 			App.Database.ResetSelection();
 			
 			//App.MainPage = new NavigationPage(new MainPage());
-		}
-
-
-		async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
-		{
-			if (e.Item == null)
-				return;
-
-			await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
-
-			//Deselect Item
-			((ListView)sender).SelectedItem = null;
 		}
 	}
 }

@@ -13,7 +13,14 @@
             </Style>
             <Style x:Key="Body" TargetType="Label">
                 <Setter Property="Padding" Value="15,0,15,0"/>
-                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="Button" TargetType="Button">
+                <Setter Property="HeightRequest" Value="60"/>
+                <Setter Property="BackgroundColor" Value="Silver"/>
+                <Setter Property="CommandParameter" Value="{Binding .}"/>
+                <Setter Property="Margin" Value="2,2,2,5"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -55,20 +62,17 @@
                                 <Label Text="{Binding lastDate}"  Grid.Column="2" Style="{StaticResource Body}"/>
                                 <Button 
                                         Grid.Column="3" 
-                                        Clicked="OnDelete" 
-                                        BackgroundColor="Silver"
-                                        CommandParameter="{Binding .}" 
-                                        HeightRequest="60"
+                                       
+                                    Style="{StaticResource Button}"
                                         ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.trash_bin_small.png}"
-                                        ContentLayout="top,10"/>
+                                        />
                                 <Button 
                                         Grid.Column="4" 
                                         Clicked="OnOpen" 
-                                        BackgroundColor="Silver"
-                                        CommandParameter="{Binding .}" 
-                                        HeightRequest="60"
+                                        Style="{StaticResource Button}"
+                                        
                                         ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.play_small.png}"
-                                        ContentLayout="top,10"/>
+                                        />
                             </Grid>
                         </ViewCell.View>
                     </ViewCell>
