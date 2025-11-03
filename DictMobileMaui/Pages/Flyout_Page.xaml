@@ -10,6 +10,8 @@
                     <x:Array x:Key="SectionsArray" Type="{x:Type x:String}">
                         <x:String>Word</x:String>
                         <x:String>Translation</x:String>
+                        <x:String>Word->Translation</x:String>
+                        <x:String>Translation->Word</x:String>
                     </x:Array>
                 </ResourceDictionary>
             </ContentPage.Resources>

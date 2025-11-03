@@ -145,6 +145,10 @@ namespace IndDictionary
 			}
 			return database.Query<dict>(request);	
 		}
+		public IEnumerable<dict> getSelected()
+		{
+			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
+		}
 		//------------forms list of dates or topics depending on T----------------------
 		public IEnumerable<T> showTopicsDates<T>(bool showAll) where T:new()
 		{
