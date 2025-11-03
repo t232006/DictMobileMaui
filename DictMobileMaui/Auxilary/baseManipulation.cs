@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using IndDictionary.addition;
+using DictMobileMaui.addition;
 
 namespace IndDictionary
 {
@@ -64,11 +65,13 @@ namespace IndDictionary
 				{
 					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
 					database.Update(item);
+					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
 					return item.Number;
 				}
 				else
 				{
 					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
 					return database.Insert(item);
 				}
 

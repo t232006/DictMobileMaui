@@ -36,6 +36,7 @@ namespace IndDictionary.Pages
 			
 			Items = new List<BaseInfo>();
 			IEnumerable<string> fileList = Directory.GetFiles(App.APPFOLDER).Select(fi => Path.GetFileName(fi));
+			byte o=0; byte k=0; // o - index of current database; k - iterator
 			foreach (string s in fileList)
 			{
 				BaseInfo Item = new BaseInfo();
@@ -43,17 +44,21 @@ namespace IndDictionary.Pages
 				string myKey = Path.Combine(App.APPFOLDER, s);
 				if (Preferences.ContainsKey(myKey))
 				{
-					string[] ss = Preferences.Get(myKey,"").Split('.');
+					string[] ss = Preferences.Get(myKey, "").Split('.');
 					Item.wordsCount = ss[0];
 					if (ss[1].Length < 3)
-						Item.lastDate = $"{ss[1]}.{ss[2]}.{ss[3]}"; else
-						Item.lastDate = ss[1];  
+						Item.lastDate = $"{ss[1]}.{ss[2]}.{ss[3]}";
+					else
+						Item.lastDate = ss[1];
 					Item.filename = s;
 				}
+				if (Preferences.Get("current","") == Path.Combine(App.APPFOLDER, s))
+					o = k;
+				k++;
 				Items.Add(Item);
 			}
 			FList.ItemsSource = Items;
-			FList.SelectedItem = null;
+			FList.SelectedItem = Items.ElementAt(o);
 		}
 		protected void OnDelete(Object Sender, EventArgs e)
 		{
@@ -76,7 +81,9 @@ namespace IndDictionary.Pages
 			string filename = (button.CommandParameter as BaseInfo).filename;
 			Preferences.Remove("current");
 			Preferences.Set("current", Path.Combine(App.APPFOLDER, filename));
+			FList.SelectedItem = Items.FindIndex(x => x.filename == filename);
 			App.Database.toReboot = true;
+			PageRefresh();
 			App.Database.ResetSelection();
 			
 			//App.MainPage = new NavigationPage(new MainPage());

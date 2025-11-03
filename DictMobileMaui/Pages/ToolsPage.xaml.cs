@@ -27,8 +27,7 @@ namespace IndDictionary
 			InitializeComponent();
 			//if (Detail.transl) Title = "Translation"; else Title = "Word";
 			detail = Detail;
-			DateLabel.Text = "Last record " + App.Database.getInfo(2);
-			CountLabel.Text = "Records count " + App.Database.getInfo(1);
+			
 			NavigationButtons navButtons = new NavigationButtons(Detail);
 			forNavButtons.Children.Add(navButtons);
 		}
@@ -36,6 +35,13 @@ namespace IndDictionary
 		{
 			detail.PassParams(showAll, wts);
 			base.OnDisappearing();
+		}
+
+		protected override void OnAppearing()
+		{
+			DateLabel.Text = "Last record: " + App.Database.getInfo(2);
+			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
+			base.OnAppearing();
 		}
 		protected void OnAll(object sender, EventArgs e)
 		{
