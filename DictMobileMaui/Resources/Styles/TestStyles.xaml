@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Style x:Key="var1" TargetType="Border">
+        <Setter Property="Stroke" Value="#FF5722"/>
+        <Setter Property="StrokeThickness" Value="4"/>
+        <Setter Property="BackgroundColor" Value="#FFF3E0"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 20"/>
+        <Setter Property="Margin" Value="10,10,0,10"/>
+        <Setter Property="WidthRequest" Value="500"/>
+        <Setter Property="HeightRequest" Value="60"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black"
+                Offset="3,3"
+                Radius="8"
+                Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="var1Text" TargetType="Label">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextColor" Value="#E65100"/>
+        <Setter Property="HorizontalOptions" Value="Start"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Padding" Value="5"/>
+        
+    </Style>
+  
+
+        <!-- 2. Разные радиусы по осям -->
+    <Style x:Key="var2" TargetType="Border">
+        <Setter Property="Stroke" Value="#4CAF50"/>
+        <Setter Property="StrokeThickness" Value="3"/>
+        <Setter Property="BackgroundColor" Value="#E8F5E9"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 40,15"/>
+        <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="HeightRequest" Value="100"/>
+     </Style>
+    <Style x:Key="var2Text" TargetType="Label">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextColor" Value="#2E7D32"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center" />
+     </Style>
+
+        <!-- 3. Через объект RoundRectangle -->
+    <Style x:Key="var3" TargetType="Border">
+        <Setter Property="Stroke" Value="#2196F3"/>
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="BackgroundColor" Value="#E3F2FD"/>
+        <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="HeightRequest" Value="100"/>
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="10,30,10,30" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="var3Text" TargetType="Label">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextColor" Value="#1976D2"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+
+    <!-- 4. Без скругления (прямоугольник) -->
+    <Style x:Key="var4" TargetType="Border">
+        <Setter Property="Stroke" Value="#9C27B0"/>
+        <Setter Property="StrokeThickness" Value="5"/>
+        <Setter Property="BackgroundColor" Value="#F3E5F5"/>
+        <Setter Property="StrokeShape" Value="Rectangle"/>
+        <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="HeightRequest" Value="100"/>
+    </Style>
+    <Style x:Key="var4Text" TargetType="Label" >
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextColor" Value="#7B1FA2"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>    
+
+        <!-- 5. Тонкая рамка + тень -->
+    <Style x:Key="var5" TargetType="Border">
+    <Setter Property="Stroke" Value="#000000"/>
+    <Setter Property="StrokeThickness" Value="1"/>
+    <Setter Property="BackgroundColor" Value="White"/>
+    <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+    <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="HeightRequest" Value="100"/>
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="Black"
+                    Offset="3,3"
+                    Radius="8"
+                    Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="var5Text" TargetType="Label" >
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+            <!-- 6. Пунктирная рамка -->
+    <Style x:Key="var6" TargetType="Border">
+        <Setter Property="Stroke" Value="#FF9800"/>
+        <Setter Property="StrokeThickness" Value="3"/>
+        <Setter Property="BackgroundColor" Value="#FFF8E1"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 25"/>
+        <Setter Property="StrokeDashArray" Value="5,3"/>
+        <Setter Property="StrokeDashOffset" Value="2"/>
+        <Setter Property="WidthRequest" Value="300"/>
+        <Setter Property="HeightRequest" Value="100"/>
+    </Style>
+    <Style x:Key="var6Text" TargetType="Label" >
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextColor" Value="#F57C00"/>
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+</ResourceDictionary>

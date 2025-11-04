@@ -4,11 +4,10 @@
              xmlns:loc="clr-namespace:IndDictionary"
              x:Class="IndDictionary.TestPage">
     <ContentPage.Resources>
-        <StyleSheet Source="/styles/testStyles.css"/>
+        <ResourceDictionary x:Name="MyStyle" Source="/Resources/Styles/TestStyles.xaml"/>
     </ContentPage.Resources>
-        <StackLayout x:Name="MainStack">
-            <Label x:Name="answer" FontSize="Medium"/>
-            <ListView />
-        </StackLayout>
+        <StackLayout x:Name="MainStack" >
+        <Label x:Name="Answer" FontSize="Medium" Margin="0,20,0,30"/>
+    </StackLayout>
 
 </ContentPage>

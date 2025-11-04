@@ -78,6 +78,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Auxilary\SameNameFileCopy.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiAsset Remove="Resources\Raw\dictionaryCut.db" />
 	</ItemGroup>
 
@@ -147,6 +151,9 @@
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\TestPage.xaml">
 	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\TestStyles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 

@@ -22,6 +22,22 @@ namespace IndDictionary
 			itemsD = database.Table<dict>().ToList();
 			itemsT = database.Table<topic>().ToList();
 		}
+		public void GetReward(int id, bool increase)
+		{
+			dict? item = findOneRecord(id);
+			if (item != null)
+			{
+				if (increase)
+				{
+					if (item.Grade < 6) item.Grade += 1;
+				}
+				else
+				{
+					if (item.Grade > 0) item.Grade -= 1;
+				}
+				saveRecD(item);
+			}
+		}
 		public void dispose()
 		{
 			database.Dispose();
