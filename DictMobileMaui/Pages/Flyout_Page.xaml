@@ -12,6 +12,7 @@
                         <x:String>Translation</x:String>
                         <x:String>Word->Translation</x:String>
                         <x:String>Translation->Word</x:String>
+                        <x:String>Tests</x:String>
                     </x:Array>
                 </ResourceDictionary>
             </ContentPage.Resources>

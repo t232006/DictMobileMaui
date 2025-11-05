@@ -19,7 +19,6 @@ namespace DictMobileMaui.games
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 		}
-
 		public dict Answer 
 		{ 
 			get => answ; 

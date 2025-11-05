@@ -35,13 +35,16 @@ namespace IndDictionary
                 case 2:
                     {
                         Detail = new NavigationPage(new TestPage(false)); break;
-					}
+                    }
                 case 3:
                     {
                         Detail = new NavigationPage(new TestPage(true)); break;
-					}
-
-			}
+                    }
+                case 4:
+                    {
+                        Detail = new NavigationPage(new Card()); break;
+                    }
+            }
 			//Detail = new NavigationPage(new WordPage(transl));
             //IsPresented = false;
 		}

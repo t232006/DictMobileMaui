@@ -147,7 +147,7 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Pages\Card.xaml">
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\TestPage.xaml">
 	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
