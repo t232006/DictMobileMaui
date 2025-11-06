@@ -3,7 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="IndDictionary.App">
     <Application.Resources>
+
+        
+            <ResourceDictionary x:Name="MyStyle" Source="/Resources/Styles/TestStyles.xaml"/>
+        <ResourceDictionary x:Name="ModeSelector" Source="/Resources/BasePage.xaml"/>
+
         <ResourceDictionary>
+            
             <Style x:Key="BaseStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="14"/>

@@ -19,6 +19,7 @@ namespace IndDictionary
 		public TestPage(bool _word_translation)
 		{
 			InitializeComponent();
+			
 			word_translation = _word_translation;
 			ListView Variants = new ListView
 			{
@@ -27,8 +28,8 @@ namespace IndDictionary
 				{
 					Border num = new Border
 					{
-						Content = new Label() { Style = (Style)MyStyle["var1Text"] },
-						Style = (Style)MyStyle["var1"]
+						Content = new Label() { Style = (Style)App.Current.Resources["var1Text"] },
+						Style = (Style)App.Current.Resources["var1"]
 					};
 
 					if (word_translation) num.Content.SetBinding(Label.TextProperty, "Translation", BindingMode.OneWay);

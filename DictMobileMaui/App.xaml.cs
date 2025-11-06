@@ -16,6 +16,8 @@ namespace IndDictionary
 		public const string DEFAULTDATABASENAME = "dictionaryCut.db";	//only for default!
 		public static string APPFOLDER = FileSystem.AppDataDirectory;
 		static baseManipulation database;
+		public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
 		{
 				if (Preferences.ContainsKey("current"))
