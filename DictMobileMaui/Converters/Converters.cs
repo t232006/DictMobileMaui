@@ -50,4 +50,19 @@ namespace IndDictionary.Converters
 			return ((DateTime)value).ToString("dd.MM.yyyy");
 		}
 	}
+	class PeakerToBool : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if ((byte)(value)==0) return false; else return true;
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			bool b = (bool)value;
+			if (b)
+				return 1;
+			else
+				return 0;
+		}
+	}
 }

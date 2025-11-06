@@ -4,8 +4,7 @@
              xmlns:loc="clr-namespace:IndDictionary" 
              x:Class="IndDictionary.Card">
 
-    
+
     <StackLayout x:Name="MainStack">
-        <ContentView ControlTemplate="{StaticResource ModeSelector}"/>
     </StackLayout>
 </ContentPage>
