@@ -50,19 +50,40 @@ namespace IndDictionary.Converters
 			return ((DateTime)value).ToString("dd.MM.yyyy");
 		}
 	}
-	class PeakerToBool : IValueConverter
+	class BoolToBorderStyle: IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if ((byte)(value)==0) return false; else return true;
+			string temp = (bool)value ? "CardStyle1" : "CardStyle2";
+			return App.Current.Resources[temp] as Style;
 		}
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			bool b = (bool)value;
-			if (b)
-				return 1;
-			else
-				return 0;
+			throw new NotImplementedException();
+		}
+	}
+	class BoolToBorderLabelStyle : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			string temp = (bool)value ? "CardTextStyle1" : "CardTextStyle2";
+			return App.Current.Resources[temp] as Style;
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+	class BoolToBorderText : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return (bool)value ? "Word" : "Translation";
+			
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

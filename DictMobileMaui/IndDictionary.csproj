@@ -162,6 +162,9 @@
 	  <MauiXaml Update="Pages\TestPage.xaml">
 	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\CardStyles.xaml">
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Resources\Styles\TestStyles.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

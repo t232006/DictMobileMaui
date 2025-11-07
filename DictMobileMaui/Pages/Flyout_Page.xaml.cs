@@ -35,7 +35,7 @@ namespace IndDictionary
                     }
                 case 2:
                     {
-                        Detail = new NavigationPage(new Card()); break;
+                        Detail = new NavigationPage(new Card(Xmode)); break;
                     }
             }
             actPage = (byte)e.SelectedItemIndex;

@@ -1,28 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DictMobileMaui;
+﻿using DictMobileMaui;
 using DictMobileMaui.games;
+using IndDictionary.Converters;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.Layouts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace IndDictionary
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Card : ContentPage
+	
+	public partial class Card : ContentPage, INotifyPropertyChanged
 	{
 		double CardHeight; double CardWidth;
-		public Card()
+		bool _isWord;
+		public bool isWord 
+		{ 
+			get => _isWord;
+			set
+			{ 
+				_isWord = value;
+				OnPropertyChanged(nameof(isWord));
+			}
+		}
+		public event PropertyChangedEventHandler PropertyChanged;
+		public void OnPropertyChanged(string propName)
 		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+		}
+		public Card(bool _word)
+		{
+			_isWord = _word;
+			Cards cards = new Cards();
 			InitializeComponent();
 			CarouselView Cards = new CarouselView
 			{
 				VerticalOptions = LayoutOptions.Start,
 			};
-			Cards.ItemsSource = App.Database.getSelected();
+			Cards.ItemsSource = cards.CardSeq;
 			Cards.ItemTemplate = new DataTemplate(() =>
 			{
 				Grid grid = new Grid
@@ -32,31 +53,36 @@ namespace IndDictionary
 					Margin = new Thickness(0, 15, 0, 0)
 
 				};
-
+				//var binding = new Binding(path: "isWord", source: this, converter: new BoolToBorderStyle());
 				Border CardBorder = new Border
 				{
-					Style = (Style)App.Current.Resources["CardStyle"],
-					Content = new Label() { Style = (Style)App.Current.Resources["CardTextStyle"] }
+					Content = new Label() {	},
 				};
+				Binding bindBorderStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderStyle());
+				Binding bindTextStyle  = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderLabelStyle());
+
+				CardBorder.SetBinding(Border.StyleProperty, bindBorderStyle);
+				CardBorder.Content.SetBinding(Label.StyleProperty, bindTextStyle);
+				CardBorder.Content.SetBinding(Label.TextProperty, new Binding(isWord?"Word":"Translation"));
 				
 				CardBorder.GestureRecognizers.Add(new TapGestureRecognizer
-				{
-					Command = new Command(async () =>
 					{
-						await CardBorder.ScaleXTo(0.001, 250, Easing.SinInOut);
-						await CardBorder.ScaleXTo(1, 250, Easing.SinInOut);
-					})
-				});
-				CardBorder.Content.SetBinding(Label.TextProperty, "Word", BindingMode.OneWay);
+						Command = new Command(async () =>
+						{
+							await CardBorder.ScaleXTo(0.001, 250, Easing.SinInOut);
+							isWord = !isWord;
+							//rotate(isWord);
+							await CardBorder.ScaleXTo(1, 250, Easing.SinInOut);
+						})
+					});
 				grid.Add(CardBorder);
 				return grid;
 			});
 			MainStack.Add(Cards);
-
 		}
 		protected override void OnAppearing()
 		{
-			if (DeviceInfo.Platform==DevicePlatform.Android && DeviceInfo.Platform == DevicePlatform.iOS)
+			if (DeviceInfo.Platform==DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
 			{
 				CardHeight = App.screenHeight * 0.9;
 				CardWidth = App.screenWidth * 0.8;
@@ -65,7 +91,6 @@ namespace IndDictionary
 				CardHeight=this.Window.Height * 0.75;
 				CardWidth=this.Window.Width * 0.4;
 			}
-
 			base.OnAppearing();
 		}
 

@@ -6,6 +6,6 @@
              Title="Tests">
 
     <VerticalStackLayout x:Name="MainStack" >
-        <Label x:Name="Answer" FontSize="Medium" Margin="0,20,0,30"/>
+        <Label x:Name="Answer" FontSize="Medium" Margin="15,20,0,30"/>
     </VerticalStackLayout>
 </ContentPage> 

@@ -5,7 +5,8 @@
     <Application.Resources>
 
 
-        <ResourceDictionary x:Name="MyStyle" Source="/Resources/Styles/TestStyles.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/TestStyles.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/CardStyles.xaml"/>
 
         <ResourceDictionary>
             

@@ -163,6 +163,8 @@ namespace IndDictionary
 		}
 		public IEnumerable<dict> getSelected()
 		{
+			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
+			if (count<6) database.Execute("Update Dict set Usersel=true");
 			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
