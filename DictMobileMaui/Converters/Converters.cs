@@ -74,14 +74,15 @@ namespace IndDictionary.Converters
 			throw new NotImplementedException();
 		}
 	}
-	class BoolToBorderText : IValueConverter
+	class BoolToBorderText : IMultiValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 		{
-			return (bool)value ? "Word" : "Translation";
-			
+			if ((values.Length != 2) || !(values[0] is bool isWord) || !(values[1] is dict item)) return null; else
+				return isWord ? item.Word: item.Translation;
 		}
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+
+		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}

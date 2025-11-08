@@ -60,10 +60,20 @@ namespace IndDictionary
 				};
 				Binding bindBorderStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderStyle());
 				Binding bindTextStyle  = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderLabelStyle());
-
+				MultiBinding MultiBind = new MultiBinding
+				{
+					Converter = new BoolToBorderText(),
+				};
+				Binding bind = new Binding(
+					path: nameof(isWord), 
+					source: this
+					);
+				Binding param = new Binding(path: ".");
+				MultiBind.Bindings.Add(bind); MultiBind.Bindings.Add(param);
 				CardBorder.SetBinding(Border.StyleProperty, bindBorderStyle);
 				CardBorder.Content.SetBinding(Label.StyleProperty, bindTextStyle);
-				CardBorder.Content.SetBinding(Label.TextProperty, new Binding(isWord?"Word":"Translation"));
+
+				CardBorder.Content.SetBinding(Label.TextProperty, MultiBind);
 				
 				CardBorder.GestureRecognizers.Add(new TapGestureRecognizer
 					{
