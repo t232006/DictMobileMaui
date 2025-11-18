@@ -65,6 +65,7 @@
                                        
                                     Style="{StaticResource Button}"
                                         ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.trash_bin_small.png}"
+                                        Clicked="OnDelete"
                                         />
                                 <Button 
                                         Grid.Column="4" 
