@@ -1,8 +1,4 @@
 ﻿using SQLite;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using IndDictionary.addition;
 using DictMobileMaui.addition;
 
@@ -45,8 +41,8 @@ namespace IndDictionary
 
 		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
 		{
-			return filtr(allrec, wts);
-		}
+				return filtr(allrec, wts);
+        }
 
 		public IEnumerable<topic> showTableTopic()
 		{
@@ -137,7 +133,7 @@ namespace IndDictionary
 					}
 				case 2:
 					{
-						result = showTableDict(true, WhatToShow.alltogether).Select(p => p.DateRec).Max().ToString();
+						result = showTableDict(true, WhatToShow.alltogether).Max(p => p.DateRec)!.ToString();
 						break;
 					}
 			}
@@ -175,14 +171,14 @@ namespace IndDictionary
 			{
 				request = "select distinct DateRec from Dict ";
 				if (showAll==false) request += "where Usersel=true ";
-				request += "order by DateRec";
-			}
+				return (IEnumerable<T>)database.Query<dict>(request).OrderBy(t => DateTime.Parse(t.DateRec));
+            }
 			else
 			{
 				request = "SELECT DISTINCT Name FROM Topic JOIN Dict ON Topic.ID=Dict.Topic ";
 				if (showAll == false) request += "where Usersel=true";
-			}
-			return database.Query<T>(request);
+                return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
+            }
 		}
 		public void ResetSelection()
 		{

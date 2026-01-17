@@ -21,7 +21,7 @@ namespace IndDictionary
 	
 		public static ControlTemplate GetSelector()
 		{
-			return (ControlTemplate)Application.Current.Resources["BasePageTemplate"];
+			return (ControlTemplate)Application.Current!.Resources["BasePageTemplate"];
 		}
 	} 
 }

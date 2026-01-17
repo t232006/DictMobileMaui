@@ -1,10 +1,6 @@
-﻿using System;
-using Microsoft.Maui.Controls;
-using System.IO;
-using Microsoft.Maui.Controls.Xaml;
+﻿
 using System.Reflection;
 using IndDictionary.addition;
-using Microsoft.Maui.Controls.Shapes;
 using Path = System.IO.Path;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -57,20 +53,18 @@ namespace IndDictionary
 					string dbPath = databasename;
 					if (!File.Exists(dbPath))
 					{
-						using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{DEFAULTDATABASENAME}"))
+						using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{DEFAULTDATABASENAME}"))
 						{
 							using (FileStream dest = new FileStream(dbPath, FileMode.OpenOrCreate))
 							{
-								s.CopyTo(dest);
+								s?.CopyTo(dest);
 								dest.Flush();
 							}
 						}
 					}
 					LoadDBFirstTime(dbPath);
-					//database = new baseManipulation(dbPath);
-					//RefreshAllForms();
 				}
-				return database;
+				return database!;
 			}
 		}
 
@@ -78,10 +72,12 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
-			//MainPage = new NavigationPage(new WordPage(false));
-			MainPage = new Flyout_Page();
+            //MainPage = new NavigationPage(new WordPage(false));
+#pragma warning disable CS0618 // Тип или член устарел
+            MainPage = new Flyout_Page();
+#pragma warning restore CS0618 // Тип или член устарел
 
-		}
+        }
 
 		protected override void OnStart()
 		{

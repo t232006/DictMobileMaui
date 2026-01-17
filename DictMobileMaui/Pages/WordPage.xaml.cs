@@ -23,13 +23,16 @@ namespace IndDictionary
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchPage searchPage = new SearchPage();
-		public WordPage(bool _transl)
+        IEnumerable<dict> Data = App.Database.showTableDict(true, WhatToShow.alltogether);
+        public WordPage(bool _transl)
 		{
 			InitializeComponent();
 			transl = _transl;
+			
 			ListTable = new ListView
 			{
-				ItemsSource = App.Database.showTableDict(true, WhatToShow.alltogether),
+				ItemsSource = _transl ? Data.OrderBy(t => t.Translation).ToList() 
+										: Data.OrderBy(t => t.Word).ToList(),
 				ItemTemplate = new DataTemplate(() =>
 				{
 					Label MainField = new Label
@@ -45,7 +48,7 @@ namespace IndDictionary
 					AbsoluteLayout.SetLayoutBounds(MainField, new Rect(10, 0, .68, AbsoluteLayout.AutoSize));
 					AbsoluteLayout.SetLayoutFlags(MainField, AbsoluteLayoutFlags.WidthProportional);
 					ExtSwitch extswitch = new ExtSwitch();
-					extswitch.Toggled += OnToggled ;
+					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
 					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.9, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
@@ -54,34 +57,25 @@ namespace IndDictionary
 					{
 						View = new AbsoluteLayout
 						{
-							Children = {extswitch, MainField}
+							Children = { extswitch, MainField }
 						}
 					};
 				}
 				)
 			};
-
 			NavigationButtons navButtons = new NavigationButtons(this);
-
-			//RelativeLayout relativeLayout = new RelativeLayout();
-			
-			
-			//Button refresh = new Button { Text = "Refr" };
 			ListTable.ItemTapped += OnPress;
-			//addBut.Pressed += OnAddPressed;
 			MainStack.Add(ListTable, 0, 0);
 			MainStack.Add(navButtons, 0, 1);
-
-		
-				
-		}
+            
+        }
 		public void PassParams(bool _showAll, WhatToShow _wts)
 		{
 			showall=_showAll;
 			wts=_wts;
 			//ListTable.ItemsSource = App.Database.showTableDict(_showAll, _wts);
 		}
-		protected async void OnPress(object sender, ItemTappedEventArgs e)
+		protected async void OnPress(object? sender, ItemTappedEventArgs e)
 		{
 			focusedItem = (dict)e.Item;
 			FullInform fullinform = new FullInform(false);
@@ -90,9 +84,12 @@ namespace IndDictionary
 		}
 		protected void OnToggled(object sender, ToggledEventArgs e)
 		{
-			focusedItem = App.Database.findOneRecord((sender as ExtSwitch).ID);
-			if (focusedItem !=null) focusedItem.Usersel = e.Value;
-			App.Database.saveRecD(focusedItem);
+			focusedItem = App.Database.findOneRecord((sender as ExtSwitch)!.ID)!;
+			if (focusedItem != null)
+			{
+				focusedItem.Usersel = e.Value;
+				App.Database.saveRecD(focusedItem);
+			}
 		}
 		protected async void OnAddPressed(object sender, EventArgs e)
 		{
@@ -106,9 +103,9 @@ namespace IndDictionary
 		}
 		protected override void OnAppearing()
 		{
-			if (searchPage.Result != null && searchPage.Result != "")
+			/*if (searchPage.Result != null && searchPage.Result != "")
 			{
-				IEnumerable<dict> founded = null;
+				IEnumerable<dict>? founded = null;
 				if (transl)
 					founded = App.Database.findRecords(searchPage.Result, f => f.Translation);
 				else
@@ -117,7 +114,7 @@ namespace IndDictionary
 					ListTable.ItemsSource = founded;
 			}
 			else
-				ListTable.ItemsSource = App.Database.showTableDict(showall, wts);
+				ListTable.ItemsSource = App.Database.showTableDict(showall, wts);*/
 			base.OnAppearing();
 		}
 	}

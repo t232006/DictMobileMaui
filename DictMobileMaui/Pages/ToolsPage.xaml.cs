@@ -1,16 +1,5 @@
 ﻿using IndDictionary.addition;
 using IndDictionary.Pages;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Maui.Devices; using Microsoft.Maui.Storage; using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Microsoft.Maui.Controls.Xaml;
 
 namespace IndDictionary
 {
@@ -65,7 +54,7 @@ namespace IndDictionary
 		}
 		protected void OnChecking(object sender, EventArgs e)
 		{
-			showAll = !(sender as CheckBox).IsChecked;
+			showAll = !(sender as CheckBox)!.IsChecked;
 			//detail.Refresh(showAll, wts);
 		}
 
@@ -88,7 +77,7 @@ namespace IndDictionary
 								{
 									string? fpath = Path.GetDirectoryName(st);
 									string fname = $"{Path.GetFileNameWithoutExtension(st)}_{adder++}.db";
-									st = Path.Combine(fpath, fname);
+									st = Path.Combine(fpath!, fname);
 								} while (File.Exists(st));
 							}
 								
@@ -108,16 +97,16 @@ namespace IndDictionary
 					;
 				}
 			}
-			return result;
+			return result!;
 
 		}
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
 			string currentDB = Preferences.Get("current","");
 			string DBName = Path.GetFileName(currentDB);
-			string DBPath = Path.GetDirectoryName(currentDB);
+			string? DBPath = Path.GetDirectoryName(currentDB);
 			App.Database.dispose();
-			await SyncCloud.SaveToCloud("client_secret.json", DBPath, DBName);
+			await SyncCloud.SaveToCloud("client_secret.json", DBPath!, DBName);
 		}
 		
 		protected async void OnSynchr(object sender, EventArgs e)

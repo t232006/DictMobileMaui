@@ -1,4 +1,4 @@
-﻿using GoogleDriveManipulator;
+﻿using GoogleDriveManipulation;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -14,10 +14,10 @@ namespace IndDictionary.addition
 			var gu = GoogleUploader.Upload(secret, WhereFrom, filename);
 			await gu;
 		}
-		public static void LoadFromCloud (string secret, string id, string WhereTo)
+		public static async Task LoadFromCloud (string secret, string id, string WhereTo)
 		{
-			var gu = GoogleDownloader.DownloadList(secret).Result;
-			gu.DownloadFile(id, WhereTo);
-		}
+            var gu = GoogleDownloader.DownloadFile(secret, id, WhereTo);
+            await gu;
+        }
 	}
 }

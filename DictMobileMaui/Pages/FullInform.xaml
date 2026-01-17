@@ -31,7 +31,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid x:Name="BaseLayout" BackgroundColor="Beige">
+        <Grid x:Name="BaseLayout">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="4*"/>

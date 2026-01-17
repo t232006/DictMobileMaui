@@ -32,7 +32,7 @@ namespace IndDictionary
 		public void onSelect(object sender, ItemTappedEventArgs e)
 		{
 			var temp = e.Item as DateOrTopicClassAux;
-			temp.Spoted = !temp.Spoted;
+			temp!.Spoted = !temp.Spoted;
 		}
 		public void onApplyPress(object sender, EventArgs e)
 		{

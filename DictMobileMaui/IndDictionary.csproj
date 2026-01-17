@@ -144,10 +144,9 @@
                 <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
 	</ItemGroup>
 
-
 	<ItemGroup>
-	  <Reference Include="GoogleDriveManipulation">
-	    <HintPath>..\..\GoogleDriveApplictaions\GoogleDriveSaver\bin\Release\net9.0\GoogleDriveManipulation.dll</HintPath>
+	  <Reference Include="GoogleDriveManipulationDll">
+	    <HintPath>..\..\..\..\GoogleDriveManipulationDll\GoogleDriveManipulationDll\bin\Release\net9.0\GoogleDriveManipulationDll.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

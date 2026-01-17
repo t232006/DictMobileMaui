@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
 namespace IndDictionary.Converters
 {
