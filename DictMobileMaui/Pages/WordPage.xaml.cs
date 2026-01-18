@@ -7,24 +7,26 @@ namespace IndDictionary
 	public partial class WordPage : ContentPage
 	{
 		dict focusedItem;
-		public bool transl { get; }
-		
+		public bool transl { get; }	
 		bool showall = true;
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
-		SearchPage searchPage = new SearchPage();
-		bool Pressed = false;
-        IEnumerable<dict> Data = App.Database.showTableDict(true, WhatToShow.alltogether);
-		ToolbarItem TBPressed;
+		SearchBar searchBar;
+        IEnumerable<dict> Data;
         public WordPage(bool _transl)
 		{
 			InitializeComponent();
 			transl = _transl;
-			
+			Data = _transl ? App.Database
+							.showTableDict(true, WhatToShow.alltogether)
+							.OrderBy(t => t.Translation).ToList()
+							: App.Database
+							.showTableDict(true, WhatToShow.alltogether)
+							.OrderBy(t => t.Word).ToList();
+
 			ListTable = new ListView
 			{
-				ItemsSource = _transl ? Data.OrderBy(t => t.Translation).ToList() 
-										: Data.OrderBy(t => t.Word).ToList(),
+				ItemsSource = Data,
 				ItemTemplate = new DataTemplate(() =>
 				{
 					Label MainField = new Label
@@ -56,7 +58,8 @@ namespace IndDictionary
 				)
 			};
             NavigationButtons navButtons = new NavigationButtons(this);
-			SearchBar searchBar = new SearchBar();
+			searchBar = new SearchBar();
+			searchBar.TextChanged += Searching;
 			ListTable.ItemTapped += OnPress;
 			MainStack.Add(searchBar, 0, 0);
 			MainStack.Add(ListTable, 0, 1);
@@ -89,5 +92,21 @@ namespace IndDictionary
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
 		}
-	}
+        protected void Searching(Object sender, TextChangedEventArgs e)
+        {
+			IEnumerable<dict> founded;
+			//IEnumerable<dict> saved = (IEnumerable<dict>)ListTable.ItemsSource;
+			if (transl)
+				founded = App.Database
+					.findRecords(searchBar.Text, f => f.Translation)
+					.OrderBy(f => f.Translation).ToList();
+			else
+				founded = App.Database
+					.findRecords(searchBar.Text, f => f.Word)
+					.OrderBy(f => f.Word).ToList();
+			ListTable.ItemsSource = founded;
+			if (e.NewTextValue == "")
+				ListTable.ItemsSource = Data;
+        }
+    }
 }
