@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
-using static System.Net.Mime.MediaTypeNames;
-
+﻿
 namespace IndDictionary
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]

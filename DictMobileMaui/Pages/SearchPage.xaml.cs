@@ -23,14 +23,6 @@ namespace IndDictionary
 			_result = SearchEntry.Text;
 			base.OnDisappearing();
 		}
-		protected void Searching(Object sender, TextChangedEventArgs e)
-		{
-			
-			/* IEnumerable<dict> founded = App.Database.findRecords(SearchEntry.Text, f => f.Word);
-			if (founded != null)
-				_ListTable.ItemsSource = founded;
-			if (e.NewTextValue == "")
-				_ListTable.ItemsSource = App.Database.showTableDict(showAll, wts);*/
-		}
+		
 	}
 }

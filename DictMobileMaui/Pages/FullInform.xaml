@@ -31,7 +31,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid x:Name="BaseLayout" BackgroundColor="Beige">
+        <Grid x:Name="BaseLayout">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="4*"/>
@@ -52,7 +52,7 @@
                             IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled,
                             Converter={StaticResource boolConverter}}"/>
                 <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"
-                    Margin="10,7,10,20"     />
+                    Margin="10,7,10,10"     />
             </FlexLayout>
             <Editor x:Name="WordSpace" Text="{Binding Word}" Style="{StaticResource MainSpace}" 
                     Placeholder="Слово"
@@ -67,7 +67,7 @@
             <FlexLayout x:Name="LabelSpace" Style="{StaticResource forFlex}"
                         Grid.Row="3" Grid.Column="0">
                 <Label x:Name="RelSpace" Text="{Binding Relevation, StringFormat='Открывалось {0} раз'}"/>
-                <Label x:Name="GradeSpace" Text="{Binding Grade, StringFormat='Оценка {0}'}" Margin="5,10,50,20"/>
+                <Label x:Name="GradeSpace" Text="{Binding Grade, StringFormat='Оценка {0}'}" Margin="5,8,50,5"/>
             </FlexLayout>
         </Grid>
     </ContentPage.Content>

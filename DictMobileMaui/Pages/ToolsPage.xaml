@@ -9,7 +9,7 @@
     <StackLayout BackgroundColor="#454955" >
         <StackLayout >
             <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                <CheckBox x:Name="ShowSelected" CheckedChanged="OnChecking"/>
+                <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
                 <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
             </StackLayout>
             <Label Text="Show" Style="{StaticResource LabelStyle}"/>
@@ -20,19 +20,17 @@
             <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
             <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
-            <StackLayout Orientation="Horizontal" Spacing="5">
-                <Button Text="Download" 
+            <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
+                <Button 
                         Style="{StaticResource SmallButton}"
-                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloudFrom.png}"
+                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_from.png}"
                         ContentLayout="Top, 10"
                         Pressed="OnSynchr"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.folder_small.png}" 
-                         Text="Open library"  
+                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.folder_small.png}"                        
                          Style="{StaticResource SmallButton}" 
                          Pressed="OpenLibrary"
                          ContentLayout="Top, 10"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloudTo.png}"
-                         Text="Upload"
+                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
                          />

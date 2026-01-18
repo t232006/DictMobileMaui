@@ -1,9 +1,6 @@
 ﻿using SQLite;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using IndDictionary.addition;
+using DictMobileMaui.addition;
 
 namespace IndDictionary
 {
@@ -21,11 +18,31 @@ namespace IndDictionary
 			itemsD = database.Table<dict>().ToList();
 			itemsT = database.Table<topic>().ToList();
 		}
+		public void GetReward(int id, bool increase)
+		{
+			dict? item = findOneRecord(id);
+			if (item != null)
+			{
+				if (increase)
+				{
+					if (item.Grade < 6) item.Grade += 1;
+				}
+				else
+				{
+					if (item.Grade > 0) item.Grade -= 1;
+				}
+				saveRecD(item);
+			}
+		}
+		public void dispose()
+		{
+			database.Dispose();
+		}
 
 		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
 		{
-			return filtr(allrec, wts);
-		}
+				return filtr(allrec, wts);
+        }
 
 		public IEnumerable<topic> showTableTopic()
 		{
@@ -60,11 +77,13 @@ namespace IndDictionary
 				{
 					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
 					database.Update(item);
+					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
 					return item.Number;
 				}
 				else
 				{
 					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
 					return database.Insert(item);
 				}
 
@@ -114,7 +133,7 @@ namespace IndDictionary
 					}
 				case 2:
 					{
-						result = showTableDict(true, WhatToShow.alltogether).Select(p => p.DateRec).Max().ToString();
+						result = showTableDict(true, WhatToShow.alltogether).Max(p => p.DateRec)!.ToString();
 						break;
 					}
 			}
@@ -138,6 +157,12 @@ namespace IndDictionary
 			}
 			return database.Query<dict>(request);	
 		}
+		public IEnumerable<dict> getSelected()
+		{
+			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
+			if (count<6) database.Execute("Update Dict set Usersel=true");
+			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
+		}
 		//------------forms list of dates or topics depending on T----------------------
 		public IEnumerable<T> showTopicsDates<T>(bool showAll) where T:new()
 		{
@@ -146,14 +171,14 @@ namespace IndDictionary
 			{
 				request = "select distinct DateRec from Dict ";
 				if (showAll==false) request += "where Usersel=true ";
-				request += "order by DateRec";
-			}
+				return (IEnumerable<T>)database.Query<dict>(request).OrderBy(t => DateTime.Parse(t.DateRec));
+            }
 			else
 			{
 				request = "SELECT DISTINCT Name FROM Topic JOIN Dict ON Topic.ID=Dict.Topic ";
 				if (showAll == false) request += "where Usersel=true";
-			}
-			return database.Query<T>(request);
+                return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
+            }
 		}
 		public void ResetSelection()
 		{

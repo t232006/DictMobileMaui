@@ -9,6 +9,7 @@
         <StackLayout BackgroundColor="#454955" >
             <Entry x:Name="SearchEntry" Placeholder="Search" BackgroundColor="#22252a" 
             PlaceholderColor="White" Style="{StaticResource ButtonStyle}"
+            IsVisible="False"
             TextChanged="Searching"/>
             
         </StackLayout>

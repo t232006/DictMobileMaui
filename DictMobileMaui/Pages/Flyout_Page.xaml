@@ -8,24 +8,42 @@
             <ContentPage.Resources>
                 <ResourceDictionary>
                     <x:Array x:Key="SectionsArray" Type="{x:Type x:String}">
+                        <x:String>Dictionary</x:String>
+                        <x:String>Tests</x:String>
+                        <x:String>Cards</x:String>
+                    </x:Array>
+                    <x:Array x:Key="xMode" Type="{x:Type x:String}">
                         <x:String>Word</x:String>
                         <x:String>Translation</x:String>
                     </x:Array>
                 </ResourceDictionary>
             </ContentPage.Resources>
-            <ListView x:Name="Sections" 
-                      ItemsSource="{StaticResource Key=SectionsArray}"
-                      ItemSelected="onSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout>
-                                <Label Text="{Binding }" FontSize="Large" TextColor="Black" Padding="30,0"/>
-                            </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <VerticalStackLayout>
+
+
+                <ListView x:Name="Sections" 
+                          ItemsSource="{StaticResource Key=SectionsArray}"
+                          ItemSelected="onSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout>
+                                    <Label Text="{Binding }" FontSize="Large" TextColor="Black" Padding="30,0"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Picker x:Name="ModePicker"
+                        Title="Select Mode"
+                        FontSize="Medium"
+                        ItemsSource="{StaticResource Key=xMode}"
+                        SelectedIndex="0"
+                        SelectedIndexChanged="onModeChanged"
+                        Margin="10,20,10,0"/>
+
+
+            </VerticalStackLayout>
         </ContentPage>
     </FlyoutPage.Flyout>
 </FlyoutPage>

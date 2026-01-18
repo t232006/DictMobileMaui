@@ -12,20 +12,41 @@ namespace IndDictionary
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Flyout_Page : FlyoutPage
     {
-        bool transl=false;
-        public bool Transl { set => transl = value; }
-        public Flyout_Page()
+        bool Xmode=false;
+        byte actPage = 0;
+		//public bool Transl { set => transl = value; }
+		public Flyout_Page()
         {
             InitializeComponent();
             //FlyoutLayoutBehavior = FlyoutLayoutBehavior.Popover;
-            Detail = new NavigationPage(new WordPage(transl));
+            Detail = new NavigationPage(new WordPage(false));
         }
         protected void onSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            transl = (e.SelectedItemIndex == 0) ? false : true;
-			Detail = new NavigationPage(new WordPage(transl));
-            //IsPresented = false;
+            switch (e.SelectedItemIndex)
+            {
+                case 0:
+                    {
+                        Detail = new NavigationPage(new WordPage(Xmode)); break;
+                    }
+                case 1:
+                    {
+                        Detail = new NavigationPage(new TestPage(Xmode)); break;
+                    }
+                case 2:
+                    {
+                        Detail = new NavigationPage(new Card(Xmode)); break;
+                    }
+            }
+            actPage = (byte)e.SelectedItemIndex;
+			//Detail = new NavigationPage(new WordPage(transl));
+			//IsPresented = false;
+		}
+        protected void onModeChanged(object sender, EventArgs e)
+        {
+            Xmode = ModePicker.SelectedIndex==0? false: true;
+            onSelected(this, new SelectedItemChangedEventArgs(Sections,actPage));
 		}
 
-    }
+	}
 }

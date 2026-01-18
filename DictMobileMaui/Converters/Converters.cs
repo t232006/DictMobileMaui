@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
 namespace IndDictionary.Converters
 {
@@ -48,6 +44,43 @@ namespace IndDictionary.Converters
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			return ((DateTime)value).ToString("dd.MM.yyyy");
+		}
+	}
+	class BoolToBorderStyle: IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			string temp = (bool)value ? "CardStyle1" : "CardStyle2";
+			return App.Current.Resources[temp] as Style;
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+	class BoolToBorderLabelStyle : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			string temp = (bool)value ? "CardTextStyle1" : "CardTextStyle2";
+			return App.Current.Resources[temp] as Style;
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+	class BoolToBorderText : IMultiValueConverter
+	{
+		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+		{
+			if ((values.Length != 2) || !(values[0] is bool isWord) || !(values[1] is dict item)) return null; else
+				return isWord ? item.Word: item.Translation;
+		}
+
+		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
