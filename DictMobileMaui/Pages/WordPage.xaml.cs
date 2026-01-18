@@ -55,24 +55,12 @@ namespace IndDictionary
 				}
 				)
 			};
-			
-            TBPressed = new ToolbarItem()
-            {
-                IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.searchPressed.png"),
-                Priority = 1,
-                Order = ToolbarItemOrder.Primary,
-            };
             NavigationButtons navButtons = new NavigationButtons(this);
-			SearchBar searchBar = new SearchBar() { IsVisible = false };
-			searchBar.BindingContext = this;
-			searchBar.SetBinding(SearchBar.IsVisibleProperty, "Pressed");
+			SearchBar searchBar = new SearchBar();
 			ListTable.ItemTapped += OnPress;
-			TBPressed.Clicked += OnSearchPressed;
 			MainStack.Add(searchBar, 0, 0);
 			MainStack.Add(ListTable, 0, 1);
-			MainStack.Add(navButtons, 0, 2);
-			
-            
+			MainStack.Add(navButtons, 0, 2);  
         }
 		public void PassParams(bool _showAll, WhatToShow _wts)
 		{
@@ -100,37 +88,6 @@ namespace IndDictionary
 		{
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
-		}
-		protected async void OnSearchPressed(object sender, EventArgs e)
-		{
-			//await Navigation.PushAsync(searchPage);
-			if (!Pressed)
-			{
-				ToolbarItems.Remove(TBUnpressed);
-				ToolbarItems.Add(TBPressed);
-			}
-			else
-			{
-                ToolbarItems.Remove(TBPressed);
-                ToolbarItems.Add(TBUnpressed);
-            }
-				Pressed = !Pressed;
-        }
-		protected override void OnAppearing()
-		{
-			/*if (searchPage.Result != null && searchPage.Result != "")
-			{
-				IEnumerable<dict>? founded = null;
-				if (transl)
-					founded = App.Database.findRecords(searchPage.Result, f => f.Translation);
-				else
-					founded = App.Database.findRecords(searchPage.Result, f => f.Word);
-				if (founded != null)
-					ListTable.ItemsSource = founded;
-			}
-			else
-				ListTable.ItemsSource = App.Database.showTableDict(showall, wts);*/
-			base.OnAppearing();
 		}
 	}
 }
