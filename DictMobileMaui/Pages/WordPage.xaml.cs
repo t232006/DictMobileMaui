@@ -1,14 +1,4 @@
-﻿using IndDictionary.addition;
-using IndDictionary.Pages;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
+﻿//using DictMobileMaui.Auxilary;
 using Microsoft.Maui.Layouts;
 
 namespace IndDictionary
@@ -23,7 +13,9 @@ namespace IndDictionary
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchPage searchPage = new SearchPage();
+		bool Pressed = false;
         IEnumerable<dict> Data = App.Database.showTableDict(true, WhatToShow.alltogether);
+		ToolbarItem TBPressed;
         public WordPage(bool _transl)
 		{
 			InitializeComponent();
@@ -63,10 +55,23 @@ namespace IndDictionary
 				}
 				)
 			};
-			NavigationButtons navButtons = new NavigationButtons(this);
+			
+            TBPressed = new ToolbarItem()
+            {
+                IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.searchPressed.png"),
+                Priority = 1,
+                Order = ToolbarItemOrder.Primary,
+            };
+            NavigationButtons navButtons = new NavigationButtons(this);
+			SearchBar searchBar = new SearchBar() { IsVisible = false };
+			searchBar.BindingContext = this;
+			searchBar.SetBinding(SearchBar.IsVisibleProperty, "Pressed");
 			ListTable.ItemTapped += OnPress;
-			MainStack.Add(ListTable, 0, 0);
-			MainStack.Add(navButtons, 0, 1);
+			TBPressed.Clicked += OnSearchPressed;
+			MainStack.Add(searchBar, 0, 0);
+			MainStack.Add(ListTable, 0, 1);
+			MainStack.Add(navButtons, 0, 2);
+			
             
         }
 		public void PassParams(bool _showAll, WhatToShow _wts)
@@ -99,8 +104,18 @@ namespace IndDictionary
 		protected async void OnSearchPressed(object sender, EventArgs e)
 		{
 			//await Navigation.PushAsync(searchPage);
-			await Navigation.PushAsync(searchPage);
-		}
+			if (!Pressed)
+			{
+				ToolbarItems.Remove(TBUnpressed);
+				ToolbarItems.Add(TBPressed);
+			}
+			else
+			{
+                ToolbarItems.Remove(TBPressed);
+                ToolbarItems.Add(TBUnpressed);
+            }
+				Pressed = !Pressed;
+        }
 		protected override void OnAppearing()
 		{
 			/*if (searchPage.Result != null && searchPage.Result != "")

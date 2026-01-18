@@ -10,12 +10,15 @@
         <ToolbarItem Clicked="OnAddPressed"
                      IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.add1.png}"/>
 
-        <ToolbarItem Clicked="OnSearchPressed"
+        <ToolbarItem Clicked="OnSearchPressed" x:Name="TBUnpressed"
                      IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.search.png}"/>
+        
+        
     </ContentPage.ToolbarItems>
     <Grid x:Name="MainStack">
         <Grid.RowDefinitions>
-            <RowDefinition Height="94*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="88*"/>
             <RowDefinition Height="6*"/>
         </Grid.RowDefinitions>
 
