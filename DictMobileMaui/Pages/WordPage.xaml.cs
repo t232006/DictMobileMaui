@@ -12,23 +12,21 @@ namespace IndDictionary
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchBar searchBar;
-        IEnumerable<dict> Data(bool _transl)
-		{
-			return _transl ? App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
-                            .OrderBy(t => t.Translation).ToList()
-                            : App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
-                            .OrderBy(t => t.Word).ToList();
-        }
-		public WordPage(bool _transl)
+        IEnumerable<dict> Data;
+        public WordPage(bool _transl)
 		{
 			InitializeComponent();
 			transl = _transl;
+			Data = _transl ? App.Database
+							.showTableDict(true, WhatToShow.alltogether)
+							.OrderBy(t => t.Translation).ToList()
+							: App.Database
+							.showTableDict(true, WhatToShow.alltogether)
+							.OrderBy(t => t.Word).ToList();
 
 			ListTable = new ListView
 			{
-				ItemsSource = Data(_transl),
+				ItemsSource = Data,
 				ItemTemplate = new DataTemplate(() =>
 				{
 					Label MainField = new Label
@@ -108,13 +106,7 @@ namespace IndDictionary
 					.OrderBy(f => f.Word).ToList();
 			ListTable.ItemsSource = founded;
 			if (e.NewTextValue == "")
-				ListTable.ItemsSource = Data(transl);
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-			ListTable.ItemsSource = Data(transl);
+				ListTable.ItemsSource = Data;
         }
     }
 }
