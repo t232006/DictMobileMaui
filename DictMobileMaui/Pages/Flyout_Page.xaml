@@ -28,7 +28,7 @@
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout>
-                                    <Label Text="{Binding }" FontSize="Large" TextColor="Black" Padding="30,0"/>
+                                    <Label Text="{Binding }" FontSize="Large" Padding="30,0"/>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>

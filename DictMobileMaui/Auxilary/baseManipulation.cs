@@ -10,7 +10,7 @@ namespace IndDictionary
 	{
 		SQLiteConnection database;
 		public bool toReboot = false;
-		IEnumerable<dict> itemsD;
+		IEnumerable<dict> itemsD { get; set; }
 		IEnumerable<topic> itemsT;
 		public baseManipulation(string databasePath)
 		{
@@ -179,6 +179,10 @@ namespace IndDictionary
 				if (showAll == false) request += "where Usersel=true";
                 return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
             }
+		}
+		public bool AnySelection(WhatToShow wts)
+		{
+			return showTableDict(false, wts).Any();
 		}
 		public void ResetSelection()
 		{

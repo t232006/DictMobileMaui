@@ -8,15 +8,12 @@ namespace IndDictionary
 	{
 		bool showAll = true;
 		WhatToShow wts = WhatToShow.alltogether;
-
 		WordPage detail;
-
 		public ToolsPage(WordPage Detail)
 		{
 			InitializeComponent();
 			//if (Detail.transl) Title = "Translation"; else Title = "Word";
 			detail = Detail;
-			
 			NavigationButtons navButtons = new NavigationButtons(Detail);
 			forNavButtons.Children.Add(navButtons);
 		}
@@ -28,8 +25,8 @@ namespace IndDictionary
 
 		protected override void OnAppearing()
 		{
-			ShowSelected.IsChecked = true;
-			DateLabel.Text = "Last record: " + App.Database.getInfo(2);
+			ShowSelected.IsChecked = App.Database.AnySelection(wts);
+            DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
 			base.OnAppearing();
 		}
@@ -131,7 +128,7 @@ namespace IndDictionary
 		}
 		protected async void onDates(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
 			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(!ShowSelected.IsChecked);
 			foreach (dict t in tempcont)
 			{
@@ -143,7 +140,7 @@ namespace IndDictionary
 
 		protected async void onTopics(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
 			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(!ShowSelected.IsChecked);
 			foreach (topic t in tempcont)
 			{
