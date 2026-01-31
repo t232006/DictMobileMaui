@@ -28,6 +28,7 @@ namespace IndDictionary
 
 		protected override void OnAppearing()
 		{
+			ShowSelected.IsChecked = true;
 			DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
 			base.OnAppearing();

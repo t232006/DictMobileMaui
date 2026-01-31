@@ -15,10 +15,10 @@ namespace IndDictionary
         IEnumerable<dict> Data(bool _transl)
 		{
 			return _transl ? App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
+                            .showTableDict(showall, WhatToShow.alltogether)
                             .OrderBy(t => t.Translation).ToList()
                             : App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
+                            .showTableDict(showall, WhatToShow.alltogether)
                             .OrderBy(t => t.Word).ToList();
         }
 		public WordPage(bool _transl)
