@@ -16,7 +16,8 @@ namespace IndDictionary
 		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
 		{
-				if (Preferences.ContainsKey("current"))
+			//Preferences.Clear();
+            if (Preferences.ContainsKey("current"))
 					databasename = Preferences.Get("current", "");
 				else
 				{
