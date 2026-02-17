@@ -37,6 +37,10 @@ namespace IndDictionary
                     {
                         Detail = new NavigationPage(new Card(Xmode)); break;
                     }
+                case 3:
+                    {
+                        Detail = new NavigationPage(new Accordance(Xmode)); break;
+                    }
             }
             actPage = (byte)e.SelectedItemIndex;
 			//Detail = new NavigationPage(new WordPage(transl));

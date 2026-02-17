@@ -36,13 +36,11 @@ namespace IndDictionary
 			string baseInfo = $"{database.getInfo(1)}.{database.getInfo(2)}";
 			Preferences.Set(databasename, baseInfo);
 			
-
-
-			foreach (dict d in database.showTableDict(true, WhatToShow.alltogether))
+			/*foreach (dict d in database.showTableDict(true, WhatToShow.alltogether))
 			{
 				d.DateRec = datesCorrection.toCorrectDate(d.DateRec);
 				App.Database.saveRecD(d);
-			}
+			}*/
 		}
 		public static baseManipulation Database
 		{
