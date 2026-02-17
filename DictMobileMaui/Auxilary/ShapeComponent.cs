@@ -5,32 +5,36 @@ namespace DictMobileMaui.Auxilary
     {
         public ShapeComponent(bool _isWord, string _Word, string _Translation)
         {
-            if (Application.Current.Resources.TryGetValue("CardStyle1", out var style))
+            string curStyle = _isWord ? "CardStyle1" : "CardStyle2";
+            if (Application.Current.Resources.TryGetValue(curStyle, out var style))
                 Shape.Style = (Style)style;
             isWord = _isWord;
-            translation = _Translation;
-            word = _Word;
+            Translation = _Translation;
+            Word = _Word;
             Content = Shape;
             if (Shape.Content is Label label)
             {
-                label.Text = isWord ? word : translation;
+                //label.Text = isWord ? word : translation;
                 label.HorizontalOptions = LayoutOptions.Center;
                 label.VerticalOptions = LayoutOptions.Center;
             }
 
-            Shape.HorizontalOptions = LayoutOptions.Start;
-            Shape.VerticalOptions = LayoutOptions.Start;
+            var panGesture = new PanGestureRecognizer();
+            panGesture.PanUpdated += OnPanUpdated;
+            GestureRecognizers.Add(panGesture);
 
         }
         public Border Shape = new Border
         {
             Content = new Label(),
-            WidthRequest=50,
-            HeightRequest=70
+            //WidthRequest=70,
+            HeightRequest=50
         };
         private readonly bool isWord;
         private string translation;
         private string word;
+        private double startX;
+        private double startY;
 
         public string Word
         {
@@ -40,6 +44,7 @@ namespace DictMobileMaui.Auxilary
                 {
                     var label = Shape.Content as Label;
                     label.Text = value;
+                    Shape.WidthRequest = label.Text.Length * 10;
                 }
             }
             get => word;
@@ -51,9 +56,33 @@ namespace DictMobileMaui.Auxilary
                 {
                     var label = Shape.Content as Label;
                     label.Text = value;
+                    Shape.WidthRequest = label.Text.Length * 10;
                 }
             }
             get => translation;
         }
+        private void OnPanUpdated(object sender, PanUpdatedEventArgs e)
+        {
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    // Запоминаем начальную позицию
+                    startX = TranslationX;
+                    startY = TranslationY;
+                    break;
+
+                case GestureStatus.Running:
+                    // Двигаем карточку
+                    TranslationX = startX + e.TotalX;
+                    TranslationY = startY + e.TotalY;
+                    break;
+
+                case GestureStatus.Completed:
+                case GestureStatus.Canceled:
+                    // Можно добавить "примагничивание" к сетке, возврат на место и т.д.
+                    break;
+            }
+        }
+
     }
 }
