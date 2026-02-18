@@ -20,8 +20,10 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			word = _word;
-            ShapeComponent sc = new ShapeComponent(word, "Clovo", "Perevod");
-            MainStack.Add(sc);
+            ShapeComponent sc1 = new ShapeComponent(word, "Clovo", "Perevod");
+            ShapeComponent sc2 = new ShapeComponent(true, "Perevod", "Slovo");
+            MainStack.Add(sc1);
+			MainStack.Add(sc2);
         }
 		
        

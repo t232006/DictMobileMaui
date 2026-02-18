@@ -18,10 +18,28 @@ namespace DictMobileMaui.Auxilary
                 label.HorizontalOptions = LayoutOptions.Center;
                 label.VerticalOptions = LayoutOptions.Center;
             }
-
-            var panGesture = new PanGestureRecognizer();
-            panGesture.PanUpdated += OnPanUpdated;
-            GestureRecognizers.Add(panGesture);
+            var drag = new DragGestureRecognizer
+            {
+                CanDrag = true,
+            };
+            drag.DragStarting +=(s, e) =>
+            {
+                e.Data.Properties.Add("object", this);
+            };
+            GestureRecognizers.Add(drag);
+            var drop = new DropGestureRecognizer
+            {
+                AllowDrop = true
+            };
+            drop.Drop += (s, e) =>
+            {
+                if (e.Data.Properties.TryGetValue("object", out object val))
+                {
+                    var label = Shape.Content as Label;
+                    label.Text = label.Text + (val as ShapeComponent).translation;
+                }
+            };
+            GestureRecognizers.Add(drop);
 
         }
         public Border Shape = new Border
@@ -33,8 +51,7 @@ namespace DictMobileMaui.Auxilary
         private readonly bool isWord;
         private string translation;
         private string word;
-        private double startX;
-        private double startY;
+       
 
         public string Word
         {
@@ -58,31 +75,11 @@ namespace DictMobileMaui.Auxilary
                     label.Text = value;
                     Shape.WidthRequest = label.Text.Length * 10;
                 }
+                translation = value;
             }
             get => translation;
         }
-        private void OnPanUpdated(object sender, PanUpdatedEventArgs e)
-        {
-            switch (e.StatusType)
-            {
-                case GestureStatus.Started:
-                    // Запоминаем начальную позицию
-                    startX = TranslationX;
-                    startY = TranslationY;
-                    break;
-
-                case GestureStatus.Running:
-                    // Двигаем карточку
-                    TranslationX = startX + e.TotalX;
-                    TranslationY = startY + e.TotalY;
-                    break;
-
-                case GestureStatus.Completed:
-                case GestureStatus.Canceled:
-                    // Можно добавить "примагничивание" к сетке, возврат на место и т.д.
-                    break;
-            }
-        }
+        
 
     }
 }
