@@ -5,9 +5,12 @@ namespace DictMobileMaui.Auxilary
     {
         public ShapeComponent(bool _isWord, string _Word, string _Translation)
         {
-            string curStyle = _isWord ? "CardStyle1" : "CardStyle2";
+            string curStyle = _isWord ? "var41" : "var3Round";
+            string curTextStyle = _isWord ? "var4Text" : "var3Text";
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
                 Shape.Style = (Style)style;
+            if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
+                (Shape.Content as Label).Style = (Style)textstyle;
             isWord = _isWord;
             Translation = _Translation;
             Word = _Word;
@@ -27,14 +30,20 @@ namespace DictMobileMaui.Auxilary
                 e.Data.Properties.Add("object", this);
             };
             GestureRecognizers.Add(drag);
-            var drop = new DropGestureRecognizer
+            var drop = new DropGestureRecognizer();
+
+            drop.DragOver += (s, e) =>
             {
-                AllowDrop = true
+                if (e.Data.Properties.TryGetValue("object", out object val))//не бросать в свои
+                {
+                    if ((val as ShapeComponent).isWord != this.isWord) drop.AllowDrop = true;
+                }
             };
+
             drop.Drop += (s, e) =>
             {
                 if (e.Data.Properties.TryGetValue("object", out object val))
-                {
+                { 
                     var label = Shape.Content as Label;
                     label.Text = label.Text + (val as ShapeComponent).translation;
                 }
@@ -46,7 +55,7 @@ namespace DictMobileMaui.Auxilary
         {
             Content = new Label(),
             //WidthRequest=70,
-            HeightRequest=50
+            HeightRequest=40
         };
         private readonly bool isWord;
         private string translation;
@@ -61,7 +70,8 @@ namespace DictMobileMaui.Auxilary
                 {
                     var label = Shape.Content as Label;
                     label.Text = value;
-                    Shape.WidthRequest = label.Text.Length * 10;
+                    //Shape.WidthRequest = label.Text.Length * 10;
+                    Shape.HorizontalOptions = LayoutOptions.Fill;
                 }
             }
             get => word;
@@ -73,7 +83,8 @@ namespace DictMobileMaui.Auxilary
                 {
                     var label = Shape.Content as Label;
                     label.Text = value;
-                    Shape.WidthRequest = label.Text.Length * 10;
+                    //Shape.WidthRequest = label.Text.Length * 10;
+                    Shape.HorizontalOptions = LayoutOptions.Fill;
                 }
                 translation = value;
             }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:IndDictionary" 
              xmlns:res="clr-namespace:IndDictionary.Converters"
-             x:Class="IndDictionary.Accordance">
+             x:Class="IndDictionary.AccordancePage">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -12,6 +12,6 @@
         </ResourceDictionary>
         <res:BoolToBorderStyle x:Key="boolToBorderStyle"/>
     </ContentPage.Resources>
-    <StackLayout x:Name="MainStack">
-    </StackLayout>
+    <FlexLayout x:Name="MainStack">
+    </FlexLayout>
 </ContentPage>

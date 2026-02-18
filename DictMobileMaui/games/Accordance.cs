@@ -10,6 +10,10 @@ namespace DictMobileMaui.games
 {
     public class Accordance:Games
     {
+        public Accordance()
+        {
+            Init();
+        }
         ObservableCollection<dict> pool=new ObservableCollection<dict>();
         public ObservableCollection<dict> Pool { get => pool; }
         public void Init()

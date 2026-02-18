@@ -39,7 +39,7 @@ namespace IndDictionary
                     }
                 case 3:
                     {
-                        Detail = new NavigationPage(new Accordance(Xmode)); break;
+                        Detail = new NavigationPage(new AccordancePage()); break;
                     }
             }
             actPage = (byte)e.SelectedItemIndex;
