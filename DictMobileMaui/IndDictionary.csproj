@@ -87,6 +87,7 @@
 	<ItemGroup>
 	  <MauiImage Remove="Resources\Images\add.png" />
 	  <MauiImage Remove="Resources\Images\add1.png" />
+	  <MauiImage Remove="Resources\Images\arrow_right.png" />
 	  <MauiImage Remove="Resources\Images\arrow_right_from.png" />
 	  <MauiImage Remove="Resources\Images\arrow_right_to.png" />
 	  <MauiImage Remove="Resources\Images\cancel.png" />
@@ -116,6 +117,7 @@
 	<ItemGroup>
 	  <EmbeddedResource Include="Resources\Images\add.png" />
 	  <EmbeddedResource Include="Resources\Images\add1.png" />
+	  <EmbeddedResource Include="Resources\Images\arrow_right.png" />
 	  <EmbeddedResource Include="Resources\Images\arrow_right_from.png" />
 	  <EmbeddedResource Include="Resources\Images\arrow_right_to.png" />
 	  <EmbeddedResource Include="Resources\Images\cancel.png" />

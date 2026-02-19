@@ -1,4 +1,6 @@
 ﻿
+using IndDictionary;
+
 namespace DictMobileMaui.Auxilary
 {
     public class ShapeComponent:ContentView
@@ -6,14 +8,15 @@ namespace DictMobileMaui.Auxilary
         void Answer(bool _true)
         {
            
-            string curStyle = _true ? "var2" : "var1";
+            string curStyle = _true ? "var2" : "var21";
             string curTextStyle = _true ? "var2Text" : "var1TextStrike";
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
                 Shape.Style = (Style)style;
             if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
                 (Shape.Content as Label).Style = (Style)textstyle;
+            App.Database.GetReward(id, _true);
         }
-        public ShapeComponent(bool _isWord, string _Word, string _Translation)
+        public ShapeComponent(bool _isWord, int _id)
         {
             string curStyle = _isWord ? "var41" : "var3Round";
             string curTextStyle = _isWord ? "var4Text" : "var3Text";
@@ -22,8 +25,9 @@ namespace DictMobileMaui.Auxilary
             if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
                 (Shape.Content as Label).Style = (Style)textstyle;
             isWord = _isWord;
-            Translation = _Translation;
-            Word = _Word;
+            id = _id;
+            Translation = App.Database.findOneRecord(_id)!.Translation;
+            Word = App.Database.findOneRecord(_id)!.Word;
             Content = Shape;
             if (Shape.Content is Label label)
             {
@@ -79,6 +83,7 @@ namespace DictMobileMaui.Auxilary
         private readonly bool isWord;
         private string translation;
         private string word;
+        private int id;
        
 
         public string Word

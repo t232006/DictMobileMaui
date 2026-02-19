@@ -16,48 +16,49 @@ namespace IndDictionary
 	
 	public partial class AccordancePage : ContentPage, INotifyPropertyChanged
 	{
-        
-
+        FlexLayout fl1 = new FlexLayout { Direction = FlexDirection.Column };
+        FlexLayout fl2 = new FlexLayout { Direction = FlexDirection.Column };
+        void DrawNewPage()
+        {
+            Accordance accordance = new Accordance();
+            fl1.Clear();fl2.Clear();MainStack.Clear();
+            for (byte i = 0; i < 6; i++)
+            {
+                fl1.Children.Add(new ShapeComponent(false, accordance.Pool[i].Number));
+                fl2.Children.Add(new ShapeComponent(true, accordance.Pool[i].Number));
+                
+            }
+            MainStack.Children.Add(fl1); MainStack.Children.Add(fl2);
+        }
         public AccordancePage()
 		{
 			InitializeComponent();
-            FlexLayout fl1 = new FlexLayout { Direction = FlexDirection.Column };
-            FlexLayout fl2 = new FlexLayout { Direction = FlexDirection.Column };
-            Accordance accordance = new Accordance();
+            
+            
             MainStack.Direction = (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
                  ? FlexDirection.Column
                  : FlexDirection.Row;
             MainStack.JustifyContent = FlexJustify.SpaceEvenly;
             MainStack.AlignItems = FlexAlignItems.Center;
             FlexLayout.SetGrow(fl1, 1); FlexLayout.SetGrow(fl2, 1);
-            MainStack.Children.Add(fl1); MainStack.Children.Add(fl2);
-            ShapeComponent sc11 = new ShapeComponent(false, accordance.Pool[0].Word, accordance.Pool[0].Translation);
-            ShapeComponent sc12 = new ShapeComponent(false, accordance.Pool[1].Word, accordance.Pool[1].Translation);
-            ShapeComponent sc13 = new ShapeComponent(false, accordance.Pool[2].Word, accordance.Pool[2].Translation);
-            ShapeComponent sc14 = new ShapeComponent(false, accordance.Pool[3].Word, accordance.Pool[3].Translation);
-            ShapeComponent sc15 = new ShapeComponent(false, accordance.Pool[4].Word, accordance.Pool[4].Translation);
-            ShapeComponent sc16 = new ShapeComponent(false, accordance.Pool[5].Word, accordance.Pool[5].Translation);
-            ShapeComponent sc21 = new ShapeComponent(true, accordance.Pool[0].Word, accordance.Pool[0].Translation);
-            ShapeComponent sc22 = new ShapeComponent(true, accordance.Pool[1].Word, accordance.Pool[1].Translation);
-            ShapeComponent sc23 = new ShapeComponent(true, accordance.Pool[2].Word, accordance.Pool[2].Translation);
-            ShapeComponent sc24 = new ShapeComponent(true, accordance.Pool[3].Word, accordance.Pool[3].Translation);
-            ShapeComponent sc25 = new ShapeComponent(true, accordance.Pool[4].Word, accordance.Pool[4].Translation);
-            ShapeComponent sc26 = new ShapeComponent(true, accordance.Pool[5].Word, accordance.Pool[5].Translation);
-            fl1.Children.Add(sc11);
-			fl1.Children.Add(sc12);
-            fl1.Children.Add(sc13);
-            fl1.Children.Add(sc14); 
-            fl1.Children.Add(sc15);
-            fl1.Children.Add(sc16); 
-            fl2.Children.Add(sc21);
-            fl2.Children.Add(sc22); 
-            fl2.Children.Add(sc23);
-            fl2.Children.Add(sc24);
-            fl2.Children.Add(sc25);
-            fl2.Children.Add(sc26);
+            DrawNewPage();
+            
+            fl1.ChildRemoved += (s, e) =>
+            {
+                if (fl1.Children.Count + fl2.Children.Count == 6) NextBut.IsEnabled = true;
+            };
+            fl2.ChildRemoved += (s, e) =>
+            {
+                if (fl1.Children.Count + fl2.Children.Count == 6) NextBut.IsEnabled = true;
+            };
+            
             
         }
-
+        protected void NextBlock(Object sender, EventArgs e) 
+        {
+            DrawNewPage();
+        } 
+        
 	}
 
 }
