@@ -3,6 +3,16 @@ namespace DictMobileMaui.Auxilary
 {
     public class ShapeComponent:ContentView
     {
+        void Answer(bool _true)
+        {
+           
+            string curStyle = _true ? "var2" : "var1";
+            string curTextStyle = _true ? "var2Text" : "var1TextStrike";
+            if (Application.Current.Resources.TryGetValue(curStyle, out var style))
+                Shape.Style = (Style)style;
+            if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
+                (Shape.Content as Label).Style = (Style)textstyle;
+        }
         public ShapeComponent(bool _isWord, string _Word, string _Translation)
         {
             string curStyle = _isWord ? "var41" : "var3Round";
@@ -36,16 +46,25 @@ namespace DictMobileMaui.Auxilary
             {
                 if (e.Data.Properties.TryGetValue("object", out object val))//не бросать в свои
                 {
-                    if ((val as ShapeComponent).isWord != this.isWord) drop.AllowDrop = true;
+                    if ((val as ShapeComponent).isWord != this.isWord) e.AcceptedOperation = DataPackageOperation.Copy;
+                    else
+                        e.AcceptedOperation = DataPackageOperation.None;
                 }
             };
 
             drop.Drop += (s, e) =>
             {
-                if (e.Data.Properties.TryGetValue("object", out object val))
+                if (e.Data.Properties.TryGetValue("object", out object val) && val is ShapeComponent source)
                 { 
                     var label = Shape.Content as Label;
-                    label.Text = label.Text + (val as ShapeComponent).translation;
+                    if (source.Parent is FlexLayout parent)
+                    {
+                        parent.Children.Remove(source);
+                    }
+                    label.Text = source.isWord
+                        ? label.Text + (val as ShapeComponent).word
+                        : label.Text + (val as ShapeComponent).translation;
+                    if (source.translation == this.translation) Answer(true); else Answer(false);
                 }
             };
             GestureRecognizers.Add(drop);
