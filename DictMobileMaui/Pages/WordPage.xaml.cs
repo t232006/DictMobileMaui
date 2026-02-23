@@ -1,4 +1,5 @@
 ﻿//using DictMobileMaui.Auxilary;
+using DictMobileMaui.Auxilary;
 using Microsoft.Maui.Layouts;
 
 namespace IndDictionary
@@ -34,7 +35,8 @@ namespace IndDictionary
 					Label MainField = new Label
 					{
 						LineBreakMode = LineBreakMode.TailTruncation,
-						FontSize = 14
+						FontSize = 14,
+						Padding = 10
 					};
 
 					if (transl)
@@ -42,21 +44,57 @@ namespace IndDictionary
 					else
 						MainField.SetBinding(Label.TextProperty, "Word");
 					AbsoluteLayout.SetLayoutBounds(MainField, new Rect(10, 0, .68, AbsoluteLayout.AutoSize));
-					AbsoluteLayout.SetLayoutFlags(MainField, AbsoluteLayoutFlags.WidthProportional);
+					AbsoluteLayout.SetLayoutFlags(MainField, AbsoluteLayoutFlags.WidthProportional | AbsoluteLayoutFlags.YProportional);
+					
 					ExtSwitch extswitch = new ExtSwitch();
 					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
 					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.9, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
 					AbsoluteLayout.SetLayoutFlags(extswitch, AbsoluteLayoutFlags.PositionProportional);
-					return new ViewCell
-					{
-						View = new AbsoluteLayout
-						{
-							Children = { extswitch, MainField }
-						}
-					};
-				}
+                    SectorComponent diagram = new SectorComponent() { BackgroundColor = Colors.Red };
+                    diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
+                    
+                    AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0, 24, 24));
+                    AbsoluteLayout.SetLayoutFlags(diagram, AbsoluteLayoutFlags.PositionProportional);
+                    MainField.SizeChanged += (s, e) =>
+                    {
+                        if (MainField.Height > 0)
+                        {
+                            // немного отступа, подстраивайте коэффициент под ваш дизайн
+                            double target = MainField.Height * 0.9;
+                            diagram.WidthRequest = target;
+                            diagram.HeightRequest = target;
+
+                            // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
+                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+
+                            // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
+                            diagram.Invalidate();
+                        }
+                    };
+                    var cellLayout = new AbsoluteLayout
+                    {
+                        Children = { extswitch, MainField, diagram }
+                    };
+                    MainField.SizeChanged += (s, e) =>
+                    {
+                        if (MainField.Height > 0)
+                        {
+                            // немного отступа, подстраивайте коэффициент под ваш дизайн
+                            double target = MainField.Height * 0.65;
+                            diagram.WidthRequest = target;
+                            diagram.HeightRequest = target;
+
+                            // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
+                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+
+                            // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
+                            diagram.Invalidate();
+                        }
+                    };
+                    return new ViewCell { View = cellLayout };
+                }
 				)
 			};
             NavigationButtons navButtons = new NavigationButtons(this);
