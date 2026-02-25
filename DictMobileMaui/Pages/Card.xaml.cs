@@ -1,4 +1,5 @@
-﻿using DictMobileMaui;
+﻿//using Android.Gestures;
+using DictMobileMaui;
 using DictMobileMaui.games;
 using IndDictionary.Converters;
 using Microsoft.Maui.Controls;
@@ -39,10 +40,10 @@ namespace IndDictionary
 			_isWord = _word;
 			Cards cards = new Cards();
 			InitializeComponent();
-			CarouselView Cards = new CarouselView
-			{
-				VerticalOptions = LayoutOptions.Start,
-			};
+				CarouselView Cards = new CarouselView
+				{
+					VerticalOptions = LayoutOptions.Start,
+				};
 			Cards.ItemsSource = cards.CardSeq;
 			Cards.ItemTemplate = new DataTemplate(() =>
 			{
@@ -88,7 +89,28 @@ namespace IndDictionary
 				grid.Add(CardBorder);
 				return grid;
 			});
-			MainStack.Add(Cards);
+			Cards.GestureRecognizers.Add(new SwipeGestureRecognizer
+			{
+				Direction = SwipeDirection.Up,
+				Command = new Command(async () =>
+				{
+					await Cards.TranslateTo(0, -CardHeight, 300, Easing.SinIn);
+					Cards.Opacity = 0;
+					Cards.Position++;
+					TranslationY = 0;
+					Cards.Opacity = 1;
+                    App.Database.GetReward((Cards.CurrentItem as dict)!.Number, true);
+				})
+			});
+            Cards.GestureRecognizers.Add(new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Down,
+                Command = new Command(() =>
+                {
+                    App.Database.GetReward((Cards.CurrentItem as dict)!.Number, false);
+                })
+            });
+            MainStack.Add(Cards);
 		}
 		protected override void OnAppearing()
 		{
