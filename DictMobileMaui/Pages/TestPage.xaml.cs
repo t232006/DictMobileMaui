@@ -24,6 +24,7 @@ namespace IndDictionary
 			word_translation = _word_translation;
 			Variants = new ListView
 			{
+				ItemsSource = test.Pool,
 				//RowHeight = Convert.ToInt32( FormHeight * 0.12),
 				ItemTemplate = new DataTemplate(() =>
 				{
@@ -33,7 +34,7 @@ namespace IndDictionary
 						Style = (Style)App.Current.Resources["var1"],
 						
 					};
-					num.SetBinding(Border.WidthRequestProperty, new Binding(path: "BorderWidth", source: this));
+					num.SetBinding(Border.WidthRequestProperty, new Binding(path: nameof(BorderWidth), source: this));
 
 					if (word_translation) num.Content.SetBinding(Label.TextProperty, "Translation", BindingMode.OneWay);
 					else
@@ -44,10 +45,7 @@ namespace IndDictionary
 					};
 				})
 			};
-			Variants.BindingContext = test;
-			Variants.SetBinding(ListView.ItemsSourceProperty, "Pool");
 
-			//this.Resources.Add(StyleSheet.FromResource("styles/testStyles.css", IntrospectionExtensions.GetTypeInfo(typeof(TestPage)).Assembly));
 			Answer.BindingContext = test;
 			if (word_translation) Answer.SetBinding(Label.TextProperty, "Answer.Word");
 			else
@@ -62,6 +60,7 @@ namespace IndDictionary
 		{
 			Variants.RowHeight = Convert.ToInt32(this.Height * 0.13);
 			BorderWidth = this.Width * 0.7;
+			Variants.HeightRequest = this.Height * 0.9;
 		}
 
 		private void OnVariantTapped(object sender, ItemTappedEventArgs e)

@@ -58,11 +58,6 @@ namespace DictMobileMaui.games
 		public ObservableCollection<dict> Pool 
 		{ 
 			get => pool;
-            private set
-            {
-                pool = value;
-                OnPropertyChanged("Pool");
-            }
         }
 		public Tests()
 		{

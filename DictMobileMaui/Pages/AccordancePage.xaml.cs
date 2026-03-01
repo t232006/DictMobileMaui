@@ -51,14 +51,21 @@ namespace IndDictionary
             {
                 if (fl1.Children.Count + fl2.Children.Count == 6) NextBut.IsEnabled = true;
             };
-            
-            
         }
         protected void NextBlock(Object sender, EventArgs e) 
         {
             DrawNewPage();
-        } 
-        
-	}
+        }
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width <= 0 || height <= 0) return;
+
+            MainStack.Direction = (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
+                 ? FlexDirection.Row
+                 : FlexDirection.Column;
+        }
+
+    }
 
 }
