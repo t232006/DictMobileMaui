@@ -46,8 +46,6 @@ namespace DictMobileMaui.games
 	{
 		ObservableCollection<dict> pool = new ObservableCollection<dict>();
 		dict answ;
-
-		public event PropertyChangedEventHandler? PropertyChanged;
 		public dict Answer 
 		{ 
 			get => answ; 
@@ -57,16 +55,26 @@ namespace DictMobileMaui.games
 				OnPropertyChanged("Answer");
 			}
 		}
-		public ObservableCollection<dict> Pool { get => pool; }
+		public ObservableCollection<dict> Pool 
+		{ 
+			get => pool;
+            private set
+            {
+                pool = value;
+                OnPropertyChanged("Pool");
+            }
+        }
 		public Tests()
 		{
 			Generate();
 		}
 		public void Generate()
 		{
-            pool = GetPool(6, selList);
+            var newPool = GetPool(6, selList);
             Random rand = new Random();
-            answ = pool[rand.Next(0, 6)];
+            Answer = newPool[rand.Next(0, 6)];
+			pool.Clear();
+			foreach (dict p in newPool) pool.Add(p);
         }
 	}
 }

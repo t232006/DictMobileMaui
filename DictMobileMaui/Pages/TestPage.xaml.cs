@@ -24,7 +24,6 @@ namespace IndDictionary
 			word_translation = _word_translation;
 			Variants = new ListView
 			{
-				ItemsSource = test.Pool,
 				//RowHeight = Convert.ToInt32( FormHeight * 0.12),
 				ItemTemplate = new DataTemplate(() =>
 				{
@@ -45,6 +44,8 @@ namespace IndDictionary
 					};
 				})
 			};
+			Variants.BindingContext = test;
+			Variants.SetBinding(ListView.ItemsSourceProperty, "Pool");
 
 			//this.Resources.Add(StyleSheet.FromResource("styles/testStyles.css", IntrospectionExtensions.GetTypeInfo(typeof(TestPage)).Assembly));
 			Answer.BindingContext = test;
