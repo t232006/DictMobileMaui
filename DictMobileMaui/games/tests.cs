@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DictMobileMaui.games;
 using IndDictionary;
 
 namespace DictMobileMaui.games 
 {
-	 
+
 	public class Games : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler? PropertyChanged;
@@ -19,28 +15,30 @@ namespace DictMobileMaui.games
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 		}
+
+		public ObservableCollection<dict> GetPool(int count, ObservableCollection<dict> Source)
+		{
+			ObservableCollection<dict> pool = new ObservableCollection<dict>();
+			Random rand = new Random();
+			pool.Clear();
+			int k;
+			for (byte i = 0; i < count; i++)
+			{
+				do
+				{
+					k = rand.Next(0, Source.Count);
+				} while (pool.Contains(Source[k]));
+				pool.Add(Source[k]);
+			}
+			return pool;
+		}
 	}
 
-	public class Cards : Games 
+    public class Cards : Games 
 	{
 		public ObservableCollection<dict> CardSeq 
-		{ get
-			{
-				Random rand = new Random();
-				ObservableCollection<dict> cardSeq = new ObservableCollection<dict>();
-				List<int> usedIndexes = new List<int>();
-				int k;
-				for (int i = 0; i < selList.Count; i++)
-				{
-					do
-					{
-						k = (int)rand.Next(0, selList.Count);
-					} while (usedIndexes.Contains(k));
-					usedIndexes.Add(k);
-					cardSeq.Add(selList[k]);
-				}
-				return cardSeq;
-			}
+		{ 
+			get => GetPool(selList.Count, selList);
 		}
 	}
 	
@@ -62,24 +60,13 @@ namespace DictMobileMaui.games
 		public ObservableCollection<dict> Pool { get => pool; }
 		public Tests()
 		{
-			generateQuestion();
+			Generate();
 		}
-		public void generateQuestion()
+		public void Generate()
 		{
-			Random rand = new Random();
-			pool.Clear();
-			byte Rand_answ = (byte)rand.Next(0, 6);
-			int k;
-			//ObservableCollection<dict> selList = new ObservableCollection<dict>(App.Database.getSelected());
-			for (byte i = 0; i < 6; i++)
-			{
-				do
-				{
-					k = (int)rand.Next(0, selList.Count);
-				} while (pool.Contains(selList[k]));
-				pool.Add(selList[k]);
-				if (i==Rand_answ) Answer = selList[k];
-			}	
-		}
+            pool = GetPool(6, selList);
+            Random rand = new Random();
+            answ = pool[rand.Next(0, 6)];
+        }
 	}
 }

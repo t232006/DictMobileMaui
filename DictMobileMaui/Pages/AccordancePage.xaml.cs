@@ -24,8 +24,8 @@ namespace IndDictionary
             fl1.Clear();fl2.Clear();MainStack.Clear();
             for (byte i = 0; i < 6; i++)
             {
-                fl1.Children.Add(new ShapeComponent(false, accordance.Pool[i].Number));
-                fl2.Children.Add(new ShapeComponent(true, accordance.Pool[i].Number));
+                fl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Number));
+                fl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Number));
                 
             }
             MainStack.Children.Add(fl1); MainStack.Children.Add(fl2);
@@ -36,8 +36,8 @@ namespace IndDictionary
             
             
             MainStack.Direction = (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
-                 ? FlexDirection.Column
-                 : FlexDirection.Row;
+                 ? FlexDirection.Row
+                 : FlexDirection.Column;
             MainStack.JustifyContent = FlexJustify.SpaceEvenly;
             MainStack.AlignItems = FlexAlignItems.Center;
             FlexLayout.SetGrow(fl1, 1); FlexLayout.SetGrow(fl2, 1);

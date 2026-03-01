@@ -36,7 +36,7 @@ namespace IndDictionary
 					{
 						LineBreakMode = LineBreakMode.TailTruncation,
 						FontSize = 14,
-						//Padding = 10
+						Padding = 10
 					};
 
 					if (transl)
@@ -52,30 +52,30 @@ namespace IndDictionary
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
 					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.9, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
 					AbsoluteLayout.SetLayoutFlags(extswitch, AbsoluteLayoutFlags.PositionProportional);
-                    //SectorComponent diagram = new SectorComponent() { BackgroundColor = Colors.Red };
-                    //diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
+                    SectorComponent diagram = new SectorComponent() { BackgroundColor = Colors.Red };
+                    diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
                     
-                    //AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0, 24, 24));
-                    //AbsoluteLayout.SetLayoutFlags(diagram, AbsoluteLayoutFlags.PositionProportional);
+                    AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0, 24, 24));
+                    AbsoluteLayout.SetLayoutFlags(diagram, AbsoluteLayoutFlags.PositionProportional);
                     MainField.SizeChanged += (s, e) =>
                     {
                         if (MainField.Height > 0)
                         {
                             // немного отступа, подстраивайте коэффициент под ваш дизайн
                             double target = MainField.Height * 0.9;
-                            //diagram.WidthRequest = target;
-                            //diagram.HeightRequest = target;
+                            diagram.WidthRequest = target;
+                            diagram.HeightRequest = target;
 
                             // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
-                            //AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
 
                             // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
-                            //diagram.Invalidate();
+                            diagram.Invalidate();
                         }
                     };
                     var cellLayout = new AbsoluteLayout
                     {
-                        Children = { extswitch, MainField/*, diagram*/ }
+                        Children = { extswitch, MainField, diagram }
                     };
                     MainField.SizeChanged += (s, e) =>
                     {
@@ -83,14 +83,14 @@ namespace IndDictionary
                         {
                             // немного отступа, подстраивайте коэффициент под ваш дизайн
                             double target = MainField.Height * 0.65;
-                            //diagram.WidthRequest = target;
-                            //diagram.HeightRequest = target;
+                            diagram.WidthRequest = target;
+                            diagram.HeightRequest = target;
 
                             // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
-                            //AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
 
                             // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
-                            //diagram.Invalidate();
+                            diagram.Invalidate();
                         }
                     };
                     return new ViewCell { View = cellLayout };

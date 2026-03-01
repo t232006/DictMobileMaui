@@ -73,7 +73,7 @@ namespace IndDictionary
 				DisplayAlert("Correct!", $"{test.Answer.Word} - {selected.Translation}", "OK"); else
 				DisplayAlert("Correct!", $"{test.Answer.Translation} - {selected.Word}", "OK");
 				App.Database.GetReward(selected.Number, true);
-				test.generateQuestion();
+				test.Generate();
 			}
 			else
 			{

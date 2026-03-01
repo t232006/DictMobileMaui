@@ -14,16 +14,15 @@ namespace DictMobileMaui.games
         {
             Init();
         }
-        ObservableCollection<dict> pool=new ObservableCollection<dict>();
-        public ObservableCollection<dict> Pool { get => pool; }
+        ObservableCollection<dict> poolword = new ObservableCollection<dict>();
+        ObservableCollection<dict> pooltrans = new ObservableCollection<dict>();
+        public ObservableCollection<dict> PoolWord { get => poolword; }
+        public ObservableCollection<dict> PoolTrans { get => pooltrans; }
         public void Init()
         {
-            Random rand = new Random();
-            pool.Clear();
-            for (byte i=0; i<6; i++)
-            {
-                pool.Add(selList[rand.Next(0,selList.Count)]);
-            }
+            poolword.Clear(); pooltrans.Clear();   
+            poolword = GetPool(6, selList);
+            pooltrans = GetPool(6, poolword);
         }
     }
 }
