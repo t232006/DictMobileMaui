@@ -9,8 +9,6 @@ using System.ComponentModel;
 namespace IndDictionary
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-
-    enum Direction { Up, Down, Left, Right}
     public partial class Card : ContentPage, INotifyPropertyChanged
     {
         double cardHeight; double cardWidth;
@@ -73,40 +71,35 @@ namespace IndDictionary
                 {
                     Content = new Label() { },
                 };
-                async Task MySwipe(Direction dir)
+                async Task MySwipe(SwipeDirection dir)
                 {
                     
                     if (isAnimating) return;
                     isAnimating = true;
                     switch (dir)
                     {
-                        case Direction.Up:
+                        case SwipeDirection.Up:
                             await CardBorder.TranslateTo(0, -cardHeight, 300, Easing.SinIn);
                             App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, true);
                             break;
-                        case Direction.Down:
+                        case SwipeDirection.Down:
                             await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
                             App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
                             break;
-                        case Direction.Left:
+                        case SwipeDirection.Left:
                             await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);
                             break;
-                        case Direction.Right:
+                        case SwipeDirection.Right:
                             await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
                             break;
                     };
                     CardBorder.Opacity = 0;
-                    if (dir != Direction.Right)
-                    {
-                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
-                        else
-                            _Cards.Position++;
-                    } else 
-                    {
-                        if (_Cards.Position == 0) _Cards.Position = cards.CardSeq.Count - 1;
-                        else
-                            _Cards.Position--;
-                    }
+                    var index = cards.CardSeq.IndexOf((_Cards.CurrentItem as dict)!);
+                    if (dir != SwipeDirection.Right)
+                        index = (index + 1) % cards.CardSeq.Count;
+                    else
+                        index = (index - 1 + cards.CardSeq.Count) % cards.CardSeq.Count;
+                    _Cards.CurrentItem = cards.CardSeq[index];
                     CardBorder.TranslationY = 0;
                     CardBorder.TranslationX = 0;
                     CardBorder.Opacity = 1;
@@ -139,72 +132,25 @@ namespace IndDictionary
                         await CardBorder.ScaleXTo(1, 250, Easing.SinInOut);
                     })
                 });
-               CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Up,
-                    Command = new Command(async () =>
-                    {
-                        await CardBorder.TranslateTo(0, -CardHeight, 300, Easing.SinIn);
-                        //await CardBorder.FadeTo(0,300);
-                        CardBorder.Opacity = 0;
-                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0; 
-                        else
-                            _Cards.Position++;
-                        TranslationY = 0;
-                        CardBorder.Opacity = 1;
-                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, true);
-                    })
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Up))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Down,
-                    Command = new Command(async () =>
-                    {
-                        await CardBorder.TranslateTo(0, CardHeight, 300, Easing.SinIn);
-                        CardBorder.Opacity = 0;
-                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
-                        else
-                            _Cards.Position++;
-                        TranslationY = 0;
-                        CardBorder.Opacity = 1;
-                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
-                    })
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Down))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Left,
-                    Command = new Command(async () =>
-                    {
-                        if (isAnimating) return;
-                        isAnimating = true;
-                        await CardBorder.TranslateTo(-CardWidth, 0, 300, Easing.SinIn);
-                        CardBorder.Opacity = 0;
-                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
-                        else
-                            _Cards.Position++;
-                        CardBorder.TranslationY = 0;
-                        CardBorder.TranslationX = 0;
-                        CardBorder.Opacity = 1;
-                        isAnimating = false;
-                    })
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Left))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Right,
-                    Command = new Command(async () =>
-                    {
-                        if (isAnimating) return;
-                        isAnimating = true;
-                        await CardBorder.TranslateTo(CardWidth, 0, 300, Easing.SinIn);
-                        CardBorder.Opacity = 0;
-                        if (_Cards.Position == 0) _Cards.Position = cards.CardSeq.Count-1;
-                        else
-                            _Cards.Position--;
-                        //CardBorder.TranslationY = 0;
-                        //CardBorder.TranslationX = 0;
-                        CardBorder.Opacity = 1;
-                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
-                    })
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Right))
                 });
                 grid.Add(CardBorder);
                 return grid;
