@@ -93,13 +93,11 @@ namespace IndDictionary
                             await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
                             break;
                     };
-                    CardBorder.Opacity = 0;
-                    var index = cards.CardSeq.IndexOf((_Cards.CurrentItem as dict)!);
+                    //CardBorder.Opacity = 0;
                     if (dir != SwipeDirection.Right)
-                        index = (index + 1) % cards.CardSeq.Count;
+                        _Cards.Position = (_Cards.Position + 1) % cards.CardSeq.Count;
                     else
-                        index = (index - 1 + cards.CardSeq.Count) % cards.CardSeq.Count;
-                    _Cards.CurrentItem = cards.CardSeq[index];
+                        _Cards.Position = (_Cards.Position - 1 + cards.CardSeq.Count) % cards.CardSeq.Count;
                     CardBorder.TranslationY = 0;
                     CardBorder.TranslationX = 0;
                     CardBorder.Opacity = 1;
