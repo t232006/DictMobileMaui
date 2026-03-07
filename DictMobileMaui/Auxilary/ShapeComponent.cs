@@ -18,6 +18,7 @@ namespace DictMobileMaui.Auxilary
         }
         public ShapeComponent(bool _isWord, int _id)
         {
+            bool put = false;
             string curStyle = _isWord ? "var41" : "var3Round";
             string curTextStyle = _isWord ? "var4Text" : "var3Text";
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
@@ -59,15 +60,17 @@ namespace DictMobileMaui.Auxilary
             drop.Drop += (s, e) =>
             {
                 if (e.Data.Properties.TryGetValue("object", out object val) && val is ShapeComponent source)
-                { 
+                {
+                    if (put) return;
+                    put = true;
                     var label = Shape.Content as Label;
                     if (source.Parent is FlexLayout parent)
                     {
                         parent.Children.Remove(source);
                     }
                     label.Text = source.isWord
-                        ? label.Text + (val as ShapeComponent).word
-                        : label.Text + (val as ShapeComponent).translation;
+                        ? label.Text + "=" + (val as ShapeComponent).word
+                        : label.Text + "=" + (val as ShapeComponent).translation;
                     if (source.translation == this.translation) Answer(true); else Answer(false);
                 }
             };

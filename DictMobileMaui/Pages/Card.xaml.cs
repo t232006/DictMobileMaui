@@ -10,9 +10,11 @@ namespace IndDictionary
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
 
+    enum Direction { Up, Down, Left, Right}
     public partial class Card : ContentPage, INotifyPropertyChanged
     {
         double cardHeight; double cardWidth;
+        bool isAnimating;
         public double CardWidth
         {
             get => cardWidth;
@@ -52,6 +54,8 @@ namespace IndDictionary
             _Cards = new CarouselView
             {
                 VerticalOptions = LayoutOptions.Start,
+                IsSwipeEnabled = false,
+                Loop = true
             };
             _Cards.ItemsSource = cards.CardSeq;
             _Cards.ItemTemplate = new DataTemplate(() =>
@@ -68,8 +72,46 @@ namespace IndDictionary
                 Border CardBorder = new Border
                 {
                     Content = new Label() { },
-                    
                 };
+                async Task MySwipe(Direction dir)
+                {
+                    
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    switch (dir)
+                    {
+                        case Direction.Up:
+                            await CardBorder.TranslateTo(0, -cardHeight, 300, Easing.SinIn);
+                            App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, true);
+                            break;
+                        case Direction.Down:
+                            await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
+                            App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
+                            break;
+                        case Direction.Left:
+                            await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);
+                            break;
+                        case Direction.Right:
+                            await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
+                            break;
+                    };
+                    CardBorder.Opacity = 0;
+                    if (dir != Direction.Right)
+                    {
+                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
+                        else
+                            _Cards.Position++;
+                    } else 
+                    {
+                        if (_Cards.Position == 0) _Cards.Position = cards.CardSeq.Count - 1;
+                        else
+                            _Cards.Position--;
+                    }
+                    CardBorder.TranslationY = 0;
+                    CardBorder.TranslationX = 0;
+                    CardBorder.Opacity = 1;
+                    isAnimating = false;
+                }
                 Binding bindBorderStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderStyle());
                 Binding bindTextStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderLabelStyle());
                 MultiBinding MultiBind = new MultiBinding
@@ -97,29 +139,75 @@ namespace IndDictionary
                         await CardBorder.ScaleXTo(1, 250, Easing.SinInOut);
                     })
                 });
+               CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Up,
+                    Command = new Command(async () =>
+                    {
+                        await CardBorder.TranslateTo(0, -CardHeight, 300, Easing.SinIn);
+                        //await CardBorder.FadeTo(0,300);
+                        CardBorder.Opacity = 0;
+                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0; 
+                        else
+                            _Cards.Position++;
+                        TranslationY = 0;
+                        CardBorder.Opacity = 1;
+                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, true);
+                    })
+                });
+                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Down,
+                    Command = new Command(async () =>
+                    {
+                        await CardBorder.TranslateTo(0, CardHeight, 300, Easing.SinIn);
+                        CardBorder.Opacity = 0;
+                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
+                        else
+                            _Cards.Position++;
+                        TranslationY = 0;
+                        CardBorder.Opacity = 1;
+                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
+                    })
+                });
+                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Left,
+                    Command = new Command(async () =>
+                    {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        await CardBorder.TranslateTo(-CardWidth, 0, 300, Easing.SinIn);
+                        CardBorder.Opacity = 0;
+                        if (_Cards.Position == cards.CardSeq.Count - 1) _Cards.Position = 0;
+                        else
+                            _Cards.Position++;
+                        CardBorder.TranslationY = 0;
+                        CardBorder.TranslationX = 0;
+                        CardBorder.Opacity = 1;
+                        isAnimating = false;
+                    })
+                });
+                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Right,
+                    Command = new Command(async () =>
+                    {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        await CardBorder.TranslateTo(CardWidth, 0, 300, Easing.SinIn);
+                        CardBorder.Opacity = 0;
+                        if (_Cards.Position == 0) _Cards.Position = cards.CardSeq.Count-1;
+                        else
+                            _Cards.Position--;
+                        //CardBorder.TranslationY = 0;
+                        //CardBorder.TranslationX = 0;
+                        CardBorder.Opacity = 1;
+                        App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
+                    })
+                });
                 grid.Add(CardBorder);
                 return grid;
-            });
-            _Cards.GestureRecognizers.Add(new SwipeGestureRecognizer
-            {
-                Direction = SwipeDirection.Up,
-                Command = new Command(async () =>
-                {
-                    await _Cards.TranslateTo(0, -CardHeight, 300, Easing.SinIn);
-                    _Cards.Opacity = 0;
-                    _Cards.Position++;
-                    TranslationY = 0;
-                    _Cards.Opacity = 1;
-                    App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, true);
-                })
-            });
-            _Cards.GestureRecognizers.Add(new SwipeGestureRecognizer
-            {
-                Direction = SwipeDirection.Down,
-                Command = new Command(() =>
-                {
-                    App.Database.GetReward((_Cards.CurrentItem as dict)!.Number, false);
-                })
             });
             MainStack.Add(_Cards);
         }

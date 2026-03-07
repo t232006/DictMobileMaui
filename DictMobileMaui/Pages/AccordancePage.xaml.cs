@@ -1,8 +1,5 @@
 ﻿using DictMobileMaui;
 using DictMobileMaui.games;
-using IndDictionary.Converters;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
 
 using System.ComponentModel;
 using DictMobileMaui.Auxilary;
@@ -26,7 +23,6 @@ namespace IndDictionary
             {
                 fl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Number));
                 fl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Number));
-                
             }
             MainStack.Children.Add(fl1); MainStack.Children.Add(fl2);
         }
