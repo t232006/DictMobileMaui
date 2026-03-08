@@ -9,7 +9,33 @@ namespace DictMobileMaui.Auxilary
     {
         // Регистр для сопоставления текстового ключа -> ShapeComponent (чтобы передавать ссылки между платформами)
         private static readonly ConcurrentDictionary<string, ShapeComponent> DragRegistry = new();
+        double MakeShapeSizeX()
+        {
+            var info = DeviceDisplay.Current.MainDisplayInfo;
+            //if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                if (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
+                    return info.Width / info.Density * 0.3;
+                else
+                    return info.Width / info.Density * 0.8;
+            }
+            //else return info.Width / info.Density * 0.3;
 
+
+        }
+        double MakeShapeSizeY()
+        {
+            var info = DeviceDisplay.Current.MainDisplayInfo;
+           // if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                if (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
+                    return info.Height / info.Density * 0.12;
+                else
+                    return info.Height / info.Density * 0.07;
+            }
+            //else return this.Window.Height * 0.15;
+                
+        }
         void Answer(bool _true)
         {
 
@@ -35,6 +61,8 @@ namespace DictMobileMaui.Auxilary
             Translation = App.Database.findOneRecord(_id)!.Translation;
             Word = App.Database.findOneRecord(_id)!.Word;
             Content = Shape;
+            Content.WidthRequest = MakeShapeSizeX();
+            Content.HeightRequest = MakeShapeSizeY();
             if (Shape.Content is Label label)
             {
                 //label.Text = isWord ? word : translation;
@@ -114,11 +142,11 @@ namespace DictMobileMaui.Auxilary
             GestureRecognizers.Add(drop);
 
         }
+
         public Border Shape = new Border
         {
             Content = new Label(),
-            //WidthRequest=70,
-            HeightRequest = 40
+
         };
         private readonly bool isWord;
         private string translation;
