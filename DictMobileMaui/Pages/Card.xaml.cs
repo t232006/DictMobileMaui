@@ -93,7 +93,7 @@ namespace IndDictionary
                             await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
                             break;
                     };
-                    //CardBorder.Opacity = 0;
+                    CardBorder.Opacity = 0;
                     if (dir != SwipeDirection.Right)
                         _Cards.Position = (_Cards.Position + 1) % cards.CardSeq.Count;
                     else
@@ -156,20 +156,17 @@ namespace IndDictionary
             MainStack.Add(_Cards);
         }
 
-        // Обновляет размеры карточки на основе переданных DIPs (device-independent pixels)
         void UpdateCardSize(double widthDp, double heightDp)
         {
             if (widthDp <= 0 || heightDp <= 0) return;
 
             if (DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS)
             {
-                // мобильные: используем 80% экрана
                 CardWidth = widthDp * 0.8;
                 CardHeight = heightDp * 0.8;
             }
             else
             {
-                // десктоп/другие: используем окно если доступно, иначе переданные размеры
                 if (this.Window != null)
                 {
                     CardHeight = this.Window.Height * 0.75;

@@ -1,13 +1,18 @@
 ﻿
 using IndDictionary;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace DictMobileMaui.Auxilary
 {
-    public class ShapeComponent:ContentView
+    public class ShapeComponent : ContentView
     {
+        // Регистр для сопоставления текстового ключа -> ShapeComponent (чтобы передавать ссылки между платформами)
+        private static readonly ConcurrentDictionary<string, ShapeComponent> DragRegistry = new();
+
         void Answer(bool _true)
         {
-           
+
             string curStyle = _true ? "var2" : "var21";
             string curTextStyle = _true ? "var2Text" : "var1TextStrike";
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
@@ -36,42 +41,74 @@ namespace DictMobileMaui.Auxilary
                 label.HorizontalOptions = LayoutOptions.Center;
                 label.VerticalOptions = LayoutOptions.Center;
             }
+
+            // уникальный ключ для передачи через DataPackage
+            dragKey = System.Guid.NewGuid().ToString();
+            // регистрируем текущий компонент в реестре
+            DragRegistry[dragKey] = this;
+
             var drag = new DragGestureRecognizer
             {
                 CanDrag = true,
             };
-            drag.DragStarting +=(s, e) =>
+            drag.DragStarting += (s, e) =>
             {
-                e.Data.Properties.Add("object", this);
+                // На Android/Android WebView нельзя хранить произвольный объект в Data.Properties — используем текстовый ключ
+                e.Data.Text = dragKey;
             };
             GestureRecognizers.Add(drag);
             var drop = new DropGestureRecognizer();
 
             drop.DragOver += (s, e) =>
             {
-                if (e.Data.Properties.TryGetValue("object", out object val))//не бросать в свои
+                try
                 {
-                    if ((val as ShapeComponent).isWord != this.isWord) e.AcceptedOperation = DataPackageOperation.Copy;
+                    // Получаем текстовый ключ синхронно (короткая блокировка допустима для быстрого запроса)
+                    var key = e.Data.Text;
+                    if (!string.IsNullOrEmpty(key) && DragRegistry.TryGetValue(key, out var val))
+                    {
+                        if (val.isWord != this.isWord) e.AcceptedOperation = DataPackageOperation.Copy;
+                        else
+                            e.AcceptedOperation = DataPackageOperation.None;
+                    }
                     else
+                    {
                         e.AcceptedOperation = DataPackageOperation.None;
+                    }
+                }
+                catch
+                {
+                    e.AcceptedOperation = DataPackageOperation.None;
                 }
             };
 
-            drop.Drop += (s, e) =>
+            drop.Drop += async (s, e) =>
             {
-                if (e.Data.Properties.TryGetValue("object", out object val) && val is ShapeComponent source)
+                try
                 {
-                    if (put) return;
-                    put = true;
-                    var label = Shape.Content as Label;
-                    if (source.Parent is FlexLayout parent)
+                    //var key = e.Data.GetTextAsync().GetAwaiter().GetResult();
+                    string? key = await e.Data.GetTextAsync();
+                    if (!string.IsNullOrEmpty(key) && DragRegistry.TryGetValue(key, out var source))
                     {
-                        parent.Children.Remove(source);
+                        if (put) return;
+                        put = true;
+                        var label = Shape.Content as Label;
+                        if (source.Parent is FlexLayout parent)
+                        {
+                            parent.Children.Remove(source);
+                        }
+                        label.Text = source.isWord
+                            ? label.Text + "=" + (source as ShapeComponent).word
+                            : label.Text + "=" + (source as ShapeComponent).translation;
+                        if (source.translation == this.translation) Answer(true); else Answer(false);
+
+                        // удаляем из реестра после использования
+                        DragRegistry.TryRemove(key, out _);
                     }
-                    label.Text = source.isWord
-                        ? label.Text + "=" + (val as ShapeComponent).word
-                        : label.Text + "=" + (val as ShapeComponent).translation;
-                    if (source.translation == this.translation) Answer(true); else Answer(false);
+                }
+                catch
+                {
+                    // игнорируем ошибки чтения данных
                 }
             };
             GestureRecognizers.Add(drop);
@@ -81,13 +118,16 @@ namespace DictMobileMaui.Auxilary
         {
             Content = new Label(),
             //WidthRequest=70,
-            HeightRequest=40
+            HeightRequest = 40
         };
         private readonly bool isWord;
         private string translation;
         private string word;
         private int id;
-       
+
+        // ключ реестра для этого экземпляра
+        private readonly string dragKey;
+
 
         public string Word
         {
@@ -103,7 +143,8 @@ namespace DictMobileMaui.Auxilary
             }
             get => word;
         }
-        public string Translation {
+        public string Translation
+        {
             set
             {
                 if (!isWord)
@@ -117,7 +158,7 @@ namespace DictMobileMaui.Auxilary
             }
             get => translation;
         }
-        
+
 
     }
 }

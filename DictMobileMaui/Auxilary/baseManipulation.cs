@@ -189,9 +189,14 @@ namespace IndDictionary
 			database.Execute("Update Dict set Usersel=false");
 			database.Commit();
 		}
+        public void ResetRating()
+        {
+            database.Execute("Update Dict set Score=0");
+            database.Commit();
+        }
 
-		//------------------selects records from dict which are selected by user on form 
-		public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
+        //------------------selects records from dict which are selected by user on form 
+        public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
 		{
 			IEnumerable<string> l = from sl in datesList
 									where sl.Spoted == true

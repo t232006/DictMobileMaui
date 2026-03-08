@@ -50,7 +50,12 @@ namespace IndDictionary
 			App.Database.ResetSelection();
 			//detail.Refresh(showAll, wts);
 		}
-		protected void OnChecking(object sender, EventArgs e)
+        protected void onResetRating(object sender, EventArgs e)
+        {
+            App.Database.ResetRating();
+            //detail.Refresh(showAll, wts);
+        }
+        protected void OnChecking(object sender, EventArgs e)
 		{
 			showAll = !(sender as CheckBox)!.IsChecked;
 			//detail.Refresh(showAll, wts);

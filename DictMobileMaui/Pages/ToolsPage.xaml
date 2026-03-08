@@ -19,7 +19,8 @@
             <Label Text="Select" Style="{StaticResource LabelStyle}"/>
             <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
-            <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+            <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+            <Button Text="Reset rating" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
             <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
                 <Button 
                         Style="{StaticResource SmallButton}"
