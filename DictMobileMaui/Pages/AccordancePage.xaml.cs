@@ -18,13 +18,23 @@ namespace IndDictionary
         void DrawNewPage()
         {
             Accordance accordance = new Accordance();
-            fl1.Clear();fl2.Clear();MainStack.Clear();
+            var newFl1 = new FlexLayout { Direction = FlexDirection.Column };
+            var newFl2 = new FlexLayout { Direction = FlexDirection.Column };
+            FlexLayout.SetGrow(newFl1, 1);
+            FlexLayout.SetGrow(newFl2, 1);
             for (byte i = 0; i < 6; i++)
             {
-                fl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Number));
-                fl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Number));
+                newFl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Number));
+                newFl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Number));
             }
-            MainStack.Children.Add(fl1); MainStack.Children.Add(fl2);
+            MainStack.Children.Clear();
+            MainStack.Children.Add(newFl1);
+            MainStack.Children.Add(newFl2);
+            fl1 = newFl1; fl2 = newFl2;
+            fl1.InvalidateMeasure();
+            fl2.InvalidateMeasure();
+            MainStack.InvalidateMeasure();
+
         }
         public AccordancePage()
 		{

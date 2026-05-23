@@ -10,6 +10,11 @@
 
         <ResourceDictionary>
 
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="#3fcc62" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+
             <Style x:Key="BaseStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="14"/>
             </Style>
@@ -27,6 +32,7 @@
                 <Setter Property="HeightRequest" Value="81"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="BorderWidth" Value="0"/>
+                <Setter Property="BackgroundColor" Value="#3fcc62"/>
             </Style>
             <Color x:Key="BackgroundLight">#FFFFFF</Color>
             <Color x:Key="BackgroundDark">#121212</Color>

@@ -42,7 +42,7 @@ namespace IndDictionary
 					Label MainField = new Label
 					{
 						LineBreakMode = LineBreakMode.TailTruncation,
-						FontSize = 14,
+						FontSize = 16,
 						Padding = 10
 					};
 
@@ -57,9 +57,9 @@ namespace IndDictionary
 					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
-					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.9, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
+					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.85, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
 					AbsoluteLayout.SetLayoutFlags(extswitch, AbsoluteLayoutFlags.PositionProportional);
-                    SectorComponent diagram = new SectorComponent() { BackgroundColor = Colors.Red };
+                    SectorComponent diagram = new SectorComponent();
                     diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
                     
                     AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0, 24, 24));
