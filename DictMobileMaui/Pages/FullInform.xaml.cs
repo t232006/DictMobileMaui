@@ -47,10 +47,10 @@ namespace IndDictionary
 				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.edit1.png")
 			};
 			
-			ConfirmItem.Clicked += onConfPress;
-			CancelItem.Clicked += onDeclPress;
-			DeleteItem.Clicked += onDelPress;
-			EditItem.Clicked += onEditBut;
+			ConfirmItem.Clicked += onConfPress!;
+			CancelItem.Clicked += onDeclPress!;
+			DeleteItem.Clicked += onDelPress!;
+			EditItem.Clicked += onEditBut!;
 			if (_blank)
 			{
 				ToolbarItems.Add(ConfirmItem);
@@ -75,8 +75,8 @@ namespace IndDictionary
 
 		protected void onConfPress(object Sender, EventArgs e)
 		{
-			
-			App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString());
+			if (TopicSpace.SelectedItem!=null)
+			App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
 			Navigation.PopAsync();
 		}
 

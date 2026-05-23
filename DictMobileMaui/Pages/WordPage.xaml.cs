@@ -1,6 +1,7 @@
 ﻿//using DictMobileMaui.Auxilary;
 using DictMobileMaui.Auxilary;
 using Microsoft.Maui.Layouts;
+using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
@@ -13,14 +14,20 @@ namespace IndDictionary
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchBar searchBar;
-        IEnumerable<dict> Data(bool _transl)
+		ObservableCollection<dict> items = new ObservableCollection<dict>();
+		ObservableCollection<dict> Data(bool _transl)
 		{
-			return _transl ? App.Database
-                            .showTableDict(showall, WhatToShow.alltogether)
+			var list = _transl ? App.Database
+                            .showTableDict(showall, wts)
                             .OrderBy(t => t.Translation).ToList()
                             : App.Database
-                            .showTableDict(showall, WhatToShow.alltogether)
+                            .showTableDict(showall, wts)
                             .OrderBy(t => t.Word).ToList();
+			items.Clear();
+			foreach (dict d in list)
+				items.Add(d);
+
+			return items;
         }
 		public WordPage(bool _transl)
 		{
@@ -134,19 +141,25 @@ namespace IndDictionary
 		}
         protected void Searching(Object sender, TextChangedEventArgs e)
         {
-			IEnumerable<dict> founded;
-			//IEnumerable<dict> saved = (IEnumerable<dict>)ListTable.ItemsSource;
-			if (transl)
-				founded = App.Database
-					.findRecords(searchBar.Text, f => f.Translation)
-					.OrderBy(f => f.Translation).ToList();
-			else
-				founded = App.Database
-					.findRecords(searchBar.Text, f => f.Word)
-					.OrderBy(f => f.Word).ToList();
-			ListTable.ItemsSource = founded;
-			if (e.NewTextValue == "")
-				ListTable.ItemsSource = Data(transl);
+            // Берём найденные элементы из БД в список (чтобы сохранить сортировку)
+            List<dict> founded;
+            if (transl)
+                founded = App.Database
+                    .findRecords(searchBar.Text, f => f.Translation)
+                    .OrderBy(f => f.Translation).ToList();
+            else
+                founded = App.Database
+                    .findRecords(searchBar.Text, f => f.Word)
+                    .OrderBy(f => f.Word).ToList();
+
+            // Обновляем ObservableCollection — ListView обновится автоматически
+            items.Clear();
+            foreach (var d in founded)
+                items.Add(d);
+
+            // если поле поиска пустое — перезагружаем все данные
+            if (string.IsNullOrEmpty(e.NewTextValue))
+                Data(transl);
         }
 
         protected override void OnAppearing()

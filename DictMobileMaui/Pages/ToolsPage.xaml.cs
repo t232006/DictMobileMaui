@@ -1,5 +1,6 @@
 ﻿using IndDictionary.addition;
 using IndDictionary.Pages;
+using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
@@ -133,7 +134,7 @@ namespace IndDictionary
 		}
 		protected async void onDates(object sender, EventArgs e)
 		{
-            List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
 			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(!ShowSelected.IsChecked);
 			foreach (dict t in tempcont)
 			{
@@ -145,7 +146,7 @@ namespace IndDictionary
 
 		protected async void onTopics(object sender, EventArgs e)
 		{
-            List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
 			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(!ShowSelected.IsChecked);
 			foreach (topic t in tempcont)
 			{
