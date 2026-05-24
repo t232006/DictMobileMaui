@@ -34,6 +34,7 @@
                 <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
+                         Pressed="SaveToCloud"
                          />
             </StackLayout>
             <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>

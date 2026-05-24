@@ -25,6 +25,22 @@ namespace IndDictionary
 					Preferences.Set("current", databasename);
 				}
 		}
+
+		public static void CopyFilesFromResource(string filenameFull, string resFile)
+		{
+            if (!File.Exists(filenameFull))
+            {
+				//string filename = Path.GetFileName(filenameFull);
+				using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{resFile}"))
+                {
+                    using (FileStream dest = new FileStream(filenameFull, FileMode.OpenOrCreate))
+                    {
+                        s?.CopyTo(dest);
+                        dest.Flush();
+                    }
+                }
+            }
+        }
 		
 		private static void LoadDBFirstTime(string dbPath)
 		{
@@ -50,17 +66,7 @@ namespace IndDictionary
 				{
 					if (database!=null) SetDatabasename();
 					string dbPath = databasename;
-					if (!File.Exists(dbPath))
-					{
-						using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{DEFAULTDATABASENAME}"))
-						{
-							using (FileStream dest = new FileStream(dbPath, FileMode.OpenOrCreate))
-							{
-								s?.CopyTo(dest);
-								dest.Flush();
-							}
-						}
-					}
+					CopyFilesFromResource(dbPath, DEFAULTDATABASENAME);
 					LoadDBFirstTime(dbPath);
 				}
 				return database!;

@@ -106,13 +106,22 @@ namespace IndDictionary
 		}
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
-			string currentDB = Preferences.Get("current","");
+            App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, "client_secret.json"), "client_secret.json");
+            string currentDB = Preferences.Get("current", "");
 			string DBName = Path.GetFileName(currentDB);
 			string? DBPath = Path.GetDirectoryName(currentDB);
 			App.Database.dispose();
-			await SyncCloud.SaveToCloud("client_secret.json", DBPath!, DBName);
+			try
+			{
+				await SyncCloud.SaveToCloud(Path.Combine(DBPath, "client_secret.json"), DBPath!, DBName);
+				await DisplayAlert("Copied", $"Dictionary {DBName} has been saved", "OK");
+			}
+			catch (Exception Ex)
+			{
+				await DisplayAlert("Error!", Ex.Message, "OK");
+			}
 		}
-		
+
 		protected async void OnSynchr(object sender, EventArgs e)
 		{
 			var options = new PickOptions
@@ -126,6 +135,7 @@ namespace IndDictionary
 				PickerTitle = "Please, select database file"
 			};
 			await PickAndShow(options);
+			await DisplayAlert("Success!", "Dictionary has been copied from cloud", "OK");
 
 		}
 		protected async void OpenLibrary(object sender, EventArgs e)
