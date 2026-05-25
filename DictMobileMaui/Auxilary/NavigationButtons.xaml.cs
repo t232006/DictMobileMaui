@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
+﻿
 
 namespace IndDictionary
 {
@@ -28,8 +21,27 @@ namespace IndDictionary
 		}
 		protected void ToolsOpen(object sender, EventArgs e)
 		{
-			//ToolsPage = new NavigationPage(new ToolsPage(WordPage));
-			Navigation.PushModalAsync(new NavigationPage(new ToolsPage(WordPage)));
+            // Получаем навигацию основного окна; если недоступна, используем навигацию этого ContentView
+            var nav = Application.Current?.MainPage?.Navigation ?? this.Navigation;
+            if (nav == null)
+                return;
+
+            // Берём верхнюю модальную страницу, если есть, иначе — сам MainPage
+            Page? top = null;
+            var modalStack = nav.ModalStack;
+            if (modalStack != null && modalStack.Count > 0)
+                top = modalStack[modalStack.Count - 1];
+            else
+                top = Application.Current?.MainPage!;
+
+            // Если уже открыт NavigationPage, внутри которого текущая страница — ToolsPage, ничего не делаем
+            if (top is NavigationPage topNav && topNav.CurrentPage is ToolsPage)
+                return;
+
+            // Если верхняя страница сама по себе — ToolsPage, тоже ничего не делаем
+            if (top is ToolsPage)
+                return;
+            Navigation.PushModalAsync(new NavigationPage(new ToolsPage(WordPage)));
 		}
 	}
 }

@@ -15,10 +15,10 @@ namespace IndDictionary
 		[Indexed]
 		public string DateRec { get; set; }
 		[Column ("Score")]
-		public short Grade { get; set; }
+		public byte Grade { get; set; }
 		public bool Usersel { get; set; }
 		public bool Phrase { get; set; }
-		public short Relevation { get; set; }
+		public byte Relevation { get; set; }
 		bool Spot { get; set; }
     }
 	[Table ("topic")]

@@ -6,20 +6,21 @@
              x:Class="IndDictionary.ToolsPage"
              Title="Tools">
     
-    <StackLayout BackgroundColor="#454955" >
+    <StackLayout>
         <StackLayout >
             <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
                 <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
                 <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
             </StackLayout>
-            <Label Text="Show" Style="{StaticResource LabelStyle}"/>
+            <Label Text="Show"/>
             <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
             <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords"/>
             <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
             <Label Text="Select" Style="{StaticResource LabelStyle}"/>
             <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
-            <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+            <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+            <Button Text="Reset rating" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
             <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
                 <Button 
                         Style="{StaticResource SmallButton}"
@@ -33,6 +34,7 @@
                 <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
+                         Pressed="SaveToCloud"
                          />
             </StackLayout>
             <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>

@@ -9,16 +9,17 @@
         <ResourceDictionary Source="/Resources/Styles/CardStyles.xaml"/>
 
         <ResourceDictionary>
-            
+
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="#3fcc62" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+
             <Style x:Key="BaseStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="14"/>
             </Style>
-            <Style x:Key="LabelStyle" TargetType="Label">
+            <Style x:Key="LabelStyle" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
                 <Setter Property="Margin" Value="10,5,0,0"/>
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="BackgroundColor" Value="#454955"/>
             </Style>
             <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="Margin" Value="10,10,30,0"/>
@@ -29,10 +30,18 @@
                 <Setter Property="Margin" Value="10,10,3,0"/>
                 <Setter Property="WidthRequest" Value="81"/>
                 <Setter Property="HeightRequest" Value="81"/>
-                <Setter Property="BackgroundColor" Value="DeepSkyBlue"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="BorderWidth" Value="0"/>
+                <Setter Property="BackgroundColor" Value="#3fcc62"/>
             </Style>
+            <Color x:Key="BackgroundLight">#FFFFFF</Color>
+            <Color x:Key="BackgroundDark">#121212</Color>
+
+            <Color x:Key="TextLight">#000000</Color>
+            <Color x:Key="TextDark">#FFFFFF</Color>
+
+            <Color x:Key="PrimaryLight">#0066CC</Color>
+            <Color x:Key="PrimaryDark">#4DA8FF</Color>
         </ResourceDictionary>
     </Application.Resources>    
 </Application>

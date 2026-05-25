@@ -1,13 +1,5 @@
 ﻿using IndDictionary.addition;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Xaml;
 
 namespace IndDictionary
 {
@@ -16,8 +8,8 @@ namespace IndDictionary
 	public partial class DateTopicForm : ContentPage
 	{
 		WhatToSelect wts;
-		IEnumerable<DateOrTopicClassAux> PassedList;
-		public DateTopicForm(IEnumerable<DateOrTopicClassAux> _passedList, WhatToSelect _wts)
+		ObservableCollection<DateOrTopicClassAux> PassedList;
+		public DateTopicForm(ObservableCollection<DateOrTopicClassAux> _passedList, WhatToSelect _wts)
 		{
 			PassedList = _passedList;
 			wts=_wts;
@@ -41,5 +33,32 @@ namespace IndDictionary
 			Navigation.PopAsync();
 			//OnAppearing();
 		}
-	}
+        public void onDeletePress(object sender, EventArgs e)
+        {
+			//wts(PassedList);
+			var s = DataList.SelectedItem as DateOrTopicClassAux;
+			if (s != null)
+			{
+                App.Database.deleteRecT(s.DaOrTo);
+				PassedList.Remove(s);
+            }
+            
+        }
+		public async void onAddPress(object sender, EventArgs e)
+		{
+            string result = await DisplayPromptAsync(
+			"Add topic",
+			"Enter topic:",
+			"OK",
+			"Cancel",
+			placeholder: "Topic"
+			);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+				App.Database.saveRecT(new topic { Name = result });
+				await DisplayAlert("Added", $"Topic {result} is added", "OK");
+            }
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using IndDictionary.addition;
 using IndDictionary.Pages;
+using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
@@ -8,15 +9,12 @@ namespace IndDictionary
 	{
 		bool showAll = true;
 		WhatToShow wts = WhatToShow.alltogether;
-
 		WordPage detail;
-
 		public ToolsPage(WordPage Detail)
 		{
 			InitializeComponent();
 			//if (Detail.transl) Title = "Translation"; else Title = "Word";
 			detail = Detail;
-			
 			NavigationButtons navButtons = new NavigationButtons(Detail);
 			forNavButtons.Children.Add(navButtons);
 		}
@@ -28,7 +26,8 @@ namespace IndDictionary
 
 		protected override void OnAppearing()
 		{
-			DateLabel.Text = "Last record: " + App.Database.getInfo(2);
+			ShowSelected.IsChecked = App.Database.AnySelection(wts);
+            DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
 			base.OnAppearing();
 		}
@@ -52,7 +51,12 @@ namespace IndDictionary
 			App.Database.ResetSelection();
 			//detail.Refresh(showAll, wts);
 		}
-		protected void OnChecking(object sender, EventArgs e)
+        protected void onResetRating(object sender, EventArgs e)
+        {
+            App.Database.ResetRating();
+            //detail.Refresh(showAll, wts);
+        }
+        protected void OnChecking(object sender, EventArgs e)
 		{
 			showAll = !(sender as CheckBox)!.IsChecked;
 			//detail.Refresh(showAll, wts);
@@ -102,13 +106,22 @@ namespace IndDictionary
 		}
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
-			string currentDB = Preferences.Get("current","");
+            App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, "client_secret.json"), "client_secret.json");
+            string currentDB = Preferences.Get("current", "");
 			string DBName = Path.GetFileName(currentDB);
 			string? DBPath = Path.GetDirectoryName(currentDB);
 			App.Database.dispose();
-			await SyncCloud.SaveToCloud("client_secret.json", DBPath!, DBName);
+			try
+			{
+				await SyncCloud.SaveToCloud(Path.Combine(DBPath, "client_secret.json"), DBPath!, DBName);
+				await DisplayAlert("Copied", $"Dictionary {DBName} has been saved", "OK");
+			}
+			catch (Exception Ex)
+			{
+				await DisplayAlert("Error!", Ex.Message, "OK");
+			}
 		}
-		
+
 		protected async void OnSynchr(object sender, EventArgs e)
 		{
 			var options = new PickOptions
@@ -122,6 +135,7 @@ namespace IndDictionary
 				PickerTitle = "Please, select database file"
 			};
 			await PickAndShow(options);
+			await DisplayAlert("Success!", "Dictionary has been copied from cloud", "OK");
 
 		}
 		protected async void OpenLibrary(object sender, EventArgs e)
@@ -130,7 +144,7 @@ namespace IndDictionary
 		}
 		protected async void onDates(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
 			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(!ShowSelected.IsChecked);
 			foreach (dict t in tempcont)
 			{
@@ -142,7 +156,7 @@ namespace IndDictionary
 
 		protected async void onTopics(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
 			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(!ShowSelected.IsChecked);
 			foreach (topic t in tempcont)
 			{

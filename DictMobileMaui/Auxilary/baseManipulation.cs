@@ -1,6 +1,8 @@
 ﻿using SQLite;
 using IndDictionary.addition;
 using DictMobileMaui.addition;
+using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace IndDictionary
 {
@@ -10,8 +12,8 @@ namespace IndDictionary
 	{
 		SQLiteConnection database;
 		public bool toReboot = false;
-		IEnumerable<dict> itemsD;
-		IEnumerable<topic> itemsT;
+		List<dict> itemsD;
+		List<topic> itemsT;
 		public baseManipulation(string databasePath)
 		{
 			database = new SQLiteConnection(databasePath);
@@ -53,18 +55,23 @@ namespace IndDictionary
 			if (item != null)
 			{
 				if (item.Number != 0)
-				{
-					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
-					database.Update(item);
-					return item.Number;
-				}
-				else
-				{
-					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
-					return database.Insert(item);
-				}
-					
-			}
+                {
+                    item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
+                    database.Update(item);
+                    // обновляем кэш
+                    itemsD = database.Table<dict>().ToList();
+                    return item.Number;
+                }
+                else
+                {
+                    item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+                    int id = database.Insert(item);
+                    // обновляем кэш
+                    itemsD = database.Table<dict>().ToList();
+                    return id;
+                }
+
+            }
 			return -1;
 		}
 		public int saveRecD(dict item, string topic)
@@ -73,18 +80,22 @@ namespace IndDictionary
 			{
 				int TopicID = database.Table<topic>().Where(t => t.Name == topic).Select(t => t.id).FirstOrDefault();
 				item.Topic = TopicID;
+				
 				if (item.Number != 0)
 				{
 					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
 					database.Update(item);
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
-					return item.Number;
+                    itemsD = database.Table<dict>().ToList();
+                    return item.Number;
 				}
 				else
 				{
 					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
-					return database.Insert(item);
+                    int id = database.Insert(item);
+					itemsD = database.Table<dict>().ToList();
+					return id;
 				}
 
 			}
@@ -102,17 +113,28 @@ namespace IndDictionary
 		}
 		public int deleteRecD(int id)
 		{
-			return database.Delete<dict>(id);
-		}
-		public int deleteRecT(int id)
+            int res = database.Delete<dict>(id);
+            // обновляем кэш
+            itemsD = database.Table<dict>().ToList();
+            return res;
+        }
+		public int deleteRecT(string Name)
 		{
-			return database.Delete<topic>(id);
-		}
-		public IEnumerable<dict> findRecords(string needle, Func<dict, string> _field)
+            int id = itemsT.First(s => s.Name == Name).id;
+            int res = database.Delete<topic>(id);
+            // обновляем кэш
+            itemsT = database.Table<topic>().ToList();
+            return res;
+        }
+		public ObservableCollection<dict> findRecords(string needle, Func<dict, string> _field)
 		{
-			return from s in itemsD
+			IEnumerable<dict> items = from s in itemsD
 				   where _field(s).Contains(needle)
 				   select s;
+			ObservableCollection<dict> result = new ObservableCollection<dict>();
+			foreach (var r in items)
+				result.Add(r);
+			return result;
 		}
 		public dict? findOneRecord(int id)
 		{
@@ -180,14 +202,24 @@ namespace IndDictionary
                 return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
             }
 		}
+		public bool AnySelection(WhatToShow wts)
+		{
+			return showTableDict(false, wts).Any();
+		}
 		public void ResetSelection()
 		{
 			database.Execute("Update Dict set Usersel=false");
 			database.Commit();
-		}
+            itemsD = database.Table<dict>().ToList();
+        }
+        public void ResetRating()
+        {
+            database.Execute("Update Dict set Score=0");
+            database.Commit();
+        }
 
-		//------------------selects records from dict which are selected by user on form 
-		public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
+        //------------------selects records from dict which are selected by user on form 
+        public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
 		{
 			IEnumerable<string> l = from sl in datesList
 									where sl.Spoted == true
@@ -200,7 +232,8 @@ namespace IndDictionary
 			ResetSelection();
 			database.Execute(requestString);
 			database.Commit();
-		}
+            itemsD = database.Table<dict>().ToList();
+        }
 
     }
 }
