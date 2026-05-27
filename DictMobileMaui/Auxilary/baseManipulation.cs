@@ -103,14 +103,19 @@ namespace IndDictionary
 		}
 		public int saveRecT(topic item)
 		{
+			int result;
 			if (item.id != 0)
 			{
 				database.Update(item);
-				return item.id;
+				result = item.id;
 			}
 			else
-				return database.Insert(item);
-		}
+                result = database.Insert(item);
+            itemsT = database.Table<topic>().ToList();
+			return result;
+
+
+        }
 		public int deleteRecD(int id)
 		{
             int res = database.Delete<dict>(id);

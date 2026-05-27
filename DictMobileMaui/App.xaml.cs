@@ -9,7 +9,7 @@ namespace IndDictionary
 	public partial class App : Application
 	{
 		public static string databasename;//!!reset after development
-		public const string DEFAULTDATABASENAME = "dictionaryCut.db";	//only for default!
+		public const string DEFAULTDATABASENAME = "dictionary.db";	//only for default!
 		public static string APPFOLDER = FileSystem.AppDataDirectory;
 		static baseManipulation database;
 		public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;

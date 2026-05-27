@@ -93,7 +93,7 @@ namespace IndDictionary
 
 		protected override void OnAppearing()
 		{
-			TempTop = App.Database.showTableTopic();
+			TempTop = App.Database.showTableTopic();	
 			TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
 			
 			if (!blank)
