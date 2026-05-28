@@ -11,6 +11,17 @@ namespace IndDictionary
 		dict focusedItem;
 		public bool transl { get; }	
 		bool showall = true;
+		bool _showSecondField = false;
+		public bool showSecondField { get => _showSecondField;
+            set
+            {
+                if (_showSecondField != value)
+                {
+                    _showSecondField = value;
+                    OnPropertyChanged(nameof(showSecondField));
+                }
+            }
+        }
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchBar searchBar;
@@ -29,6 +40,12 @@ namespace IndDictionary
 
 			return items;
         }
+		protected void OnShowTranslation(object? Sender, EventArgs e)
+		{
+			showSecondField = !showSecondField;
+			showSecond.Text=showSecondField?"W-T":"W";
+			
+		}
 		public WordPage(bool _transl)
 		{
 			InitializeComponent();
@@ -45,61 +62,71 @@ namespace IndDictionary
 						FontSize = 16,
 						Padding = 10
 					};
+					Binding bindVisible = new Binding(path: nameof(showSecondField), source: this);
+					//Binding bindLabelSource = new Binding(path: ".");
+					//MultiBinding mult = new mu
+					Label SecondField = new Label
+					{
+						FontSize = 16,
+						Padding = 10,
+					};
 
 					if (transl)
-						MainField.SetBinding(Label.TextProperty, "Translation");
+					{
+                        MainField.SetBinding(Label.TextProperty, "Translation");
+						SecondField.SetBinding(Label.TextProperty, "Word");
+                    }
+
 					else
-						MainField.SetBinding(Label.TextProperty, "Word");
-					AbsoluteLayout.SetLayoutBounds(MainField, new Rect(10, 0, .68, AbsoluteLayout.AutoSize));
-					AbsoluteLayout.SetLayoutFlags(MainField, AbsoluteLayoutFlags.WidthProportional | AbsoluteLayoutFlags.YProportional);
+					{
+                        MainField.SetBinding(Label.TextProperty, "Word");
+                        SecondField.SetBinding(Label.TextProperty, "Translation");
+                    }
+                    SecondField.SetBinding(Label.IsVisibleProperty, bindVisible);
 					
 					ExtSwitch extswitch = new ExtSwitch();
 					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
-					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.85, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
-					AbsoluteLayout.SetLayoutFlags(extswitch, AbsoluteLayoutFlags.PositionProportional);
-                    SectorComponent diagram = new SectorComponent();
+					
+					SectorComponent diagram = new SectorComponent();
                     diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
+
                     
-                    AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0, 24, 24));
-                    AbsoluteLayout.SetLayoutFlags(diagram, AbsoluteLayoutFlags.PositionProportional);
-                    MainField.SizeChanged += (s, e) =>
+                     MainField.SizeChanged += (s, e) =>
+                     {
+                         if (MainField.Height > 0)
+                         {
+                             // немного отступа, подстраивайте коэффициент под ваш дизайн
+                             double target = MainField.Height * 0.9;
+                             diagram.WidthRequest = target;
+                             diagram.HeightRequest = target;
+
+                             // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
+                             AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+
+                             // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
+                             diagram.Invalidate();
+                         }
+                     };
+                    var cellLayout = new Grid
                     {
-                        if (MainField.Height > 0)
-                        {
-                            // немного отступа, подстраивайте коэффициент под ваш дизайн
-                            double target = MainField.Height * 0.9;
-                            diagram.WidthRequest = target;
-                            diagram.HeightRequest = target;
+                        ColumnDefinitions =
+						{
+							new ColumnDefinition { Width = GridLength.Star },   // Main
+							new ColumnDefinition { Width = GridLength.Auto },   // Second
+							new ColumnDefinition { Width = GridLength.Auto },   // Switch
+							new ColumnDefinition { Width = GridLength.Auto },    // Diagram
 
-                            // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
-                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
-
-                            // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
-                            diagram.Invalidate();
-                        }
+                            new ColumnDefinition { Width = 50 }    // Diagram
+						}
                     };
-                    var cellLayout = new AbsoluteLayout
-                    {
-                        Children = { extswitch, MainField, diagram }
-                    };
-                    MainField.SizeChanged += (s, e) =>
-                    {
-                        if (MainField.Height > 0)
-                        {
-                            // немного отступа, подстраивайте коэффициент под ваш дизайн
-                            double target = MainField.Height * 0.65;
-                            diagram.WidthRequest = target;
-                            diagram.HeightRequest = target;
-
-                            // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
-                            AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
-
-                            // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
-                            diagram.Invalidate();
-                        }
-                    };
+                    cellLayout.Add(MainField, 0, 0);
+                    cellLayout.Add(SecondField, 1, 0);
+                    cellLayout.Add(extswitch, 2, 0);
+                    cellLayout.Add(diagram, 3, 0);
+                   
+                    
                     return new ViewCell { View = cellLayout };
                 }
 				)
