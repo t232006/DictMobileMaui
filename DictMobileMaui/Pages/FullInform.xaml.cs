@@ -23,28 +23,28 @@ namespace IndDictionary
 				//Text = "Confirm",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 0,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.ok.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.ok.png")
 			};
 			CancelItem = new ToolbarItem()
 			{
 				//Text = "Cancel",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 1,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.cancel.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.cancel.png")
 			};
 			DeleteItem = new ToolbarItem()
 			{
 				//Text = "Delete",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 2,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.trash_bin_small.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.trash_bin_small.png")
 			};
 			EditItem = new ToolbarItem()
 			{
 				//Text = "Edit",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 3,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.edit1.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.edit1.png")
 			};
 			
 			ConfirmItem.Clicked += onConfPress!;

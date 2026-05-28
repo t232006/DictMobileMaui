@@ -1,8 +1,8 @@
-﻿using DictMobileMaui;
-using DictMobileMaui.games;
+﻿using DictMobile;
+using DictMobile.games;
 
 using System.ComponentModel;
-using DictMobileMaui.Auxilary;
+using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
 
 

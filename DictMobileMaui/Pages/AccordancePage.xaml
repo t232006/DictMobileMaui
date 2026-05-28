@@ -8,7 +8,7 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem x:Name="NextBut" Clicked="NextBlock" IsEnabled="True"
-          IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.arrow_right.png}"/>
+          IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.arrow_right.png}"/>
     </ContentPage.ToolbarItems>
     <FlexLayout x:Name="MainStack">
     </FlexLayout>

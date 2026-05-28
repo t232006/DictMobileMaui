@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DictMobileMaui.games
+namespace DictMobile.games
 {
     public class Accordance:Games
     {

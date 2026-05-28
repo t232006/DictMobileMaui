@@ -1,6 +1,7 @@
 ﻿using IndDictionary.addition;
 using IndDictionary.Pages;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace IndDictionary
 {
@@ -46,14 +47,16 @@ namespace IndDictionary
 			wts = WhatToShow.words;
 			//detail.Refresh(showAll, wts);
 		}
-		protected void onReset(object sender, EventArgs e)
+		protected async void onReset(object sender, EventArgs e)
 		{
 			App.Database.ResetSelection();
-			//detail.Refresh(showAll, wts);
-		}
-        protected void onResetRating(object sender, EventArgs e)
+            await DisplayAlert("Confirmation", "Selection has been droped", "OK");
+            //detail.Refresh(showAll, wts);
+        }
+        protected async void onResetRating(object sender, EventArgs e)
         {
             App.Database.ResetRating();
+			await DisplayAlert("Confirmation", "Rating has been droped", "OK");
             //detail.Refresh(showAll, wts);
         }
         protected void OnChecking(object sender, EventArgs e)
@@ -106,16 +109,21 @@ namespace IndDictionary
 		}
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
-            App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, "client_secret.json"), "client_secret.json");
+            //App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, App.SECRETFILE), App.SECRETFILE);
+
             string currentDB = Preferences.Get("current", "");
 			string DBName = Path.GetFileName(currentDB);
 			string? DBPath = Path.GetDirectoryName(currentDB);
 			App.Database.dispose();
 			try
 			{
-				await SyncCloud.SaveToCloud(Path.Combine(DBPath, "client_secret.json"), DBPath!, DBName);
-				await DisplayAlert("Copied", $"Dictionary {DBName} has been saved", "OK");
-			}
+				string mes = await SyncCloud.SaveToCloud(App.SECRETFILE, DBPath!, DBName);
+				if (mes == DBName)
+					await DisplayAlert("Copied", $"Dictionary {DBName} has been saved", "OK");
+				else
+					await DisplayAlert("Error", mes, "OK");
+
+            }
 			catch (Exception Ex)
 			{
 				await DisplayAlert("Error!", Ex.Message, "OK");

@@ -11,7 +11,11 @@ namespace IndDictionary
 		public static string databasename;//!!reset after development
 		public const string DEFAULTDATABASENAME = "dictionary.db";	//only for default!
 		public static string APPFOLDER = FileSystem.AppDataDirectory;
-		static baseManipulation database;
+		public static readonly string SECRETFILE = DeviceInfo.Platform == DevicePlatform.Android ?
+														"client_secret_mobile.json" :
+														"client_secret.json";
+
+        static baseManipulation database;
 		public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
@@ -31,7 +35,7 @@ namespace IndDictionary
             if (!File.Exists(filenameFull))
             {
 				//string filename = Path.GetFileName(filenameFull);
-				using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{resFile}"))
+				using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobile.Resources.Raw.{resFile}"))
                 {
                     using (FileStream dest = new FileStream(filenameFull, FileMode.OpenOrCreate))
                     {

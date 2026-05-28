@@ -7,13 +7,13 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="onApplyPress"        
-             IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.ok.png}"
+             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.ok.png}"
              x:Name="EditBut"/>
         <ToolbarItem Clicked="onDeletePress"
-             IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.trash_bin_small.png}"
+             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.trash_bin_small.png}"
              x:Name="DeleteBut"/>
         <ToolbarItem Clicked="onAddPress"
-             IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.add1.png}"
+             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.add1.png}"
              x:Name="AddBut"/>        
         <!--ToolbarItem Text="Cancel" Clicked="OnCancel" Priority="1" Order="Primary"/-->
     </ContentPage.ToolbarItems>

@@ -20,18 +20,18 @@
             <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
             <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
-            <Button Text="Reset rating" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
+            <Button Text="Reset rating" BackgroundColor="#ffa500" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
             <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
                 <Button 
                         Style="{StaticResource SmallButton}"
-                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_from.png}"
+                        ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_from.png}"
                         ContentLayout="Top, 10"
                         Pressed="OnSynchr"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.folder_small.png}"                        
+                <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.folder_small.png}"                        
                          Style="{StaticResource SmallButton}" 
                          Pressed="OpenLibrary"
                          ContentLayout="Top, 10"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_to.png}"
+                <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
                          Pressed="SaveToCloud"

@@ -1,6 +1,6 @@
 ﻿
 
-namespace DictMobileMaui.Auxilary
+namespace DictMobile.Auxilary
 {
     public class SectorComponent: GraphicsView
     {
@@ -45,7 +45,7 @@ namespace DictMobileMaui.Auxilary
             float centerY = dirtyRect.Center.Y;
             float radius = Math.Min(dirtyRect.Width, dirtyRect.Height) / 2;
 
-            canvas.FillColor = Colors.DarkSeaGreen;
+            canvas.FillColor = Colors.Orange;
             canvas.FillCircle(centerX, centerY, radius);
 
             var path = new PathF();
@@ -54,7 +54,7 @@ namespace DictMobileMaui.Auxilary
             path.LineTo(centerX + radius, centerY);
             
 
-            canvas.FillColor = Colors.Orange;
+            canvas.FillColor = Colors.DarkSeaGreen;
             path.AddArc(
                 centerX - radius,
                 centerY - radius,
@@ -62,7 +62,7 @@ namespace DictMobileMaui.Auxilary
                 radius * 2,
                 0,
                 60 * _alpha,
-                true);
+                false);
 
             path.Close();
 

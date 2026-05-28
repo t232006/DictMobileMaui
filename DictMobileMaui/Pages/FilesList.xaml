@@ -64,7 +64,7 @@
                                         Grid.Column="3" 
                                        
                                     Style="{StaticResource Button}"
-                                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.trash_bin_small.png}"
+                                        ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.trash_bin_small.png}"
                                         Clicked="OnDelete"
                                         />
                                 <Button 
@@ -72,7 +72,7 @@
                                         Clicked="OnOpen" 
                                         Style="{StaticResource Button}"
                                         
-                                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.play_small.png}"
+                                        ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.play_small.png}"
                                         />
                             </Grid>
                         </ViewCell.View>

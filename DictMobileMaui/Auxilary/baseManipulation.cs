@@ -1,6 +1,6 @@
 ﻿using SQLite;
 using IndDictionary.addition;
-using DictMobileMaui.addition;
+using DictMobile.addition;
 using System.Collections.ObjectModel;
 using System.Collections;
 
@@ -56,7 +56,7 @@ namespace IndDictionary
 			{
 				if (item.Number != 0)
                 {
-                    item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
+                    //item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
                     database.Update(item);
                     // обновляем кэш
                     itemsD = database.Table<dict>().ToList();
@@ -64,7 +64,7 @@ namespace IndDictionary
                 }
                 else
                 {
-                    item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+                    //item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
                     int id = database.Insert(item);
                     // обновляем кэш
                     itemsD = database.Table<dict>().ToList();
@@ -83,7 +83,7 @@ namespace IndDictionary
 				
 				if (item.Number != 0)
 				{
-					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
+					//item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
 					database.Update(item);
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
                     itemsD = database.Table<dict>().ToList();
@@ -91,7 +91,7 @@ namespace IndDictionary
 				}
 				else
 				{
-					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+					//item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
                     int id = database.Insert(item);
 					itemsD = database.Table<dict>().ToList();

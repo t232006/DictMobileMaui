@@ -1,7 +1,7 @@
 ﻿
 //using Android.Gestures;
-using DictMobileMaui;
-using DictMobileMaui.games;
+using DictMobile;
+using DictMobile.games;
 using IndDictionary.Converters;
 using System.ComponentModel;
 

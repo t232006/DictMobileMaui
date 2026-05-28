@@ -1,5 +1,5 @@
-﻿//using DictMobileMaui.Auxilary;
-using DictMobileMaui.Auxilary;
+﻿//using DictMobile.Auxilary;
+using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
 using System.Collections.ObjectModel;
 

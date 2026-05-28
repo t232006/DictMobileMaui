@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using IndDictionary;
 
-namespace DictMobileMaui.games 
+namespace DictMobile.games 
 {
 
 	public class Games : INotifyPropertyChanged

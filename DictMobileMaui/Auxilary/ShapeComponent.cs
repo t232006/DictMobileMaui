@@ -3,7 +3,7 @@ using IndDictionary;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace DictMobileMaui.Auxilary
+namespace DictMobile.Auxilary
 {
     public class ShapeComponent : ContentView
     {
