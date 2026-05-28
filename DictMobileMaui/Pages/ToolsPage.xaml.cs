@@ -128,6 +128,7 @@ namespace IndDictionary
 			{
 				await DisplayAlert("Error!", Ex.Message, "OK");
 			}
+			App.Database.toReboot = true; 
 		}
 
 		protected async void OnSynchr(object sender, EventArgs e)

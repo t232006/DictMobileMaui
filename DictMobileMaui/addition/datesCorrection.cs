@@ -21,7 +21,7 @@ namespace IndDictionary.addition
 				}
 			catch { da = DateTime.Now; }
 			//finally { }
-			return da.ToString("dd.MM.yyyy");
+			return da.ToString("yyyy-MM-dd");
 		} 
     }
 }

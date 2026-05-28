@@ -1,4 +1,6 @@
-﻿using DictMobile.GoogleDrive.forAndroid;
+﻿#if ANDROID
+using GoogleDriveManipulationAndroid;
+#endif
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Util.Store;
@@ -28,23 +30,25 @@ namespace GoogleDriveManipulation
             using (var stream = await FileSystem.OpenAppPackageFileAsync(token))
             {
                 ClientSecrets cs = GoogleClientSecrets.FromStream(stream).Secrets;
-                this.credentials = forMobile ? await GoogleWebAuthorizationBroker.AuthorizeAsync(
+#if ANDROID
+                this.credentials = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     cs,
                     Scopes,
                     user: "user",
                     taskCancellationToken: CancellationToken.None,
                     new FileDataStore(credentialPath, true),
                     codeReceiver: new AndroidCodeReceiver()
-                    )
-                    :
-                    await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.FromStream(stream).Secrets,
+                    );
+#else
+                    this.credentials = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    cs,
                     //new[] {DriveService.ScopeConstants.DriveReadonly},
                     Scopes,
                     user: "user",
                     taskCancellationToken: CancellationToken.None,
                     new FileDataStore(credentialPath, true)
                     );
+#endif
 
             }
             this.driveService = new DriveService(new Google.Apis.Services.BaseClientService.Initializer

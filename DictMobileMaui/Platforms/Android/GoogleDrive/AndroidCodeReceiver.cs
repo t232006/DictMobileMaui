@@ -2,13 +2,14 @@
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Microsoft.Maui.Authentication;
+using System.Diagnostics;
 
-namespace DictMobile.GoogleDrive.forAndroid;
+namespace GoogleDriveManipulationAndroid;
 
 public class AndroidCodeReceiver : ICodeReceiver
 {
     // Должен полностью совпадать с тем, что указали в Google Cloud Console
-    public string RedirectUri { get; } = "com.mycompany.dictMobile:/oauth2redirect";
+    public string RedirectUri { get; } = "com.mycompany.dictmobile:/oauth2redirect";
 
     public async Task<AuthorizationCodeResponseUrl> ReceiveCodeAsync(
         AuthorizationCodeRequestUrl url,
@@ -17,6 +18,9 @@ public class AndroidCodeReceiver : ICodeReceiver
         try
         {
             var authUrl = url.Build().ToString();
+
+            Debug.WriteLine($"Auth URL: {authUrl}"); // ← проверьте redirect_uri в строке запроса
+            Debug.WriteLine($"Expected redirect URI: {RedirectUri}");
 
             // Открываем браузер и ждём callback
             var result = await WebAuthenticator.AuthenticateAsync(

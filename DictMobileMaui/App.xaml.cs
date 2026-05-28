@@ -46,7 +46,7 @@ namespace IndDictionary
             }
         }
 		
-		private static void LoadDBFirstTime(string dbPath)
+		static void LoadDBFirstTime(string dbPath)
 		{
 			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
