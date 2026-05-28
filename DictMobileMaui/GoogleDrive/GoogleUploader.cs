@@ -45,12 +45,8 @@ namespace GoogleDriveManipulation
                     // опционально: изменить chunk size для Android при необходимости
                     // request.ChunkSize = ResumableUpload.MinimumChunkSize * 2;
 
-                    Debug.WriteLine("GoogleUploader: starting upload...");
+               
                     var progress = await request.UploadAsync();
-
-                    Debug.WriteLine($"GoogleUploader: upload status = {progress.Status}");
-                    if (progress.Exception != null)
-                        Debug.WriteLine($"GoogleUploader: upload exception = {progress.Exception}");
 
                     if (progress.Status != UploadStatus.Completed)
                     {
@@ -59,16 +55,7 @@ namespace GoogleDriveManipulation
                 }
 
                 var file = request.ResponseBody;
-                if (file == null)
-                {
-                    instance.output = "Upload finished but server returned no file metadata.";
-                    Debug.WriteLine("GoogleUploader: request.ResponseBody == null");
-                }
-                else
-                {
-                    instance.output = $"Uploaded: {file.Name}";
-                    Debug.WriteLine($"GoogleUploader: success id={file.Id}");
-                }
+                instance.output = file?.Name ?? "no filename";
             }
             catch (Exception e)
             {
