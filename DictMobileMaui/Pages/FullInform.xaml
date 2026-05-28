@@ -14,6 +14,8 @@
             <Style x:Key="forEntrys" TargetType="Entry" >
                 <Setter Property="FontSize" Value="Large"/>
                 <Setter Property="Margin" Value="10, 7, 10, 10"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                Light={StaticResource BackgroundLight}}"/>
                 <!--Setter Property="HeightRequest" Value="300"/-->
             </Style>
             <Style x:Key="forFlex" TargetType="FlexLayout">
@@ -22,7 +24,14 @@
                 <Setter Property="JustifyContent" Value="SpaceBetween"/>
             </Style>
             <Style x:Key="MainSpace" TargetType="Entry" BasedOn="{StaticResource forEntrys}">
-                <Setter Property="TextColor" Value="DarkBlue"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource PrimaryDark},
+                                                                Light={StaticResource PrimaryLight}}"/>
+                
+            </Style>
+            <Style x:Key="SecondSpace" TargetType="Entry" BasedOn="{StaticResource forEntrys}">
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextDark},
+                                                                Light={StaticResource TextLight}}"/>
+               
             </Style>
             <loc:BoolConverter x:Key="boolConverter"/>
             <loc:CheckBoxToString x:Key="checkBoxToString"/>
@@ -31,7 +40,8 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid x:Name="BaseLayout">
+        <Grid x:Name="BaseLayout" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                                Light={StaticResource BackgroundLight}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="4*"/>
@@ -52,7 +62,7 @@
                             IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled,
                             Converter={StaticResource boolConverter}}"/>
                 <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"
-                    Margin="10,7,10,10"     />
+                            Margin="10,7,10,10"     />
             </FlexLayout>
             <Editor x:Name="WordSpace" Text="{Binding Word}" Style="{StaticResource MainSpace}" 
                     Placeholder="Слово"

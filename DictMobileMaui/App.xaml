@@ -34,6 +34,7 @@
                 <Setter Property="BorderWidth" Value="0"/>
                 <Setter Property="BackgroundColor" Value="#3fcc62"/>
             </Style>
+            
             <Color x:Key="BackgroundLight">#FFFFFF</Color>
             <Color x:Key="BackgroundDark">#121212</Color>
 
