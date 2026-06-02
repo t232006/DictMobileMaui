@@ -25,11 +25,22 @@ namespace IndDictionary
 			base.OnDisappearing();
 		}
 
+		protected void onToCopySelected(object Sender, EventArgs e)
+		{
+			GoButton.IsVisible = true;
+		}
+		protected void onGoPress(object Sender, EventArgs e)
+		{
+			GoButton.IsVisible = false;
+			App.Database.doSelectedToTopic(CopyToTopic.SelectedItem.ToString());
+		}
+		
 		protected override void OnAppearing()
 		{
 			ShowSelected.IsChecked = App.Database.AnySelection(wts);
             DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
+			CopyToTopic.ItemsSource = App.Database.showTableTopic().Select(n=>n.Name).ToList();
 			base.OnAppearing();
 		}
 		protected void OnAll(object sender, EventArgs e)
@@ -49,8 +60,9 @@ namespace IndDictionary
 		}
 		protected async void onReset(object sender, EventArgs e)
 		{
-			App.Database.ResetSelection();
+			App.Database.ResetSelection(); App.Database.ResetSelection(); //double reset. Unknown error!
             await DisplayAlert("Confirmation", "Selection has been droped", "OK");
+            ShowSelected.IsChecked = App.Database.AnySelection(wts);
             //detail.Refresh(showAll, wts);
         }
         protected async void onResetRating(object sender, EventArgs e)

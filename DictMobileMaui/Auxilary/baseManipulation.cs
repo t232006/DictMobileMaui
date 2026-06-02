@@ -168,6 +168,12 @@ namespace IndDictionary
 			return result;
 
 		}
+
+		public void doSelectedToTopic(string Topic)
+		{
+			string request = $"update dict set topic = (select distinct id from topic where name='{Topic}') where usersel=true ";
+			database.Query<dict>(request);
+		}
 		IEnumerable<dict> filtr(bool allrec, WhatToShow _wts)
 		{
 			string request = "SELECT * FROM Dict ";

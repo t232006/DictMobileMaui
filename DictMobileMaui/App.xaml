@@ -26,6 +26,9 @@
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="14"/>
             </Style>
+            <Style x:Key="GoButton" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Margin" Value="150,5,0,0"/>
+            </Style>
             <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
                 <Setter Property="Margin" Value="10,10,3,0"/>
                 <Setter Property="WidthRequest" Value="81"/>

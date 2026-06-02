@@ -19,7 +19,7 @@ namespace IndDictionary
         {
             InitializeComponent();
             //FlyoutLayoutBehavior = FlyoutLayoutBehavior.Popover;
-            Detail = new NavigationPage(new WordPage(false));
+            Detail = new NavigationPage(new WordPage(dictside.word));
         }
         protected void onSelected(object sender, SelectedItemChangedEventArgs e)
         {
@@ -27,7 +27,9 @@ namespace IndDictionary
             {
                 case 0:
                     {
-                        Detail = new NavigationPage(new WordPage(Xmode)); break;
+                        Detail = Xmode?
+                            new NavigationPage(new WordPage(dictside.translation)):
+                            new NavigationPage(new WordPage(dictside.word)); break;
                     }
                 case 1:
                     {

@@ -21,6 +21,14 @@
             <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
             <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
             <Button Text="Reset rating" BackgroundColor="#ffa500" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
+            <Grid>
+                
+                <Picker x:Name="CopyToTopic" BackgroundColor="SlateBlue"  Title="Selected to topic" SelectedIndexChanged="onToCopySelected"
+                                                                    Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="GoButton" Text="Go" BackgroundColor="SlateBlue" IsVisible="False" Style="{StaticResource GoButton}"
+                        HorizontalOptions="Start" VerticalOptions="Start" Pressed="onGoPress"/>
+            </Grid>
+            
             <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
                 <Button 
                         Style="{StaticResource SmallButton}"

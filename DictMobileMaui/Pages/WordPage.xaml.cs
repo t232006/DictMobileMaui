@@ -5,11 +5,12 @@ using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
+	public enum dictside {word, translation, none };
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class WordPage : ContentPage
 	{
 		dict focusedItem;
-		public bool transl { get; }	
+		dictside side=dictside.none;	
 		bool showall = true;
 		bool _showSecondField = false;
 		public bool showSecondField { get => _showSecondField;
@@ -25,35 +26,37 @@ namespace IndDictionary
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchBar searchBar;
-		ObservableCollection<dict> items = new ObservableCollection<dict>();
-		ObservableCollection<dict> Data(bool _transl)
+        CancellationTokenSource _cts;
+        ObservableCollection<dict> items;
+		async Task LoadDataAsync(dictside _side)
 		{
-			var list = _transl ? App.Database
-                            .showTableDict(showall, wts)
-                            .OrderBy(t => t.Translation).ToList()
-                            : App.Database
-                            .showTableDict(showall, wts)
-                            .OrderBy(t => t.Word).ToList();
-			items.Clear();
-			foreach (dict d in list)
-				items.Add(d);
-
-			return items;
+			if (side == _side) return;
+			side = _side;
+			var data = await Task.Run(() =>
+			{
+                var raw = App.Database.showTableDict(showall, wts);
+                return _side==dictside.translation ? raw.OrderBy(t => t.Translation).ToList()
+													: raw.OrderBy(t => t.Word).ToList();
+			}
+			);
+			items = new ObservableCollection<dict>(data);
+			ListTable.ItemsSource = items;
         }
+		
 		protected void OnShowTranslation(object? Sender, EventArgs e)
 		{
 			showSecondField = !showSecondField;
 			showSecond.Text=showSecondField?"W-T":"W";
 			
 		}
-		public WordPage(bool _transl)
+		public WordPage(dictside _side)
 		{
 			InitializeComponent();
-			transl = _transl;
+			//side = _side;
 
 			ListTable = new ListView
 			{
-				ItemsSource = Data(_transl),
+				//ItemsSource = Data(_side),
 				ItemTemplate = new DataTemplate(() =>
 				{
 					Label MainField = new Label
@@ -71,7 +74,7 @@ namespace IndDictionary
 						Padding = 10,
 					};
 
-					if (transl)
+					if (side==dictside.translation)
 					{
                         MainField.SetBinding(Label.TextProperty, "Translation");
 						SecondField.SetBinding(Label.TextProperty, "Word");
@@ -166,33 +169,41 @@ namespace IndDictionary
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
 		}
-        protected void Searching(Object sender, TextChangedEventArgs e)
+        protected async void Searching(Object sender, TextChangedEventArgs e)
         {
-            // Берём найденные элементы из БД в список (чтобы сохранить сортировку)
-            List<dict> founded;
-            if (transl)
-                founded = App.Database
-                    .findRecords(searchBar.Text, f => f.Translation)
-                    .OrderBy(f => f.Translation).ToList();
-            else
-                founded = App.Database
-                    .findRecords(searchBar.Text, f => f.Word)
-                    .OrderBy(f => f.Word).ToList();
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+            try
+            {
+                await Task.Delay(300, token); // debounce
+                var text = e.NewTextValue;
+                var result = await Task.Run(() =>
+                {
+                    if (string.IsNullOrEmpty(text))
+                        return App.Database.showTableDict(showall, wts);
+                    return side==dictside.translation
+                        ? App.Database.findRecords(text, f => f.Translation)
+                        : App.Database.findRecords(text, f => f.Word);
+                });
 
-            // Обновляем ObservableCollection — ListView обновится автоматически
-            items.Clear();
-            foreach (var d in founded)
-                items.Add(d);
+                var sorted = side==dictside.translation
+                    ? result.OrderBy(f => f.Translation).ToList()
+                    : result.OrderBy(f => f.Word).ToList();
 
-            // если поле поиска пустое — перезагружаем все данные
-            if (string.IsNullOrEmpty(e.NewTextValue))
-                Data(transl);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    items = new ObservableCollection<dict>(sorted);
+                    ListTable.ItemsSource = items;
+                });
+            }
+            catch (TaskCanceledException) { }
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             base.OnAppearing();
-			ListTable.ItemsSource = Data(transl);
+			await LoadDataAsync(side);
         }
     }
 }
