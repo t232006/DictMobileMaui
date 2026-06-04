@@ -2,15 +2,17 @@
 using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
 using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace IndDictionary
 {
-	public enum dictside {word, translation, none };
+	//public enum bool {word, translation, none };
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class WordPage : ContentPage
 	{
 		dict focusedItem;
-		dictside side=dictside.none;	
+		bool side;
+		//bool earlyopen = false; //shows whether page has already opened
 		bool showall = true;
 		bool _showSecondField = false;
 		public bool showSecondField { get => _showSecondField;
@@ -28,15 +30,13 @@ namespace IndDictionary
 		SearchBar searchBar;
         CancellationTokenSource _cts;
         ObservableCollection<dict> items;
-		async Task LoadDataAsync(dictside _side)
+		async Task LoadDataAsync(bool _side)
 		{
-			if (side == _side) return;
-			side = _side;
 			var data = await Task.Run(() =>
 			{
                 var raw = App.Database.showTableDict(showall, wts);
-                return _side==dictside.translation ? raw.OrderBy(t => t.Translation).ToList()
-													: raw.OrderBy(t => t.Word).ToList();
+                return _side ? raw.OrderBy(t => t.Translation).ToList()
+								: raw.OrderBy(t => t.Word).ToList();
 			}
 			);
 			items = new ObservableCollection<dict>(data);
@@ -49,10 +49,10 @@ namespace IndDictionary
 			showSecond.Text=showSecondField?"W-T":"W";
 			
 		}
-		public WordPage(dictside _side)
+		public WordPage(bool _side)
 		{
 			InitializeComponent();
-			//side = _side;
+			side = _side;
 
 			ListTable = new ListView
 			{
@@ -74,7 +74,7 @@ namespace IndDictionary
 						Padding = 10,
 					};
 
-					if (side==dictside.translation)
+					if (_side)
 					{
                         MainField.SetBinding(Label.TextProperty, "Translation");
 						SecondField.SetBinding(Label.TextProperty, "Word");
@@ -169,7 +169,18 @@ namespace IndDictionary
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
 		}
-        protected async void Searching(Object sender, TextChangedEventArgs e)
+        private async Task<ObservableCollection<dict>> Search(string needle)
+		{
+            if (string.IsNullOrEmpty(needle))
+			{
+				var result=await App.Database.showTableDictAsync(showall, wts);
+				return new ObservableCollection<dict>(result); 
+			} 
+            return side
+                ? await App.Database.findRecordsAsync(needle, f => f.Translation)
+                : await App.Database.findRecordsAsync(needle, f => f.Word);
+        }
+		protected async void Searching(Object sender, TextChangedEventArgs e)
         {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
@@ -178,16 +189,9 @@ namespace IndDictionary
             {
                 await Task.Delay(300, token); // debounce
                 var text = e.NewTextValue;
-                var result = await Task.Run(() =>
-                {
-                    if (string.IsNullOrEmpty(text))
-                        return App.Database.showTableDict(showall, wts);
-                    return side==dictside.translation
-                        ? App.Database.findRecords(text, f => f.Translation)
-                        : App.Database.findRecords(text, f => f.Word);
-                });
+                var result = await Search(e.NewTextValue);
 
-                var sorted = side==dictside.translation
+                var sorted = side
                     ? result.OrderBy(f => f.Translation).ToList()
                     : result.OrderBy(f => f.Word).ToList();
 
@@ -201,9 +205,12 @@ namespace IndDictionary
         }
 
         protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-			await LoadDataAsync(side);
+        { 
+			base.OnAppearing();
+			if (searchBar.Text != "")
+				{ var result = await Search(searchBar.Text); }
+			await LoadDataAsync(side); //do one time only
+			//earlyopen = true;
         }
     }
 }

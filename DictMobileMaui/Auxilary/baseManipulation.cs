@@ -3,6 +3,7 @@ using IndDictionary.addition;
 using DictMobile.addition;
 using System.Collections.ObjectModel;
 using System.Collections;
+//using Android.OS;
 
 namespace IndDictionary
 {
@@ -41,9 +42,40 @@ namespace IndDictionary
 			database.Dispose();
 		}
 
-		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
+        public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
+        {
+            string request = "SELECT * FROM Dict ";
+            if (!allrec) request += "WHERE usersel=true ";
+
+            switch (wts)
+            {
+                case WhatToShow.words:
+                    request += allrec ? "WHERE phrase=false" : "AND phrase=false";
+                    break;
+                case WhatToShow.phrases:
+                    request += allrec ? "WHERE phrase=true" : "AND phrase=true";
+                    break;
+            }
+            return  database.Query<dict>(request);
+
+        }
+
+        public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
-				return filtr(allrec, wts);
+            string request = "SELECT * FROM Dict ";
+            if (!allrec) request += "WHERE usersel=true ";
+
+            switch (wts)
+            {
+                case WhatToShow.words:
+                    request += allrec ? "WHERE phrase=false" : "AND phrase=false";
+                    break;
+                case WhatToShow.phrases:
+                    request += allrec ? "WHERE phrase=true" : "AND phrase=true";
+                    break;
+            }
+            return await Task.Run(() => database.Query<dict>(request));
+            
         }
 
 		public IEnumerable<topic> showTableTopic()
@@ -131,15 +163,12 @@ namespace IndDictionary
             itemsT = database.Table<topic>().ToList();
             return res;
         }
-		public ObservableCollection<dict> findRecords(string needle, Func<dict, string> _field)
+		public async Task<ObservableCollection<dict>> findRecordsAsync(string needle, Func<dict, string> _field)
 		{
-			IEnumerable<dict> items = from s in itemsD
-				   where _field(s).Contains(needle)
-				   select s;
-			ObservableCollection<dict> result = new ObservableCollection<dict>();
-			foreach (var r in items)
-				result.Add(r);
-			return result;
+			var items = await Task.Run(() =>
+				itemsD.Where(f => _field(f).Contains(needle)).Select(s => s).ToList()
+			);
+			return new ObservableCollection<dict>(items);
 		}
 		public dict? findOneRecord(int id)
 		{
@@ -174,22 +203,7 @@ namespace IndDictionary
 			string request = $"update dict set topic = (select distinct id from topic where name='{Topic}') where usersel=true ";
 			database.Query<dict>(request);
 		}
-		IEnumerable<dict> filtr(bool allrec, WhatToShow _wts)
-		{
-			string request = "SELECT * FROM Dict ";
-			if (!allrec) request += "WHERE usersel=true ";
-
-			switch (_wts)
-			{
-				case WhatToShow.words:
-					request += allrec ? "WHERE phrase=false" : "AND phrase=false";
-					break;
-				case WhatToShow.phrases:
-					request += allrec ? "WHERE phrase=true" : "AND phrase=true";
-					break;
-			}
-			return database.Query<dict>(request);	
-		}
+        
 		public IEnumerable<dict> getSelected()
 		{
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
