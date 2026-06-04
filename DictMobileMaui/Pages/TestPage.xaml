@@ -5,7 +5,9 @@
              x:Class="IndDictionary.TestPage"
              Title="Tests">
 
-    <VerticalStackLayout x:Name="MainStack" >
-        <Label x:Name="Answer" FontSize="Medium" Margin="15,10,0,20"/>
+        <VerticalStackLayout x:Name="MainStack" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                         Light={StaticResource BackgroundLight}}">
+        <Label x:Name="Answer" FontSize="Medium" Margin="15,10,0,20" TextColor="{AppThemeBinding Dark={StaticResource TextDark},
+                                                    Light={StaticResource TextLight}}"/>
     </VerticalStackLayout>
 </ContentPage> 

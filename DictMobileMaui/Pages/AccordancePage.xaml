@@ -10,6 +10,7 @@
         <ToolbarItem x:Name="NextBut" Clicked="NextBlock" IsEnabled="True"
           IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.arrow_right.png}"/>
     </ContentPage.ToolbarItems>
-    <FlexLayout x:Name="MainStack">
+    <FlexLayout x:Name="MainStack" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                    Light={StaticResource BackgroundLight}}">
     </FlexLayout>
 </ContentPage>
