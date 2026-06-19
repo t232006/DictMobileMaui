@@ -20,6 +20,8 @@ namespace IndDictionary
 		public bool Phrase { get; set; }
 		public byte Relevation { get; set; }
 		public bool IsDeleted { get; set; }
+		public string Modification_Time { get; set; }
+		public int DBID { get; set; }
 		bool Spot { get; set; }
     }
 	[Table ("topic")]
@@ -29,6 +31,7 @@ namespace IndDictionary
 		public int id { get; set; }
 		public string Name { get; set; }
 		public bool IsDeleted { get; set; }
-		public string DateRec { get; set; }
+		public string Modification_Time { get; set; }
+		public int DBID { get; set; }
 	}
 }
