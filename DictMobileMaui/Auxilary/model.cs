@@ -19,6 +19,7 @@ namespace IndDictionary
 		public bool Usersel { get; set; }
 		public bool Phrase { get; set; }
 		public byte Relevation { get; set; }
+		public bool IsDeleted { get; set; }
 		bool Spot { get; set; }
     }
 	[Table ("topic")]
@@ -27,5 +28,7 @@ namespace IndDictionary
 		[PrimaryKey, AutoIncrement]
 		public int id { get; set; }
 		public string Name { get; set; }
+		public bool IsDeleted { get; set; }
+		public string DateRec { get; set; }
 	}
 }

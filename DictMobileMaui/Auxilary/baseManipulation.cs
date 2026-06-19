@@ -18,8 +18,8 @@ namespace IndDictionary
 		public baseManipulation(string databasePath)
 		{
 			database = new SQLiteConnection(databasePath);
-			itemsD = database.Table<dict>().ToList();
-			itemsT = database.Table<topic>().ToList();
+			itemsD = database.Table<dict>().Where(d=>d.IsDeleted==false).ToList();
+			itemsT = database.Table<topic>().Where(d=>d.IsDeleted==false).ToList();
 		}
 		public void GetReward(int id, bool increase)
 		{
@@ -44,16 +44,16 @@ namespace IndDictionary
 
         public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
         {
-            string request = "SELECT * FROM Dict ";
-            if (!allrec) request += "WHERE usersel=true ";
+            string request = "SELECT * FROM Dict WHERE isDeleted=false ";
+            if (!allrec) request += "AND usersel=true ";
 
             switch (wts)
             {
                 case WhatToShow.words:
-                    request += allrec ? "WHERE phrase=false" : "AND phrase=false";
+                    request += "AND phrase=false";
                     break;
                 case WhatToShow.phrases:
-                    request += allrec ? "WHERE phrase=true" : "AND phrase=true";
+                    request += "AND phrase=true";
                     break;
             }
             return  database.Query<dict>(request);
@@ -62,16 +62,16 @@ namespace IndDictionary
 
         public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
-            string request = "SELECT * FROM Dict ";
-            if (!allrec) request += "WHERE usersel=true ";
+            string request = "SELECT * FROM Dict WHERE isDeleted=false ";
+            if (!allrec) request += "AND usersel=true ";
 
             switch (wts)
             {
                 case WhatToShow.words:
-                    request += allrec ? "WHERE phrase=false" : "AND phrase=false";
+                    request += "AND phrase=false";
                     break;
                 case WhatToShow.phrases:
-                    request += allrec ? "WHERE phrase=true" : "AND phrase=true";
+                    request += "AND phrase=true";
                     break;
             }
             return await Task.Run(() => database.Query<dict>(request));
@@ -91,7 +91,7 @@ namespace IndDictionary
                     item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
                     database.Update(item);
                     // обновляем кэш
-                    itemsD = database.Table<dict>().ToList();
+                    itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
                     return item.Number;
                 }
                 else
@@ -99,7 +99,7 @@ namespace IndDictionary
                     item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
                     int id = database.Insert(item);
                     // обновляем кэш
-                    itemsD = database.Table<dict>().ToList();
+                    itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
                     return id;
                 }
 
@@ -118,7 +118,7 @@ namespace IndDictionary
 					item.DateRec = datesCorrection.toCorrectDate(item.DateRec);
 					database.Update(item);
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
-                    itemsD = database.Table<dict>().ToList();
+                    itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
                     return item.Number;
 				}
 				else
@@ -126,8 +126,8 @@ namespace IndDictionary
 					item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 					if (IsItPhrase.isItPhrase(item.Word)) item.Phrase = true; else item.Phrase = false;
                     int id = database.Insert(item);
-					itemsD = database.Table<dict>().ToList();
-					return id;
+					itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+                    return id;
 				}
 
 			}
@@ -143,25 +143,29 @@ namespace IndDictionary
 			}
 			else
                 result = database.Insert(item);
-            itemsT = database.Table<topic>().ToList();
-			return result;
+            itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
+            return result;
 
 
         }
-		public int deleteRecD(int id)
+		public void deleteRecD(int id)
 		{
-            int res = database.Delete<dict>(id);
+			//int res = database.Delete<dict>(id);
+			dict? temp = findOneRecord(id);
+			temp.IsDeleted = true;
+			temp.DateRec = DateTime.Now.ToString();
             // обновляем кэш
-            itemsD = database.Table<dict>().ToList();
-            return res;
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
         }
-		public int deleteRecT(string Name)
+		public void deleteRecT(string Name)
 		{
-            int id = itemsT.First(s => s.Name == Name).id;
-            int res = database.Delete<topic>(id);
+			//int res = database.Delete<topic>(id);
+			topic? temp = itemsT.First(s => s.Name == Name);
+			temp.IsDeleted = true;
+			temp.DateRec = DateTime.Now.ToString();
+
             // обновляем кэш
-            itemsT = database.Table<topic>().ToList();
-            return res;
+            itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
         }
 		public async Task<ObservableCollection<dict>> findRecordsAsync(string needle, Func<dict, string> _field)
 		{
@@ -216,14 +220,14 @@ namespace IndDictionary
 			string request;
 			if (typeof(T).Equals(typeof(dict)))
 			{
-				request = "select distinct DateRec from Dict ";
-				if (showAll==false) request += "where Usersel=true ";
+				request = "select distinct DateRec from Dict where isDeleted=false";
+				if (showAll==false) request += "and Usersel=true ";
 				return (IEnumerable<T>)database.Query<dict>(request).OrderBy(t => DateTime.Parse(t.DateRec));
             }
 			else
 			{
-				request = "SELECT DISTINCT Name FROM Topic JOIN Dict ON Topic.ID=Dict.Topic ";
-				if (showAll == false) request += "where Usersel=true";
+				request = "SELECT DISTINCT Name FROM Topic JOIN Dict ON Topic.ID=Dict.Topic where isDeleted=false";
+				if (showAll == false) request += "and Usersel=true";
                 return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
             }
 		}
@@ -235,7 +239,7 @@ namespace IndDictionary
 		{
 			database.Execute("Update Dict set Usersel=false");
 			database.Commit();
-            itemsD = database.Table<dict>().ToList();
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
         }
         public void ResetRating()
         {
@@ -257,7 +261,7 @@ namespace IndDictionary
 			ResetSelection();
 			database.Execute(requestString);
 			database.Commit();
-            itemsD = database.Table<dict>().ToList();
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
         }
 
     }

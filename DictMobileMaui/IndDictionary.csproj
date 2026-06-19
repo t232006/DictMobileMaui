@@ -78,6 +78,8 @@
 	  <AndroidSigningKeyPass>489259383</AndroidSigningKeyPass>
 	  <ApplicationTitle>DictMobile</ApplicationTitle>
 	  <ApplicationId>com.companyname.dictmobile</ApplicationId>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
+	  <ApplicationVersion>3</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
@@ -87,16 +89,22 @@
 	  <AndroidSigningKeyPass>489259383</AndroidSigningKeyPass>
 	  <ApplicationTitle>DictMobile</ApplicationTitle>
 	  <ApplicationId>com.companyname.dictmobile</ApplicationId>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
+	  <ApplicationVersion>3</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>DictMobile</ApplicationTitle>
 	  <ApplicationId>com.companyname.dictmobile</ApplicationId>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
+	  <ApplicationVersion>3</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>DictMobile</ApplicationTitle>
 	  <ApplicationId>com.companyname.dictmobile</ApplicationId>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
+	  <ApplicationVersion>3</ApplicationVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
