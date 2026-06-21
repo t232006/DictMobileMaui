@@ -89,7 +89,7 @@ namespace IndDictionary
 					
 					ExtSwitch extswitch = new ExtSwitch();
 					extswitch.Toggled += OnToggled!;
-					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
+					extswitch.SetBinding(ExtSwitch.IDProperty, "id");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
 					
 					SectorComponent diagram = new SectorComponent();

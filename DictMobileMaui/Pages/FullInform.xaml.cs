@@ -1,4 +1,6 @@
 ﻿
+using IndDictionary.addition;
+
 namespace IndDictionary
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
@@ -75,8 +77,13 @@ namespace IndDictionary
 
 		protected void onConfPress(object Sender, EventArgs e)
 		{
-			if (TopicSpace.SelectedItem!=null)
-			App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
+			if (TopicSpace.SelectedItem != null)
+			{
+				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
+                TempDict.DateRec = datesCorrection.toCorrectDate(TempDict.DateRec);
+                App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
+			}
+			
 			Navigation.PopAsync();
 		}
 
@@ -87,7 +94,7 @@ namespace IndDictionary
 
 		protected void onDelPress(object Sender, EventArgs e)
 		{
-			App.Database.deleteRecD((this.BindingContext as dict).Number);
+			App.Database.deleteRecD((this.BindingContext as dict).id);
 			Navigation.PopAsync();
 		}
 
@@ -102,8 +109,15 @@ namespace IndDictionary
 				var temp = from p in TempTop
 						   where p.id == TempDict.Topic
 						   select p.Name;
-				TopicSpace.SelectedItem = temp.ToList()[0];
-				TempDict.Relevation++;
+				if (temp.Any())
+					TopicSpace.SelectedItem = temp.ToList()[0];
+				else
+				{
+					TopicSpace.SelectedIndex = -1;
+					TempDict.Topic = null;
+				} 
+					
+					TempDict.Relevation++;
 				App.Database.saveRecD(TempDict);	
 			}
 			else

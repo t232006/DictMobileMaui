@@ -67,18 +67,18 @@ namespace IndDictionary
 		{
 			dict selected = (dict)e.Item;
 
-			if (selected.Number == test.Answer.Number)
+			if (selected.id == test.Answer.id)
 			{
 				if (word_translation)
 				DisplayAlert("Correct!", $"{test.Answer.Word} - {selected.Translation}", "OK"); else
 				DisplayAlert("Correct!", $"{test.Answer.Translation} - {selected.Word}", "OK");
-				App.Database.GetReward(selected.Number, true);
+				App.Database.GetReward(selected.id, true);
 				test.Generate();
 			}
 			else
 			{
 				DisplayAlert("Incorrect", $"Sorry, that is not the correct answer.", "Try Again");
-				App.Database.GetReward(selected.Number, false);
+				App.Database.GetReward(selected.id, false);
 			}
 		}
 	}
