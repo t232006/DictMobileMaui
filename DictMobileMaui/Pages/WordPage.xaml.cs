@@ -207,9 +207,9 @@ namespace IndDictionary
         protected async override void OnAppearing()
         { 
 			base.OnAppearing();
-			if (searchBar.Text != "")
-				{ var result = await Search(searchBar.Text); }
-			await LoadDataAsync(side); //do one time only
+			if (searchBar.Text!=null)
+				await Search(searchBar.Text); else
+				await LoadDataAsync(side); //do one time only
 			//earlyopen = true;
         }
     }

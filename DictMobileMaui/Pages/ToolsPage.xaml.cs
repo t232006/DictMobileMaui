@@ -166,7 +166,7 @@ namespace IndDictionary
 		protected async void onDates(object sender, EventArgs e)
 		{
             ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
-			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(!ShowSelected.IsChecked);
+			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(showAll);
 			foreach (dict t in tempcont)
 			{
 				conteiner.Add(new DateOrTopicClassAux { DaOrTo = t.DateRec, Spoted = false });
@@ -178,7 +178,7 @@ namespace IndDictionary
 		protected async void onTopics(object sender, EventArgs e)
 		{
             ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
-			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(!ShowSelected.IsChecked);
+			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(showAll);
 			foreach (topic t in tempcont)
 			{
 				conteiner.Add(new DateOrTopicClassAux { DaOrTo = t.Name, Spoted = false });
