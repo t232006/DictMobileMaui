@@ -3,6 +3,7 @@ using IndDictionary.addition;
 using DictMobile.addition;
 using System.Collections.ObjectModel;
 using System.Collections;
+using System.Text.Json;
 //using Android.OS;
 
 namespace IndDictionary
@@ -12,6 +13,8 @@ namespace IndDictionary
 	public class baseManipulation
 	{
         private uint? FBDID;
+		private DateTime _LastUpdate;
+		public DateTime LastUpdate { set => _LastUpdate = value; }
 		public uint? BDID { get => FBDID; }
 		
         SQLiteConnection database;
@@ -263,6 +266,13 @@ namespace IndDictionary
 			database.Commit();
             itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
         }
+		public string GetPull()
+		{
+			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+			string query = $"SELECT * from dict where Modification_time>'{trueDate}'";
+			IEnumerable<dict> pool = database.Query<dict>(query);
+			return JsonSerializer.Serialize(pool);
+		}
 
     }
 }

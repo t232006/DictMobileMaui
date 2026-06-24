@@ -81,6 +81,7 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
+
             //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел
             MainPage = new Flyout_Page();
@@ -90,7 +91,8 @@ namespace IndDictionary
 
 		protected override void OnStart()
 		{
-			
+			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
+			database.GetPull();
 		}
 
 		protected override void OnSleep()
