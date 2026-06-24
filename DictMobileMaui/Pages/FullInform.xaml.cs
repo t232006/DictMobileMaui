@@ -1,5 +1,6 @@
 ﻿
 using IndDictionary.addition;
+using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
@@ -75,13 +76,22 @@ namespace IndDictionary
 			}
 		}
 
-		protected void onConfPress(object Sender, EventArgs e)
+		async protected void onConfPress(object Sender, EventArgs e)
 		{
 			if (TopicSpace.SelectedItem != null)
 			{
 				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
-                TempDict.DateRec = datesCorrection.toCorrectDate(TempDict.DateRec);
-                App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
+                TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+				ObservableCollection<dict> found = await App.Database.findRecordsAsync(TempDict.Word, f=>f.Word);
+				foreach (dict d in found)
+				{
+					if ((d.Word.IndexOf(TempDict.Word) >= 0) || (d.Translation.IndexOf(TempDict.Translation) >= 0))
+					{
+						bool result=await DisplayAlert($"Word {TempDict.Word} already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+						if (!result) return;
+					}			
+				}
+				App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
 			}
 			
 			Navigation.PopAsync();
