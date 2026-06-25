@@ -1,7 +1,6 @@
 ﻿using IndDictionary.addition;
 using IndDictionary.Pages;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace IndDictionary
 {
@@ -143,6 +142,22 @@ namespace IndDictionary
 			App.Database.toReboot = true; 
 		}
 
+		protected void onNewDict(object sender, EventArgs e)
+		{
+			//string destination = Path.GetDirectoryName(App.databasename)!;
+			string filename = App.DEFAULTDATABASENAME;
+			string folder = App.APPFOLDER;
+			string destination = Path.Combine(folder, filename);
+			byte adder = 1;
+
+			while (File.Exists(destination))
+                {
+                    destination = Path.Combine(folder,String.Concat(Path.GetFileNameWithoutExtension(filename),Convert.ToString(adder++),Path.GetExtension(filename)));
+
+                } 
+            App.CopyFilesFromResource(destination, App.DEFAULTDATABASENAME);
+            App.LoadDBFirstTime(destination);
+        }
 		protected async void OnSynchr(object sender, EventArgs e)
 		{
 			var options = new PickOptions

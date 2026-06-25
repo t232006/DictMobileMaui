@@ -184,7 +184,7 @@ namespace IndDictionary
 			else return null;
 		}
 
-		public string getInfo(byte WhatExectly) //1-date, 2-count
+		public string? getInfo(byte WhatExectly) //1-date, 2-count
 		{
 			string result = "";
 			switch (WhatExectly)
@@ -196,7 +196,14 @@ namespace IndDictionary
 					}
 				case 2:
 					{
-						result = showTableDict(true, WhatToShow.alltogether).Max(p => p.DateRec)!.ToString();
+						try
+						{
+							result = showTableDict(true, WhatToShow.alltogether).Max(p => p.DateRec).ToString();
+						}
+						catch
+						{
+                            result = "none";
+                        }
 						break;
 					}
 			}
@@ -266,13 +273,20 @@ namespace IndDictionary
 			database.Commit();
             itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
         }
-		public string GetPull()
+		public string GetPullDict()
 		{
 			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
 			string query = $"SELECT * from dict where Modification_time>'{trueDate}'";
 			IEnumerable<dict> pool = database.Query<dict>(query);
 			return JsonSerializer.Serialize(pool);
 		}
+        public string GetPullTopic()
+        {
+            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+            string query = $"SELECT * from topic where Modification_time>'{trueDate}'";
+            IEnumerable<topic> pool = database.Query<topic>(query);
+            return JsonSerializer.Serialize(pool);
+        }
 
     }
 }

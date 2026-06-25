@@ -82,6 +82,7 @@
             
             <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>
             <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
+            <Button Text="+New dictionary" WidthRequest="140" BackgroundColor="Thistle" Margin="10,0,0,0" HorizontalOptions="Start" Pressed="onNewDict"/>
         </StackLayout>
         <StackLayout x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
     </StackLayout>

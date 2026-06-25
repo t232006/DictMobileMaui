@@ -9,7 +9,7 @@ namespace IndDictionary
 	public partial class App : Application
 	{
 		public static string databasename;//!!reset after development
-		public const string DEFAULTDATABASENAME = "dictionary.db";	//only for default!
+		public const string DEFAULTDATABASENAME = "dictionary_empty.db";	//only for default!
 		public static string APPFOLDER = FileSystem.AppDataDirectory;
 		public static readonly string SECRETFILE = DeviceInfo.Platform == DevicePlatform.Android ?
 														"client_secret_mobile.json" :
@@ -46,7 +46,7 @@ namespace IndDictionary
             }
         }
 		
-		static void LoadDBFirstTime(string dbPath)
+		public static void LoadDBFirstTime(string dbPath)
 		{
 			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
@@ -92,7 +92,8 @@ namespace IndDictionary
 		protected override void OnStart()
 		{
 			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
-			database.GetPull();
+			database.GetPullTopic();
+			database.GetPullDict();
 		}
 
 		protected override void OnSleep()
