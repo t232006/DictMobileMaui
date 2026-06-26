@@ -1,5 +1,5 @@
-﻿
-using System.Reflection;
+﻿using System.Reflection;
+using DictMobile.ViewModels;
 using IndDictionary.addition;
 using Path = System.IO.Path;
 
@@ -16,7 +16,16 @@ namespace IndDictionary
 														"client_secret.json";
 
         static baseManipulation database;
-		public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+        private static ListTopicsViewModel topicsViewModel;
+        public static ListTopicsViewModel TopicsViewModel 
+        { 
+            get 
+            { 
+                topicsViewModel ??= new ListTopicsViewModel();
+                return topicsViewModel; 
+            } 
+        }
+        public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
 		{
@@ -81,6 +90,7 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
+			
 
             //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел

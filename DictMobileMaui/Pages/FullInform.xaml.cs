@@ -112,7 +112,7 @@ namespace IndDictionary
 		protected override void OnAppearing()
 		{
 			TempTop = App.Database.showTableTopic();	
-			TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
+			//TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
 			
 			if (!blank)
 			{
@@ -120,14 +120,7 @@ namespace IndDictionary
 				var temp = from p in TempTop
 						   where p.id == TempDict.Topic
 						   select p.Name;
-				if (temp.Any())
-					TopicSpace.SelectedItem = temp.ToList()[0];
-				else
-				{
-					TopicSpace.SelectedIndex = -1;
-					TempDict.Topic = null;
-				} 
-					
+				
 					TempDict.Relevation++;
 				App.Database.saveRecD(TempDict);	
 			}
@@ -135,9 +128,6 @@ namespace IndDictionary
 			{
 				TempDict = new dict();
 				this.BindingContext = TempDict;
-				TopicSpace.SelectedItem = TempTop.ToList()[0].Name;
-				//EditBox.IsToggled = true;
-				//EditBut.Active = false;
 				
 			}
 			//ConfirmB.IsVisible = blank;			

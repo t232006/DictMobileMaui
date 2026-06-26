@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DictMobile.ViewModels
 {
-    internal class ListTopicsViewModel
+    public class ListTopicsViewModel
     {   
         public void GetTopicList()
         {
@@ -21,7 +21,8 @@ namespace DictMobile.ViewModels
         }
         private int currentItem=0;
         public int CurrentItem { get => currentItem;
-            set => currentItem = value; 
+            //set => currentItem = value;
+            set => currentItem=value;
         }
         public ListTopicsViewModel()
         {

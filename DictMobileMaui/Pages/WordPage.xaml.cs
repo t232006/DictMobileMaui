@@ -14,7 +14,7 @@ namespace IndDictionary
 		dict focusedItem;
 		bool side;
 		FullInform fullinform;
-		ListTopicsViewModel lt;
+		//ListTopicsViewModel lt;
         //bool earlyopen = false; //shows whether page has already opened
         bool showall = true;
 		bool _showSecondField = false;
