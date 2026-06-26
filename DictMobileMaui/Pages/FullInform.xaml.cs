@@ -1,4 +1,5 @@
 ﻿
+using DictMobile.ViewModels;
 using IndDictionary.addition;
 using System.Collections.ObjectModel;
 

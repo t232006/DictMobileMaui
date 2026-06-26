@@ -2,11 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:IndDictionary.Converters"
+             xmlns:viewmodels="clr-namespace:DictMobile.ViewModels"
              xmlns:inddictionary="clr-namespace:IndDictionary"
              xmlns:res="clr-namespace:IndDictionary.addition"
              x:Class="IndDictionary.FullInform">
     <ContentPage.Resources>
         <ResourceDictionary>
+            <viewmodels:ListTopicsViewModel x:Key="TopicsViewModel"/>
             <Style TargetType="Label">
                 <Setter Property="FontSize" Value="Medium"/>
                 <Setter Property="Margin" Value="10, 7, 2, 10"/>
@@ -56,6 +58,8 @@
                         Style="{StaticResource forFlex}"
                         Grid.Column="0" Grid.Row="0">
                 <Picker x:Name="TopicSpace" Margin="10, 10, 2, 4" HeightRequest="35"
+                        ItemsSource="{Binding Source={StaticResource TopicsViewModel},Path=TopicsList}"
+                        SelectedIndex="{Binding Source={StaticResource TopicsViewModel},Path=CurrentItem}"
                         IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled}" />
 
                 <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Reference TopicSpace}, Path=SelectedItem}"

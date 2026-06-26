@@ -1,5 +1,6 @@
 ﻿//using DictMobile.Auxilary;
 using DictMobile.Auxilary;
+using DictMobile.ViewModels;
 using Microsoft.Maui.Layouts;
 using System.Collections.ObjectModel;
 using static System.Net.Mime.MediaTypeNames;
@@ -12,8 +13,10 @@ namespace IndDictionary
 	{
 		dict focusedItem;
 		bool side;
-		//bool earlyopen = false; //shows whether page has already opened
-		bool showall = true;
+		FullInform fullinform;
+		ListTopicsViewModel lt;
+        //bool earlyopen = false; //shows whether page has already opened
+        bool showall = true;
 		bool _showSecondField = false;
 		public bool showSecondField { get => _showSecondField;
             set
@@ -53,8 +56,9 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			side = _side;
-
-			ListTable = new ListView
+            fullinform = new FullInform(false);
+            //lt = new ListTopicsViewModel();
+            ListTable = new ListView
 			{
 				//ItemsSource = Data(_side),
 				ItemTemplate = new DataTemplate(() =>
@@ -151,8 +155,9 @@ namespace IndDictionary
 		protected async void OnPress(object? sender, ItemTappedEventArgs e)
 		{
 			focusedItem = (dict)e.Item;
-			FullInform fullinform = new FullInform(false);
-			fullinform.BindingContext = focusedItem;
+			//fullinform = new FullInform(false);
+			//lt.GetTopicList();
+            fullinform.BindingContext = focusedItem;
 			await Navigation.PushAsync(fullinform);
 		}
 		protected void OnToggled(object sender, ToggledEventArgs e)
