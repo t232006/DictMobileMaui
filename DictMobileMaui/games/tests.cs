@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using DictMobile.models;
 using IndDictionary;
 
 namespace DictMobile.games 

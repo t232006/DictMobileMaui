@@ -1,4 +1,4 @@
-﻿using IndDictionary;
+﻿using DictMobile.models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

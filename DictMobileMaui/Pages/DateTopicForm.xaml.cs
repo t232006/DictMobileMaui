@@ -1,4 +1,5 @@
-﻿using IndDictionary.addition;
+﻿using DictMobile.models;
+using IndDictionary.addition;
 using System.Collections.ObjectModel;
 
 namespace IndDictionary

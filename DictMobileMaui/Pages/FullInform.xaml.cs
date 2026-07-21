@@ -1,4 +1,5 @@
 ﻿
+using DictMobile.models;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
 using System.Collections.ObjectModel;
@@ -82,15 +83,20 @@ namespace IndDictionary
 			if (TopicSpace.SelectedItem != null)
 			{
 				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
-                TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+                //TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 				ObservableCollection<dict> found = await App.Database.findRecordsAsync(TempDict.Word, f=>f.Word);
 				foreach (dict d in found)
 				{
-					if ((d.Word.IndexOf(TempDict.Word) >= 0) || (d.Translation.IndexOf(TempDict.Translation) >= 0))
+					if (d.Word.IndexOf(TempDict.Word) >= 0) 
 					{
-						bool result=await DisplayAlert($"Word {TempDict.Word} already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+						bool result=await DisplayAlert($"Phrase '{TempDict.Word}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
 						if (!result) return;
-					}			
+					}	
+					if (d.Translation.IndexOf(TempDict.Translation) >= 0)
+					{
+                        bool result = await DisplayAlert($"Phrase '{TempDict.Translation}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+                        if (!result) return;
+                    }
 				}
 				App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
 			}

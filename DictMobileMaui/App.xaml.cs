@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using DictMobile.httpMethods;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
 using Path = System.IO.Path;
@@ -101,15 +102,15 @@ namespace IndDictionary
 
 		protected override void OnStart()
 		{
-			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
-			database.GetPullTopic();
-			database.GetPullDict();
+			
 		}
 
 		protected override void OnSleep()
 		{
-			// Handle when your app sleeps
-		}
+            var httpMet = new HttpMethods();
+			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
+			Task.Run(async () => { await httpMet.PostTopicAsync(database.GetListTopic()); });
+        }
 
 		protected override void OnResume()
 		{

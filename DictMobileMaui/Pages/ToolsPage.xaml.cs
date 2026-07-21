@@ -1,4 +1,5 @@
-﻿using IndDictionary.addition;
+﻿using DictMobile.models;
+using IndDictionary.addition;
 using IndDictionary.Pages;
 using System.Collections.ObjectModel;
 

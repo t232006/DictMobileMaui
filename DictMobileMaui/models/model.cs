@@ -1,7 +1,7 @@
 ﻿using DictMobile.Auxilary;
 using SQLite;
 
-namespace IndDictionary
+namespace DictMobile.models
 {
 	[Table ("Dict")]
 	public class dict

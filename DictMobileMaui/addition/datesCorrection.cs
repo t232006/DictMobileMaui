@@ -24,7 +24,7 @@ namespace IndDictionary.addition
 			return da.ToString("yyyy-MM-dd");*/
 			//if (wrongDate.IndexOf("00:00:00Z") > 0) wrongDate.Remove(10);
 			DateTime da = DateTime.Parse(wrongDate);
-            return $"{da:u}";
+            return $"{da:yyyy-MM-ddTHH:mm:ssZ}";
 		} 
     }
 }

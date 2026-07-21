@@ -4,6 +4,7 @@ using DictMobile.addition;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Text.Json;
+using DictMobile.models;
 //using Android.OS;
 
 namespace IndDictionary
@@ -97,9 +98,10 @@ namespace IndDictionary
 		}
 		private int insert_update(dict item)
 		{
-            if (item.id != 0)
+            
+			if (item.id != 0)
             {
-                
+				item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
                 database.Update(item);
                 // обновляем кэш
                 itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
@@ -165,7 +167,7 @@ namespace IndDictionary
 			//int res = database.Delete<topic>(id);
 			topic? temp = itemsT.First(s => s.Name == Name);
 			temp.IsDeleted = true;
-			temp.Modification_Time = DateTime.Now.ToString();
+			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
             // обновляем кэш
             itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
@@ -276,16 +278,35 @@ namespace IndDictionary
 		public string GetPullDict()
 		{
 			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-			string query = $"SELECT * from dict where Modification_time>'{trueDate}'";
-			IEnumerable<dict> pool = database.Query<dict>(query);
+			string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
+				$"from dict d join topic t on d.Topic=t.Id " +
+				$"where d.Modification_time>?";
+
+			IEnumerable<DictVM> pool = database.Query<DictVM>(query, trueDate);
 			return JsonSerializer.Serialize(pool);
 		}
+        public IEnumerable<DictVM> GetListDict()
+        {
+            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+            string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
+                $"from dict d join topic t on d.Topic=t.Id " +
+                $"where d.Modification_time>?";
+
+            return database.Query<DictVM>(query, trueDate);
+        }
         public string GetPullTopic()
         {
             string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-            string query = $"SELECT * from topic where Modification_time>'{trueDate}'";
-            IEnumerable<topic> pool = database.Query<topic>(query);
+            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
+            IEnumerable<topic> pool = database.Query<topic>(query, trueDate);
             return JsonSerializer.Serialize(pool);
+        }
+        public IEnumerable<topic> GetListTopic()
+        {
+            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
+            return database.Query<topic>(query, trueDate);
+
         }
 
     }

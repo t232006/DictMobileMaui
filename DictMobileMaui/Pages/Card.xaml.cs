@@ -2,6 +2,7 @@
 //using Android.Gestures;
 using DictMobile;
 using DictMobile.games;
+using DictMobile.models;
 using IndDictionary.Converters;
 using System.ComponentModel;
 
