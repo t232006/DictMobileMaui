@@ -60,17 +60,10 @@ namespace IndDictionary
 		{
 			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
-			//for first open to write information about database
-			//if (Preferences.ContainsKey(databasename))
 			
 			string baseInfo = $"{database.getInfo(1)}.{database.getInfo(2)}";
 			Preferences.Set(databasename, baseInfo);
-			
-			/*foreach (dict d in database.showTableDict(true, WhatToShow.alltogether))
-			{
-				d.DateRec = datesCorrection.toCorrectDate(d.DateRec);
-				App.Database.saveRecD(d);
-			}*/
+
 		}
 		public static baseManipulation Database
 		{
@@ -102,14 +95,17 @@ namespace IndDictionary
 
 		protected override void OnStart()
 		{
-			
+			database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
 		}
 
 		protected override void OnSleep()
 		{
             var httpMet = new HttpMethods();
 			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
-			Task.Run(async () => { await httpMet.PostTopicAsync(database.GetListTopic()); });
+			httpMet.PostTopicAsync(database.GetListTopic()); 
+			httpMet.PostDictAsync(database.GetListDict()); 
+			database.LastUpdate = DateTime.Now;
+			Preferences.Set("LastUpdateTime", DateTime.Now);
         }
 
 		protected override void OnResume()

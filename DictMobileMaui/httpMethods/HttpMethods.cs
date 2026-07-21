@@ -35,5 +35,15 @@ namespace DictMobile.httpMethods
             List<DictVM> LDict = [.. Dict];
             return PostDictList(LDict);
         }
+        public object? PostTopic(IEnumerable<topic> Topic)
+        {
+            List<topic> LTopic = [.. Topic];
+            return PostTopicList(LTopic);
+        }
+        public object? PostDict(IEnumerable<DictVM> Dict)
+        {
+            List<DictVM> LDict = [.. Dict];
+            return PostDictList(LDict);
+        }
     }
 }
