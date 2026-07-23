@@ -58,6 +58,7 @@ namespace IndDictionary
             if (!string.IsNullOrWhiteSpace(result))
             {
 				App.Database.saveRecT(new topic { Name = result });
+				App.TopicsViewModel.GetTopicList();
 				await DisplayAlert("Added", $"Topic {result} is added", "OK");
             }
         }
