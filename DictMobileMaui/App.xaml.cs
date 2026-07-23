@@ -101,7 +101,7 @@ namespace IndDictionary
 		protected override void OnSleep()
 		{
             var httpMet = new HttpMethods();
-			database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
+			//database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
 			httpMet.PostTopicAsync(database.GetListTopic()); 
 			httpMet.PostDictAsync(database.GetListDict()); 
 			database.LastUpdate = DateTime.Now;
