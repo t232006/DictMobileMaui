@@ -98,10 +98,9 @@ namespace IndDictionary
 		}
 		private int insert_update(dict item)
 		{
-            
-			if (item.id != 0)
+            item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
+            if (item.id != 0)
             {
-				item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
                 database.Update(item);
                 // обновляем кэш
                 itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
@@ -285,6 +284,13 @@ namespace IndDictionary
 			IEnumerable<DictVM> pool = database.Query<DictVM>(query, trueDate);
 			return JsonSerializer.Serialize(pool);
 		}
+		public string GetPullTopic()
+        {
+            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
+            IEnumerable<topic> pool = database.Query<topic>(query, trueDate);
+            return JsonSerializer.Serialize(pool);
+        }
         public IEnumerable<DictVM> GetListDict()
         {
             string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
@@ -294,13 +300,7 @@ namespace IndDictionary
 
             return database.Query<DictVM>(query, trueDate);
         }
-        public string GetPullTopic()
-        {
-            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
-            IEnumerable<topic> pool = database.Query<topic>(query, trueDate);
-            return JsonSerializer.Serialize(pool);
-        }
+        
         public IEnumerable<topic> GetListTopic()
         {
             string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using DictMobile.httpMethods;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
@@ -100,10 +101,35 @@ namespace IndDictionary
 
 		protected override void OnSleep()
 		{
-            var httpMet = new HttpMethods();
+			var httpMet = new HttpMethods();
 			//database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
-			httpMet.PostTopicAsync(database.GetListTopic()); 
-			httpMet.PostDictAsync(database.GetListDict()); 
+
+			Task.Run(async () =>
+			{
+				try
+				{
+					Debug.WriteLine(httpMet.PostTopicAsync(database.GetListTopic()));
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex);
+				};
+			});
+            Task.Run(async () =>
+            {
+                try
+                {
+                    Debug.WriteLine(httpMet.PostDictAsync(database.GetListDict()));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                ;
+            });
+
+
+            //httpMet.PostDictAsync(database.GetListDict()); 
 			database.LastUpdate = DateTime.Now;
 			Preferences.Set("LastUpdateTime", DateTime.Now);
         }
