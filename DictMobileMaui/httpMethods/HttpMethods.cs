@@ -37,11 +37,11 @@ namespace DictMobile.httpMethods
             }
         }
 
-        public async Task<List<topic>?> GetTopicAsync(int DBID, DateTime since)
+        public async Task<List<topic>?> GetTopicAsync(uint? DBID, string since)
         {
             using (var client = new HttpClient())
             {
-                var url = $"{GET_TOPIC_URL}?DBID={DBID}&since={since:O}";
+                var url = $"{GET_TOPIC_URL}?DBID={DBID}&since={since}";
                 var response = await client.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -53,11 +53,11 @@ namespace DictMobile.httpMethods
             }
         }
 
-        private async Task<List<DictVM>?> GetFullDictAsync(uint DBID, DateTime since)
+        private async Task<List<DictVM>?> GetFullDictAsync(uint DBID, string since)
         {
             using (var client = new HttpClient())
             {
-                var url = $"{GET_DICT_URL}?DBID={DBID}&since={since:O}";
+                var url = $"{GET_DICT_URL}?DBID={DBID}&since={since}";
                 var response = await client.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
@@ -68,7 +68,7 @@ namespace DictMobile.httpMethods
                 return null;
             }
         }
-        public async Task<List<dict>> GetDictAsync(uint DBID, DateTime since)
+        public async Task<List<dict>> GetDictAsync(uint DBID, string since)
         {
             List<DictVM>? ReceivedList = await GetFullDictAsync(DBID, since);
             List<dict> Result = new();

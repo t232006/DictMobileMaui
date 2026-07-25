@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using DictMobile.httpMethods;
+using DictMobile.models;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
 using Path = System.IO.Path;
@@ -19,6 +20,7 @@ namespace IndDictionary
 
         static baseManipulation database;
         private static ListTopicsViewModel topicsViewModel;
+        HttpMethods httpMet;
         public static ListTopicsViewModel TopicsViewModel 
         { 
             get 
@@ -85,7 +87,8 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
-			
+            
+
 
             //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел
@@ -96,12 +99,31 @@ namespace IndDictionary
 
 		protected override void OnStart()
 		{
-			database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-		}
+            database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            //database.LastUpdate = DateTime.Parse("2026-07-23 15:10:00");
+            httpMet = new HttpMethods();
+			Task.Run(async () => 
+			{
+				try
+				{
+					List<topic>? t = await httpMet.GetTopicAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+					if (t!=null)
+					database.WriteTopicFromServer(t);
+				}
+				catch (Exception ex)
+				{
+                    Debug.WriteLine($"Error {ex}");
+                }
+				
+				database.LastUpdate = DateTime.Now;
+				
+			});
+            
+        }
 
 		protected override void OnSleep()
 		{
-			var httpMet = new HttpMethods();
+			
 			//database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
 
 			Task.Run(async () =>
@@ -112,7 +134,7 @@ namespace IndDictionary
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine(ex);
+					Debug.WriteLine(ex);
 				};
 			});
             Task.Run(async () =>
@@ -123,7 +145,7 @@ namespace IndDictionary
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Debug.WriteLine(ex);
                 }
                 ;
             });

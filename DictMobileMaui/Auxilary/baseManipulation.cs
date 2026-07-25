@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections;
 using System.Text.Json;
 using DictMobile.models;
+using DictMobile.httpMethods;
 //using Android.OS;
 
 namespace IndDictionary
@@ -15,7 +16,7 @@ namespace IndDictionary
 	{
         private uint? FBDID;
 		private DateTime _LastUpdate;
-		public DateTime LastUpdate { set => _LastUpdate = value; }
+		public DateTime LastUpdate { set => _LastUpdate = value; get => _LastUpdate; }
 		public uint? BDID { get => FBDID; }
 		
         SQLiteConnection database;
@@ -308,6 +309,11 @@ namespace IndDictionary
             return database.Query<topic>(query, trueDate);
 
         }
+		public void WriteTopicFromServer(List<topic> topic)
+		{
+			//itemsT.AddRange(topic);
+			database.InsertAll(topic);
+		}
 
     }
 }
