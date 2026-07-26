@@ -10,32 +10,32 @@ using DictMobile.httpMethods;
 
 namespace IndDictionary
 {
-	public enum WhatToShow { words, phrases, alltogether}
+	public enum WhatToShow { words, phrases, alltogether }
 	public enum WhatToSelect { dates, topics }
 	public class baseManipulation
 	{
-        private uint? FBDID;
+		private uint? FBDID;
 		private DateTime _LastUpdate;
 		public DateTime LastUpdate { set => _LastUpdate = value; get => _LastUpdate; }
 		public uint? BDID { get => FBDID; }
-		
-        SQLiteConnection database;
+
+		SQLiteConnection database;
 		public bool toReboot = false;
 		List<dict> itemsD;
 		List<topic> itemsT;
-	
+
 		public baseManipulation(string databasePath)
 		{
 			database = new SQLiteConnection(databasePath);
-			itemsD = database.Table<dict>().Where(d=>d.IsDeleted==false).ToList();
-			itemsT = database.Table<topic>().Where(d=>d.IsDeleted==false).ToList();
-            if (itemsD.Count > 0) FBDID = itemsD.Select(d => d.DBID).First();
-            else
-            {
-                Random r = new Random();
-                FBDID = (uint)r.Next(1, 65535);
-            }
-        }
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
+			if (itemsD.Count > 0) FBDID = itemsD.Select(d => d.DBID).First();
+			else
+			{
+				Random r = new Random();
+				FBDID = (uint)r.Next(1, 65535);
+			}
+		}
 		public void GetReward(int id, bool increase)
 		{
 			dict? item = findOneRecord(id);
@@ -57,41 +57,41 @@ namespace IndDictionary
 			database.Dispose();
 		}
 
-        public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
-        {
-            string request = "SELECT * FROM Dict WHERE isDeleted=false ";
-            if (!allrec) request += "AND usersel=true ";
-
-            switch (wts)
-            {
-                case WhatToShow.words:
-                    request += "AND phrase=false";
-                    break;
-                case WhatToShow.phrases:
-                    request += "AND phrase=true";
-                    break;
-            }
-            return  database.Query<dict>(request);
-
-        }
-
-        public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
+		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
 		{
-            string request = "SELECT * FROM Dict WHERE isDeleted=false ";
-            if (!allrec) request += "AND usersel=true ";
+			string request = "SELECT * FROM Dict WHERE isDeleted=false ";
+			if (!allrec) request += "AND usersel=true ";
 
-            switch (wts)
-            {
-                case WhatToShow.words:
-                    request += "AND phrase=false";
-                    break;
-                case WhatToShow.phrases:
-                    request += "AND phrase=true";
-                    break;
-            }
-            return await Task.Run(() => database.Query<dict>(request));
-            
-        }
+			switch (wts)
+			{
+				case WhatToShow.words:
+					request += "AND phrase=false";
+					break;
+				case WhatToShow.phrases:
+					request += "AND phrase=true";
+					break;
+			}
+			return database.Query<dict>(request);
+
+		}
+
+		public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
+		{
+			string request = "SELECT * FROM Dict WHERE isDeleted=false ";
+			if (!allrec) request += "AND usersel=true ";
+
+			switch (wts)
+			{
+				case WhatToShow.words:
+					request += "AND phrase=false";
+					break;
+				case WhatToShow.phrases:
+					request += "AND phrase=true";
+					break;
+			}
+			return await Task.Run(() => database.Query<dict>(request));
+
+		}
 
 		public IEnumerable<topic> showTableTopic()
 		{
@@ -99,25 +99,25 @@ namespace IndDictionary
 		}
 		private int insert_update(dict item)
 		{
-            item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
-            if (item.id != 0)
-            {
-                database.Update(item);
-                // обновляем кэш
-                itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-                return item.id;
-            }
-            else
-            {
-                item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
-                item.DBID = FBDID;
-                item.IsDeleted = false;
-                int id = database.Insert(item);
-                // обновляем кэш
-                itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-                return id;
-            }
-        }
+			item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
+			if (item.id != 0)
+			{
+				database.Update(item);
+				// обновляем кэш
+				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+				return item.id;
+			}
+			else
+			{
+				item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+				item.DBID = FBDID;
+				item.IsDeleted = false;
+				int id = database.Insert(item);
+				// обновляем кэш
+				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+				return id;
+			}
+		}
 		public int saveRecD(dict item)
 		{
 			if (item == null) return -1;
@@ -126,17 +126,17 @@ namespace IndDictionary
 		public int saveRecD(dict item, string topic)
 		{
 			if (item == null) return -1;
-			
+
 			int TopicID = database.Table<topic>().Where(t => t.Name == topic).Select(t => t.id).FirstOrDefault();
 			item.Topic = TopicID;
 			return insert_update(item!);
-			
+
 		}
 		public int saveRecT(topic item)
 		{
 			int result;
-            item.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
-            if (item.id != 0)
+			item.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
+			if (item.id != 0)
 			{
 				database.Update(item);
 				result = item.id;
@@ -146,22 +146,21 @@ namespace IndDictionary
 				item.DBID = FBDID;
 				item.IsDeleted = false;
 				result = database.Insert(item);
-			} 
-            itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
-            return result;
-
-
-        }
+			}
+			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
+			return result;
+		}
 		public void deleteRecD(int id)
 		{
 			//int res = database.Delete<dict>(id);
 			dict? temp = findOneRecord(id);
+			if (temp == null) return;
 			temp.IsDeleted = true;
 			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
-            // обновляем кэш
-            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-        }
+			// обновляем кэш
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+		}
 		public void deleteRecT(string Name)
 		{
 			//int res = database.Delete<topic>(id);
@@ -169,9 +168,9 @@ namespace IndDictionary
 			temp.IsDeleted = true;
 			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
-            // обновляем кэш
-            itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
-        }
+			// обновляем кэш
+			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
+		}
 		public async Task<ObservableCollection<dict>> findRecordsAsync(string needle, Func<dict, string> _field)
 		{
 			var items = await Task.Run(() =>
@@ -204,12 +203,12 @@ namespace IndDictionary
 						}
 						catch
 						{
-                            result = "none";
-                        }
+							result = "none";
+						}
 						break;
 					}
 			}
-			
+
 			return result;
 
 		}
@@ -219,29 +218,29 @@ namespace IndDictionary
 			string request = $"update dict set topic = (select distinct id from topic where name='{Topic}') where usersel=true and isDeleted=false";
 			database.Query<dict>(request);
 		}
-        
+
 		public IEnumerable<dict> getSelected()
 		{
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
-			if (count<6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
+			if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
 			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
-		public IEnumerable<T> showTopicsDates<T>(bool showAll) where T:new()
+		public IEnumerable<T> showTopicsDates<T>(bool showAll) where T : new()
 		{
 			string request;
 			if (typeof(T).Equals(typeof(dict)))
 			{
 				request = "select distinct DateRec from Dict where isDeleted=false";
-				if (showAll==false) request += " and Usersel=true ";
+				if (showAll == false) request += " and Usersel=true ";
 				return (IEnumerable<T>)database.Query<dict>(request).OrderBy(t => DateTime.Parse(t.DateRec));
-            }
+			}
 			else
 			{
 				request = "SELECT DISTINCT Name FROM Topic left JOIN Dict ON Topic.ID=Dict.Topic where topic.isDeleted=false";
 				if (showAll == false) request += " and Usersel=true";
-                return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
-            }
+				return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
+			}
 		}
 		public bool AnySelection(WhatToShow wts)
 		{
@@ -251,69 +250,74 @@ namespace IndDictionary
 		{
 			database.Execute("Update Dict set Usersel=false");
 			database.Commit();
-            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-        }
-        public void ResetRating()
-        {
-            database.Execute("Update Dict set Score=0");
-            database.Commit();
-        }
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+		}
+		public void ResetRating()
+		{
+			database.Execute("Update Dict set Score=0");
+			database.Commit();
+		}
 
-        //------------------selects records from dict which are selected by user on form 
-        public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
+		//------------------selects records from dict which are selected by user on form 
+		public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
 		{
 			IEnumerable<string> l = from sl in datesList
 									where sl.Spoted == true
 									select sl.DaOrTo;
 			string collect = string.Join("','", l);
-			collect = "'" + collect +"'";
+			collect = "'" + collect + "'";
 			string requestString = wtsel == WhatToSelect.dates ?
 				"Update Dict set Usersel=true where isDeleted=false and daterec in (" + collect + ")" :
 				"UPDATE Dict SET Usersel=true WHERE isDeleted=false and Topic in (SELECT id FROM Topic WHERE Name in (" + collect + "))";
 			ResetSelection();
 			database.Execute(requestString);
 			database.Commit();
-            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-        }
-		public string GetPullDict()
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+		}
+
+		public IEnumerable<DictVM> GetListDict()
 		{
 			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
 			string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
 				$"from dict d join topic t on d.Topic=t.Id " +
 				$"where d.Modification_time>?";
 
-			IEnumerable<DictVM> pool = database.Query<DictVM>(query, trueDate);
-			return JsonSerializer.Serialize(pool);
+			return database.Query<DictVM>(query, trueDate);
 		}
-		public string GetPullTopic()
-        {
-            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
-            IEnumerable<topic> pool = database.Query<topic>(query, trueDate);
-            return JsonSerializer.Serialize(pool);
-        }
-        public IEnumerable<DictVM> GetListDict()
-        {
-            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-            string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
-                $"from dict d join topic t on d.Topic=t.Id " +
-                $"where d.Modification_time>?";
 
-            return database.Query<DictVM>(query, trueDate);
-        }
-        
-        public IEnumerable<topic> GetListTopic()
-        {
-            string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
-            string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
-            return database.Query<topic>(query, trueDate);
+		public IEnumerable<topic> GetListTopic()
+		{
+			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+			string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
+			return database.Query<topic>(query, trueDate);
 
-        }
+		}
 		public void WriteTopicFromServer(List<topic> topic)
 		{
-			//itemsT.AddRange(topic);
-			database.InsertAll(topic);
+			foreach (topic t in topic)
+			{
+				try
+				{
+					saveRecT(t);
+				}
+				finally { }
+				;
+			}
+			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
 		}
+		public void WriteDictFromServer(List<dict> dict)
+		{
+			foreach (dict d in dict)
+			{
+				try
+				{
+					saveRecD(d);
+				}
+				finally { }
+				;
+			}
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 
-    }
+		}
+	}
 }

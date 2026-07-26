@@ -34,19 +34,7 @@ namespace IndDictionary
 		SearchBar searchBar;
         CancellationTokenSource _cts;
         ObservableCollection<dict> items;
-		async Task LoadDataAsync(bool _side)
-		{
-			var data = await Task.Run(() =>
-			{
-                var raw = App.Database.showTableDict(showall, wts);
-                return _side ? raw.OrderBy(t => t.Translation).ToList()
-								: raw.OrderBy(t => t.Word).ToList();
-			}
-			);
-			items = new ObservableCollection<dict>(data);
-			ListTable.ItemsSource = items;
-        }
-		
+		WordsViewModel wvm ;
 		protected void OnShowTranslation(object? Sender, EventArgs e)
 		{
 			showSecondField = !showSecondField;
@@ -175,17 +163,7 @@ namespace IndDictionary
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
 		}
-        private async Task<ObservableCollection<dict>> Search(string needle)
-		{
-            if (string.IsNullOrEmpty(needle))
-			{
-				var result=await App.Database.showTableDictAsync(showall, wts);
-				return new ObservableCollection<dict>(result); 
-			} 
-            return side
-                ? await App.Database.findRecordsAsync(needle, f => f.Translation)
-                : await App.Database.findRecordsAsync(needle, f => f.Word);
-        }
+        
 		protected async void Searching(Object sender, TextChangedEventArgs e)
         {
             _cts?.Cancel();
@@ -194,8 +172,9 @@ namespace IndDictionary
             try
             {
                 await Task.Delay(300, token); // debounce
-                var text = e.NewTextValue;
-                var result = await Search(e.NewTextValue);
+                //var text = e.NewTextValue;
+				await wvm.Search(e.NewTextValue);
+                var result = wvm.WordsList;
 
                 var sorted = side
                     ? result.OrderBy(f => f.Translation).ToList()
@@ -213,9 +192,13 @@ namespace IndDictionary
         protected async override void OnAppearing()
         { 
 			base.OnAppearing();
+			wvm = new(showall, wts, side);
 			if (searchBar.Text!=null)
-				await Search(searchBar.Text); else
-				await LoadDataAsync(side); //do one time only
+				await wvm.Search(searchBar.Text);
+			else
+				await wvm.LoadAsync();
+			ListTable.ItemsSource = wvm.WordsList;
+			
 			//earlyopen = true;
         }
     }

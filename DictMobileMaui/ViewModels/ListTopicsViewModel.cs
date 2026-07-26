@@ -9,7 +9,7 @@ namespace DictMobile.ViewModels
     {   
         public void GetTopicList()
         {
-            topicsList = new ObservableCollection<string>(
+            TopicsList = new ObservableCollection<string>(
                 App.Database.showTableTopic()
                     .OrderBy(i => i.id)
                     .Select(n => n.Name));

@@ -20,6 +20,7 @@ namespace IndDictionary
 
         static baseManipulation database;
         private static ListTopicsViewModel topicsViewModel;
+		private static WordsViewModel wordsViewModel;
         HttpMethods httpMet;
         public static ListTopicsViewModel TopicsViewModel 
         { 
@@ -29,6 +30,14 @@ namespace IndDictionary
                 return topicsViewModel; 
             } 
         }
+		public static WordsViewModel WordsViewModel
+		{
+			get
+			{
+				wordsViewModel ??= new WordsViewModel(true, WhatToShow.alltogether, true);
+				return wordsViewModel;
+			}
+		}
         public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
@@ -97,18 +106,31 @@ namespace IndDictionary
 
         }
 
-		protected override void OnStart()
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            var window = base.CreateWindow(activationState);
+
+            // Вызывается, когда приложение полностью скрылось с экрана (свернуто или закрывается)
+            window.Destroying += (s, e) =>
+            {
+				OnSleep();
+            };
+
+            return window;
+        }
+
+        protected override void OnStart()
 		{
-            database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            //database.LastUpdate = DateTime.Parse("2026-07-23 15:10:00");
+            //database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
             httpMet = new HttpMethods();
 			Task.Run(async () => 
 			{
 				try
 				{
-					List<topic>? t = await httpMet.GetTopicAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+					List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
 					if (t!=null)
-					database.WriteTopicFromServer(t);
+						database.WriteTopicFromServer(t);
 				}
 				catch (Exception ex)
 				{
@@ -118,13 +140,26 @@ namespace IndDictionary
 				database.LastUpdate = DateTime.Now;
 				
 			});
+			Task.Run(async () =>
+			{
+				try
+				{
+					List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+					if (d != null)
+						database.WriteDictFromServer(d);
+				}
+				catch (Exception ex)
+				{
+					Debug.WriteLine($"Error {ex}");
+				}
+			});
             
         }
 
 		protected override void OnSleep()
 		{
 			
-			//database.LastUpdate = DateTime.Parse("2026-06-20 17:55:00");
+			database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
 
 			Task.Run(async () =>
 			{
@@ -148,12 +183,9 @@ namespace IndDictionary
                     Debug.WriteLine(ex);
                 }
                 ;
-            });
-
-
-            //httpMet.PostDictAsync(database.GetListDict()); 
-			database.LastUpdate = DateTime.Now;
-			Preferences.Set("LastUpdateTime", DateTime.Now);
+            }); 
+			//database.LastUpdate = DateTime.Now;
+			//Preferences.Set("LastUpdateTime", DateTime.Now);
         }
 
 		protected override void OnResume()
