@@ -96,7 +96,40 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
-            
+
+            //database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+            httpMet = new HttpMethods();
+            var task1 = Task.Run(async () =>
+            {
+                try
+                {
+                    List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                    if (t != null)
+                        database.WriteTopicFromServer(t);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error {ex}");
+                }
+
+                database.LastUpdate = DateTime.Now;
+
+            });
+            var task2 = Task.Run(async () =>
+            {
+                try
+                {
+                    List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                    if (d != null)
+                        database.WriteDictFromServer(d);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error {ex}");
+                }
+            });
+            Task.WaitAll(task1, task2);
 
 
             //MainPage = new NavigationPage(new WordPage(false));
@@ -121,38 +154,7 @@ namespace IndDictionary
 
         protected override void OnStart()
 		{
-            //database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
-            httpMet = new HttpMethods();
-			Task.Run(async () => 
-			{
-				try
-				{
-					List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
-					if (t!=null)
-						database.WriteTopicFromServer(t);
-				}
-				catch (Exception ex)
-				{
-                    Debug.WriteLine($"Error {ex}");
-                }
-				
-				database.LastUpdate = DateTime.Now;
-				
-			});
-			Task.Run(async () =>
-			{
-				try
-				{
-					List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
-					if (d != null)
-						database.WriteDictFromServer(d);
-				}
-				catch (Exception ex)
-				{
-					Debug.WriteLine($"Error {ex}");
-				}
-			});
+            
             
         }
 
