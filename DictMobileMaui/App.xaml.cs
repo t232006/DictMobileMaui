@@ -97,8 +97,8 @@ namespace IndDictionary
 			InitializeComponent();
 			SetDatabasename();
 
-            //database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+            Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            //Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
             httpMet = new HttpMethods();
             var task1 = Task.Run(async () =>
             {
@@ -161,7 +161,7 @@ namespace IndDictionary
 		protected override void OnSleep()
 		{
 			
-			database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+			//database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
 
 			Task.Run(async () =>
 			{
@@ -186,8 +186,8 @@ namespace IndDictionary
                 }
                 ;
             }); 
-			//database.LastUpdate = DateTime.Now;
-			//Preferences.Set("LastUpdateTime", DateTime.Now);
+			database.LastUpdate = DateTime.Now;
+			Preferences.Set("LastUpdateTime", DateTime.Now);
         }
 
 		protected override void OnResume()
