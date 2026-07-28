@@ -112,9 +112,6 @@ namespace IndDictionary
                 {
                     Debug.WriteLine($"Error {ex}");
                 }
-
-                database.LastUpdate = DateTime.Now;
-
             });
             var task2 = Task.Run(async () =>
             {
@@ -130,6 +127,7 @@ namespace IndDictionary
                 }
             });
             Task.WaitAll(task1, task2);
+            database.LastUpdate = DateTime.Now;
 
 
             //MainPage = new NavigationPage(new WordPage(false));
@@ -163,7 +161,7 @@ namespace IndDictionary
 			
 			//database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
 
-			Task.Run(async () =>
+			var task1 = Task.Run(async () =>
 			{
 				try
 				{
@@ -174,7 +172,7 @@ namespace IndDictionary
 					Debug.WriteLine(ex);
 				};
 			});
-            Task.Run(async () =>
+            var task2 = Task.Run(async () =>
             {
                 try
                 {
@@ -185,8 +183,9 @@ namespace IndDictionary
                     Debug.WriteLine(ex);
                 }
                 ;
-            }); 
-			database.LastUpdate = DateTime.Now;
+            });
+            Task.WaitAll(task1, task2);
+            database.LastUpdate = DateTime.Now;
 			Preferences.Set("LastUpdateTime", DateTime.Now);
         }
 

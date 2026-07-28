@@ -174,7 +174,7 @@ namespace IndDictionary
 		public async Task<ObservableCollection<dict>> findRecordsAsync(string needle, Func<dict, string> _field)
 		{
 			var items = await Task.Run(() =>
-				itemsD.Where(f => _field(f).Contains(needle)).Select(s => s).ToList()
+				itemsD.Where(f => _field(f).Contains(needle,StringComparison.CurrentCultureIgnoreCase)).Select(s => s).ToList()
 			);
 			return new ObservableCollection<dict>(items);
 		}
