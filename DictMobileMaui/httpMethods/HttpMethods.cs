@@ -11,14 +11,18 @@ namespace DictMobile.httpMethods
         const string POST_TOPIC_URL = "https://syncserver-739819639259.europe-west1.run.app/api/sync/push/topic";
         const string GET_TOPIC_URL = "https://syncserver-739819639259.europe-west1.run.app/api/sync/pull/topic";
         const string GET_DICT_URL = "https://syncserver-739819639259.europe-west1.run.app/api/sync/pull/dict";
-        
+
+        private class SyncResponse
+        {
+            public int applied { get; set; }
+        }
         private async Task<string> PostListAsync<T>(T DictOrTopic, string URL)
         {
             using (var client = new HttpClient())
             {
                 var response = await client.PostAsJsonAsync(URL, DictOrTopic); 
-                var result = await response.Content.ReadFromJsonAsync<dynamic>();
-                if (response.IsSuccessStatusCode)    
+                var result = await response.Content.ReadFromJsonAsync<SyncResponse>();
+                if (response.IsSuccessStatusCode)
                     return $"Success! Applied {result.applied}";
                 else
                     return result.ToString();
@@ -77,7 +81,8 @@ namespace DictMobile.httpMethods
         public async Task<string> PostTopicAsync(IEnumerable<topic> Topic)
         {
             List<topic> LTopic = [.. Topic]; //from IEnumerable to List
-            return await PostListAsync<List<topic>>(LTopic, POST_TOPIC_URL);
+            var result = await PostListAsync<List<topic>>(LTopic, POST_TOPIC_URL);
+            return result;
         }
         public async Task<string> PostDictAsync(IEnumerable<DictVM> Dict)
         {

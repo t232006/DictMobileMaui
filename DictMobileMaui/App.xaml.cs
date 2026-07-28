@@ -91,8 +91,45 @@ namespace IndDictionary
 				return database!;
 			}
 		}
+        private async Task<bool> PostAsync()
+        {
+            try
+            {
+                var result = await httpMet.PostTopicAsync(database.GetListTopic());
+                Debug.WriteLine("====>", result);
+                result = await httpMet.PostDictAsync(database.GetListDict());
+                return result.Contains("applied");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("error ====>", ex);
+                return false;
+            }
+        }
+        private async Task<bool> GetAsync()
+        {
+            try
+            {
+                List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                if (t != null)
+                    database.WriteTopicFromServer(t);
+                else return false;
 
-		public App()
+                List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                if (d != null)
+                    database.WriteDictFromServer(d);  
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error {ex}");
+                if (ex.Message.Contains("UNIQUE")) return true; //it is not error
+                return false;
+            }
+            return true;
+        }
+
+        public App()
 		{
 			InitializeComponent();
 			SetDatabasename();
@@ -100,34 +137,13 @@ namespace IndDictionary
             Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
             //Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
             httpMet = new HttpMethods();
-            var task1 = Task.Run(async () =>
+            Task.Run(async () =>
             {
-                try
-                {
-                    List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
-                    if (t != null)
-                        database.WriteTopicFromServer(t);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error {ex}");
-                }
+                await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
+                if (await GetAsync())
+                    database.LastUpdate = DateTime.Now;
             });
-            var task2 = Task.Run(async () =>
-            {
-                try
-                {
-                    List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
-                    if (d != null)
-                        database.WriteDictFromServer(d);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error {ex}");
-                }
-            });
-            Task.WaitAll(task1, task2);
-            database.LastUpdate = DateTime.Now;
+            
 
 
             //MainPage = new NavigationPage(new WordPage(false));
@@ -149,6 +165,7 @@ namespace IndDictionary
 
             return window;
         }
+        
 
         protected override void OnStart()
 		{
@@ -156,37 +173,19 @@ namespace IndDictionary
             
         }
 
+        
 		protected override void OnSleep()
 		{
-			
-			//database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
-
-			var task1 = Task.Run(async () =>
-			{
-				try
-				{
-					Debug.WriteLine(httpMet.PostTopicAsync(database.GetListTopic()));
-				}
-				catch (Exception ex)
-				{
-					Debug.WriteLine(ex);
-				};
-			});
-            var task2 = Task.Run(async () =>
+            Task.Run(async () =>
             {
-                try
+                if (await PostAsync())
                 {
-                    Debug.WriteLine(httpMet.PostDictAsync(database.GetListDict()));
+                    database.LastUpdate = DateTime.Now;
+                    Preferences.Set("LastUpdateTime", DateTime.Now);
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-                ;
             });
-            Task.WaitAll(task1, task2);
-            database.LastUpdate = DateTime.Now;
-			Preferences.Set("LastUpdateTime", DateTime.Now);
+            
+            
         }
 
 		protected override void OnResume()
