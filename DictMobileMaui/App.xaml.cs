@@ -1,5 +1,8 @@
-﻿
+﻿using System.Diagnostics;
 using System.Reflection;
+using DictMobile.httpMethods;
+using DictMobile.models;
+using DictMobile.ViewModels;
 using IndDictionary.addition;
 using Path = System.IO.Path;
 
@@ -9,14 +12,38 @@ namespace IndDictionary
 	public partial class App : Application
 	{
 		public static string databasename;//!!reset after development
-		public const string DEFAULTDATABASENAME = "dictionaryCut.db";	//only for default!
+		public const string DEFAULTDATABASENAME = "dictionary_empty.db";	//only for default!
 		public static string APPFOLDER = FileSystem.AppDataDirectory;
-		static baseManipulation database;
-		public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+		public static readonly string SECRETFILE = DeviceInfo.Platform == DevicePlatform.Android ?
+														"client_secret_mobile.json" :
+														"client_secret.json";
+
+        static baseManipulation database;
+        private static ListTopicsViewModel topicsViewModel;
+		private static WordsViewModel wordsViewModel;
+        HttpMethods httpMet;
+        public static ListTopicsViewModel TopicsViewModel 
+        { 
+            get 
+            { 
+                topicsViewModel ??= new ListTopicsViewModel();
+                return topicsViewModel; 
+            } 
+        }
+		public static WordsViewModel WordsViewModel
+		{
+			get
+			{
+				wordsViewModel ??= new WordsViewModel(true, WhatToShow.alltogether, true);
+				return wordsViewModel;
+			}
+		}
+        public static double screenWidth => DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 		public static double screenHeight => DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density;
 		private static void SetDatabasename()
 		{
-				if (Preferences.ContainsKey("current"))
+			//Preferences.Clear();
+            if (Preferences.ContainsKey("current"))
 					databasename = Preferences.Get("current", "");
 				else
 				{
@@ -24,24 +51,31 @@ namespace IndDictionary
 					Preferences.Set("current", databasename);
 				}
 		}
+
+		public static void CopyFilesFromResource(string filenameFull, string resFile)
+		{
+            if (!File.Exists(filenameFull))
+            {
+				//string filename = Path.GetFileName(filenameFull);
+				using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobile.Resources.Raw.{resFile}"))
+                {
+                    using (FileStream dest = new FileStream(filenameFull, FileMode.OpenOrCreate))
+                    {
+                        s?.CopyTo(dest);
+                        dest.Flush();
+                    }
+                }
+            }
+        }
 		
-		private static void LoadDBFirstTime(string dbPath)
+		public static void LoadDBFirstTime(string dbPath)
 		{
 			if (database != null) database.dispose();
 			database = new baseManipulation(dbPath);
-			//for first open to write information about database
-			//if (Preferences.ContainsKey(databasename))
 			
 			string baseInfo = $"{database.getInfo(1)}.{database.getInfo(2)}";
 			Preferences.Set(databasename, baseInfo);
-			
 
-
-			foreach (dict d in database.showTableDict(true, WhatToShow.alltogether))
-			{
-				d.DateRec = datesCorrection.toCorrectDate(d.DateRec);
-				App.Database.saveRecD(d);
-			}
 		}
 		public static baseManipulation Database
 		{
@@ -51,17 +85,7 @@ namespace IndDictionary
 				{
 					if (database!=null) SetDatabasename();
 					string dbPath = databasename;
-					if (!File.Exists(dbPath))
-					{
-						using (Stream? s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"DictMobileMaui.Resources.Raw.{DEFAULTDATABASENAME}"))
-						{
-							using (FileStream dest = new FileStream(dbPath, FileMode.OpenOrCreate))
-							{
-								s?.CopyTo(dest);
-								dest.Flush();
-							}
-						}
-					}
+					CopyFilesFromResource(dbPath, DEFAULTDATABASENAME);
 					LoadDBFirstTime(dbPath);
 				}
 				return database!;
@@ -72,6 +96,42 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			SetDatabasename();
+
+            Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            //Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+            httpMet = new HttpMethods();
+            var task1 = Task.Run(async () =>
+            {
+                try
+                {
+                    List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                    if (t != null)
+                        database.WriteTopicFromServer(t);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error {ex}");
+                }
+
+                database.LastUpdate = DateTime.Now;
+
+            });
+            var task2 = Task.Run(async () =>
+            {
+                try
+                {
+                    List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                    if (d != null)
+                        database.WriteDictFromServer(d);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error {ex}");
+                }
+            });
+            Task.WaitAll(task1, task2);
+
+
             //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел
             MainPage = new Flyout_Page();
@@ -79,15 +139,56 @@ namespace IndDictionary
 
         }
 
-		protected override void OnStart()
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            var window = base.CreateWindow(activationState);
+
+            // Вызывается, когда приложение полностью скрылось с экрана (свернуто или закрывается)
+            window.Destroying += (s, e) =>
+            {
+				OnSleep();
+            };
+
+            return window;
+        }
+
+        protected override void OnStart()
 		{
-			
-		}
+            
+            
+        }
 
 		protected override void OnSleep()
 		{
-			// Handle when your app sleeps
-		}
+			
+			//database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+
+			Task.Run(async () =>
+			{
+				try
+				{
+					Debug.WriteLine(httpMet.PostTopicAsync(database.GetListTopic()));
+				}
+				catch (Exception ex)
+				{
+					Debug.WriteLine(ex);
+				};
+			});
+            Task.Run(async () =>
+            {
+                try
+                {
+                    Debug.WriteLine(httpMet.PostDictAsync(database.GetListDict()));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                ;
+            }); 
+			database.LastUpdate = DateTime.Now;
+			Preferences.Set("LastUpdateTime", DateTime.Now);
+        }
 
 		protected override void OnResume()
 		{

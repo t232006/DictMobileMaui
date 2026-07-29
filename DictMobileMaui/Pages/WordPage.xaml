@@ -7,10 +7,13 @@
              x:Name="contPage"
              Title="Dictionary">
     <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="showSecond" Clicked="OnShowTranslation" Text="W"/>
         <ToolbarItem Clicked="OnAddPressed"
-                     IconImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.add1.png}"/>
+                     IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.add1.png}"/>
+        
     </ContentPage.ToolbarItems>
-    <Grid x:Name="MainStack">
+    <Grid x:Name="MainStack" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                                Light={StaticResource BackgroundLight}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
             <RowDefinition Height="88*"/>

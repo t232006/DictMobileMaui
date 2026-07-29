@@ -1,4 +1,9 @@
 ﻿
+using DictMobile.models;
+using DictMobile.ViewModels;
+using IndDictionary.addition;
+using System.Collections.ObjectModel;
+
 namespace IndDictionary
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
@@ -23,34 +28,34 @@ namespace IndDictionary
 				//Text = "Confirm",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 0,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.ok.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.ok.png")
 			};
 			CancelItem = new ToolbarItem()
 			{
 				//Text = "Cancel",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 1,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.cancel.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.cancel.png")
 			};
 			DeleteItem = new ToolbarItem()
 			{
 				//Text = "Delete",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 2,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.trash_bin_small.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.trash_bin_small.png")
 			};
 			EditItem = new ToolbarItem()
 			{
 				//Text = "Edit",
 				Order = ToolbarItemOrder.Primary,
 				Priority = 3,
-				IconImageSource = ImageSource.FromResource("DictMobileMaui.Resources.Images.edit1.png")
+				IconImageSource = ImageSource.FromResource("DictMobile.Resources.Images.edit1.png")
 			};
 			
-			ConfirmItem.Clicked += onConfPress;
-			CancelItem.Clicked += onDeclPress;
-			DeleteItem.Clicked += onDelPress;
-			EditItem.Clicked += onEditBut;
+			ConfirmItem.Clicked += onConfPress!;
+			CancelItem.Clicked += onDeclPress!;
+			DeleteItem.Clicked += onDelPress!;
+			EditItem.Clicked += onEditBut!;
 			if (_blank)
 			{
 				ToolbarItems.Add(ConfirmItem);
@@ -73,10 +78,29 @@ namespace IndDictionary
 			}
 		}
 
-		protected void onConfPress(object Sender, EventArgs e)
+		async protected void onConfPress(object Sender, EventArgs e)
 		{
+			if (TopicSpace.SelectedItem != null)
+			{
+				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
+                //TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+				ObservableCollection<dict> found = await App.Database.findRecordsAsync(TempDict.Word, f=>f.Word);
+				foreach (dict d in found)
+				{
+					if (d.Word.IndexOf(TempDict.Word) >= 0) 
+					{
+						bool result=await DisplayAlert($"Phrase '{TempDict.Word}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+						if (!result) return;
+					}	
+					if (d.Translation.IndexOf(TempDict.Translation) >= 0)
+					{
+                        bool result = await DisplayAlert($"Phrase '{TempDict.Translation}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+                        if (!result) return;
+                    }
+				}
+				App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
+			}
 			
-			App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString());
 			Navigation.PopAsync();
 		}
 
@@ -87,14 +111,14 @@ namespace IndDictionary
 
 		protected void onDelPress(object Sender, EventArgs e)
 		{
-			App.Database.deleteRecD((this.BindingContext as dict).Number);
+			App.Database.deleteRecD((this.BindingContext as dict).id);
 			Navigation.PopAsync();
 		}
 
 		protected override void OnAppearing()
 		{
-			TempTop = App.Database.showTableTopic();
-			TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
+			TempTop = App.Database.showTableTopic();	
+			//TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
 			
 			if (!blank)
 			{
@@ -102,17 +126,14 @@ namespace IndDictionary
 				var temp = from p in TempTop
 						   where p.id == TempDict.Topic
 						   select p.Name;
-				TopicSpace.SelectedItem = temp.ToList()[0];
-				TempDict.Relevation++;
+				
+					TempDict.Relevation++;
 				App.Database.saveRecD(TempDict);	
 			}
 			else
 			{
 				TempDict = new dict();
 				this.BindingContext = TempDict;
-				TopicSpace.SelectedItem = TempTop.ToList()[0].Name;
-				//EditBox.IsToggled = true;
-				//EditBut.Active = false;
 				
 			}
 			//ConfirmB.IsVisible = blank;			

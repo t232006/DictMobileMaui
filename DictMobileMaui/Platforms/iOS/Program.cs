@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace DictMobileMaui
+namespace DictMobile
 {
     public class Program
     {
