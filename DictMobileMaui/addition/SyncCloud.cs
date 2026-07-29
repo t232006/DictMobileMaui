@@ -1,18 +1,13 @@
-﻿using GoogleDriveManipulation;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//using Android.App;
+using GoogleDriveManipulation;
 namespace IndDictionary.addition
 {
 	class SyncCloud
 	{
-		public static async Task SaveToCloud(string secret, string WhereFrom, string filename)
+		public static async Task<string> SaveToCloud(string secret, string WhereFrom, string filename)
 		{
-			var gu = GoogleUploader.Upload(secret, WhereFrom, filename);
-			await gu;
+			var gu = await GoogleUploader.Upload(secret, WhereFrom, filename);
+			return gu.output;
 		}
 		public static async Task LoadFromCloud (string secret, string id, string WhereTo)
 		{

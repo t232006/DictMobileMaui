@@ -1,62 +1,130 @@
-﻿//using DictMobileMaui.Auxilary;
+﻿//using DictMobile.Auxilary;
+using DictMobile.Auxilary;
+using DictMobile.models;
+using DictMobile.ViewModels;
 using Microsoft.Maui.Layouts;
+using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace IndDictionary
 {
+	//public enum bool {word, translation, none };
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class WordPage : ContentPage
 	{
 		dict focusedItem;
-		public bool transl { get; }	
-		bool showall = true;
+		bool side;
+		FullInform fullinform;
+		//ListTopicsViewModel lt;
+        //bool earlyopen = false; //shows whether page has already opened
+        bool showall = true;
+		bool _showSecondField = false;
+		public bool showSecondField { get => _showSecondField;
+            set
+            {
+                if (_showSecondField != value)
+                {
+                    _showSecondField = value;
+                    OnPropertyChanged(nameof(showSecondField));
+                }
+            }
+        }
 		WhatToShow wts = WhatToShow.alltogether;
 		ListView ListTable;
 		SearchBar searchBar;
-        IEnumerable<dict> Data(bool _transl)
+        CancellationTokenSource _cts;
+        ObservableCollection<dict> items;
+		WordsViewModel wvm ;
+		protected void OnShowTranslation(object? Sender, EventArgs e)
 		{
-			return _transl ? App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
-                            .OrderBy(t => t.Translation).ToList()
-                            : App.Database
-                            .showTableDict(true, WhatToShow.alltogether)
-                            .OrderBy(t => t.Word).ToList();
-        }
-		public WordPage(bool _transl)
+			showSecondField = !showSecondField;
+			showSecond.Text=showSecondField?"W-T":"W";
+			
+		}
+		public WordPage(bool _side)
 		{
 			InitializeComponent();
-			transl = _transl;
-
-			ListTable = new ListView
+			side = _side;
+            fullinform = new FullInform(false);
+            //lt = new ListTopicsViewModel();
+            ListTable = new ListView
 			{
-				ItemsSource = Data(_transl),
+				//ItemsSource = Data(_side),
 				ItemTemplate = new DataTemplate(() =>
 				{
 					Label MainField = new Label
 					{
 						LineBreakMode = LineBreakMode.TailTruncation,
-						FontSize = 14
+						FontSize = 16,
+						Padding = 10
+					};
+					Binding bindVisible = new Binding(path: nameof(showSecondField), source: this);
+					//Binding bindLabelSource = new Binding(path: ".");
+					//MultiBinding mult = new mu
+					Label SecondField = new Label
+					{
+						FontSize = 16,
+						Padding = 10,
 					};
 
-					if (transl)
-						MainField.SetBinding(Label.TextProperty, "Translation");
+					if (_side)
+					{
+                        MainField.SetBinding(Label.TextProperty, "Translation");
+						SecondField.SetBinding(Label.TextProperty, "Word");
+                    }
+
 					else
-						MainField.SetBinding(Label.TextProperty, "Word");
-					AbsoluteLayout.SetLayoutBounds(MainField, new Rect(10, 0, .68, AbsoluteLayout.AutoSize));
-					AbsoluteLayout.SetLayoutFlags(MainField, AbsoluteLayoutFlags.WidthProportional);
+					{
+                        MainField.SetBinding(Label.TextProperty, "Word");
+                        SecondField.SetBinding(Label.TextProperty, "Translation");
+                    }
+                    SecondField.SetBinding(Label.IsVisibleProperty, bindVisible);
+					
 					ExtSwitch extswitch = new ExtSwitch();
 					extswitch.Toggled += OnToggled!;
-					extswitch.SetBinding(ExtSwitch.IDProperty, "Number");
+					extswitch.SetBinding(ExtSwitch.IDProperty, "id");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
-					AbsoluteLayout.SetLayoutBounds(extswitch, new Rect(.9, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
-					AbsoluteLayout.SetLayoutFlags(extswitch, AbsoluteLayoutFlags.PositionProportional);
-					return new ViewCell
-					{
-						View = new AbsoluteLayout
+					
+					SectorComponent diagram = new SectorComponent();
+                    diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
+
+                    
+                     MainField.SizeChanged += (s, e) =>
+                     {
+                         if (MainField.Height > 0)
+                         {
+                             // немного отступа, подстраивайте коэффициент под ваш дизайн
+                             double target = MainField.Height * 0.9;
+                             diagram.WidthRequest = target;
+                             diagram.HeightRequest = target;
+
+                             // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
+                             AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
+
+                             // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
+                             diagram.Invalidate();
+                         }
+                     };
+                    var cellLayout = new Grid
+                    {
+                        ColumnDefinitions =
 						{
-							Children = { extswitch, MainField }
+							new ColumnDefinition { Width = GridLength.Star },   // Main
+							new ColumnDefinition { Width = GridLength.Auto },   // Second
+							new ColumnDefinition { Width = GridLength.Auto },   // Switch
+							new ColumnDefinition { Width = GridLength.Auto },    // Diagram
+
+                            new ColumnDefinition { Width = 50 }    // Diagram
 						}
-					};
-				}
+                    };
+                    cellLayout.Add(MainField, 0, 0);
+                    cellLayout.Add(SecondField, 1, 0);
+                    cellLayout.Add(extswitch, 2, 0);
+                    cellLayout.Add(diagram, 3, 0);
+                   
+                    
+                    return new ViewCell { View = cellLayout };
+                }
 				)
 			};
             NavigationButtons navButtons = new NavigationButtons(this);
@@ -76,8 +144,9 @@ namespace IndDictionary
 		protected async void OnPress(object? sender, ItemTappedEventArgs e)
 		{
 			focusedItem = (dict)e.Item;
-			FullInform fullinform = new FullInform(false);
-			fullinform.BindingContext = focusedItem;
+			//fullinform = new FullInform(false);
+			//lt.GetTopicList();
+            fullinform.BindingContext = focusedItem;
 			await Navigation.PushAsync(fullinform);
 		}
 		protected void OnToggled(object sender, ToggledEventArgs e)
@@ -94,27 +163,43 @@ namespace IndDictionary
 			FullInform fullinform = new FullInform(true);
 			await Navigation.PushAsync(fullinform);
 		}
-        protected void Searching(Object sender, TextChangedEventArgs e)
+        
+		protected async void Searching(Object sender, TextChangedEventArgs e)
         {
-			IEnumerable<dict> founded;
-			//IEnumerable<dict> saved = (IEnumerable<dict>)ListTable.ItemsSource;
-			if (transl)
-				founded = App.Database
-					.findRecords(searchBar.Text, f => f.Translation)
-					.OrderBy(f => f.Translation).ToList();
-			else
-				founded = App.Database
-					.findRecords(searchBar.Text, f => f.Word)
-					.OrderBy(f => f.Word).ToList();
-			ListTable.ItemsSource = founded;
-			if (e.NewTextValue == "")
-				ListTable.ItemsSource = Data(transl);
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+            try
+            {
+                await Task.Delay(300, token); // debounce
+                //var text = e.NewTextValue;
+				await wvm.Search(e.NewTextValue);
+                var result = wvm.WordsList;
+
+                var sorted = side
+                    ? result.OrderBy(f => f.Translation).ToList()
+                    : result.OrderBy(f => f.Word).ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    items = new ObservableCollection<dict>(sorted);
+                    ListTable.ItemsSource = items;
+                });
+            }
+            catch (TaskCanceledException) { }
         }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-			ListTable.ItemsSource = Data(transl);
+        protected async override void OnAppearing()
+        { 
+			base.OnAppearing();
+			wvm = new(showall, wts, side);
+			if (searchBar.Text!=null)
+				await wvm.Search(searchBar.Text);
+			else
+				await wvm.LoadAsync();
+			ListTable.ItemsSource = wvm.WordsList;
+			
+			//earlyopen = true;
         }
     }
 }

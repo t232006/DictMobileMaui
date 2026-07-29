@@ -6,37 +6,83 @@
              x:Class="IndDictionary.ToolsPage"
              Title="Tools">
     
-    <StackLayout BackgroundColor="#454955" >
+    <StackLayout>
         <StackLayout >
-            <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
-                <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
-            </StackLayout>
-            <Label Text="Show" Style="{StaticResource LabelStyle}"/>
-            <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
-            <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords"/>
-            <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
-            <Label Text="Select" Style="{StaticResource LabelStyle}"/>
-            <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
-            <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
-            <Button Text="Reset" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
-            <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
-                <Button 
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="AsaptiveStates">
+                    <VisualState Name="SmallHeight">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowHeight="0"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="SelectSpace"
+                                    Property="Orientation"
+                                    Value="Horizontal"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="NormalHeight">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowHeight="600"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="SelectSpace"
+                                    Property="Orientation"
+                                    Value="Vertical"/>    
+                        </VisualState.Setters>
+                    </VisualState>
+
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <StackLayout x:Name="SelectSpace">
+                <StackLayout>
+                    <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
+                        <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
+                        <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical" x:Name="RadioGroup">
+                        <Label Text="Show"/>
+                        <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
+                        <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords"/>
+                        <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
+                    </StackLayout>
+                </StackLayout>
+                <StackLayout Orientation="Vertical">
+                        <Label Text="Select" Style="{StaticResource LabelStyle}"/>
+                        <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
+                        <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
+                        <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+                        <Button Text="Reset rating" BackgroundColor="#ffa500" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
+                        
+                </StackLayout>
+                <Grid>
+
+                    <Picker x:Name="CopyToTopic" BackgroundColor="SlateBlue"  Title="Selected to topic" SelectedIndexChanged="onToCopySelected"
+                                            Style="{StaticResource ButtonStyle}"/>
+                    <Button x:Name="GoButton" Text="Go" BackgroundColor="SlateBlue" IsVisible="False" Style="{StaticResource GoButton}"
+                    HorizontalOptions="Start" VerticalOptions="Start" Pressed="onGoPress"/>
+                </Grid>
+                <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
+                    <Button 
                         Style="{StaticResource SmallButton}"
-                        ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_from.png}"
+                        ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_from.png}"
                         ContentLayout="Top, 10"
                         Pressed="OnSynchr"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.folder_small.png}"                        
+                    <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.folder_small.png}"                        
                          Style="{StaticResource SmallButton}" 
                          Pressed="OpenLibrary"
                          ContentLayout="Top, 10"/>
-                <Button  ImageSource="{res:ImageResourceExt DictMobileMaui.Resources.Images.cloud_to.png}"
+                    <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
-                         />
+                         Pressed="SaveToCloud"/>
+                </StackLayout>
+
             </StackLayout>
+
+            
             <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>
             <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
+            <Button Text="+New dictionary" WidthRequest="140" BackgroundColor="Thistle" Margin="10,0,0,0" HorizontalOptions="Start" Pressed="onNewDict"/>
         </StackLayout>
         <StackLayout x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
     </StackLayout>
