@@ -6,6 +6,7 @@ using System.Collections;
 using System.Text.Json;
 using DictMobile.models;
 using DictMobile.httpMethods;
+using System.Diagnostics;
 //using Android.OS;
 
 namespace IndDictionary
@@ -299,7 +300,8 @@ namespace IndDictionary
 				try
 				{
 					saveRecT(t);
-				}
+                    Debug.WriteLine("Topic has written");
+                }
 				finally { }
 				;
 			}
@@ -311,9 +313,27 @@ namespace IndDictionary
 			{
 				try
 				{
-					saveRecD(d);
+					if (d.IsDeleted == false)  //new record
+					{
+						saveRecD(d);
+						Debug.WriteLine("Record has written");
+					}
+					else
+					{
+						dict dd = itemsD.First(r => r.Word == d.Word && r.Translation == d.Translation);
+						dd.IsDeleted = true;
+						database.Update(dd);
+                        Debug.WriteLine("Record has deleted");
+                    }
+					
 				}
-				finally { }
+				catch (SQLiteException ex) when (ex.Message.Contains("UNIQUE"))
+				{
+                    dict dd = itemsD.First(r => r.Word == d.Word && r.Translation == d.Translation); //when record is recovered
+					dd.IsDeleted = d.IsDeleted;
+					database.Update(dd);
+                    Debug.WriteLine("UNIQUE on WriteDictServer"); 
+				}
 				;
 			}
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();

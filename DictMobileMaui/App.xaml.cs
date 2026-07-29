@@ -96,8 +96,9 @@ namespace IndDictionary
             try
             {
                 var result = await httpMet.PostTopicAsync(database.GetListTopic());
-                Debug.WriteLine("====>", result);
+                Debug.WriteLine($"====> Topics {result} Time: {database.LastUpdate}");
                 result = await httpMet.PostDictAsync(database.GetListDict());
+                Debug.WriteLine($"====> Records {result} Time: {database.LastUpdate}");
                 return result.Contains("applied");
             }
             catch (Exception ex)
@@ -110,39 +111,53 @@ namespace IndDictionary
         {
             try
             {
+                topic num = database.showTableTopic().First();
                 List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
                 if (t != null)
+                {
                     database.WriteTopicFromServer(t);
+                    Debug.WriteLine($"---->Received topics {t.Count} Time: {database.LastUpdate}" ); 
+                }
+                    
                 else return false;
 
-                List<dict>? d = await httpMet.GetDictAsync(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                
+                List<dict>? d = await httpMet.GetDictAsync(num.DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
                 if (d != null)
-                    database.WriteDictFromServer(d);  
+                {
+                    database.WriteDictFromServer(d);
+                    Debug.WriteLine($"------> Received words {t.Count} Time: {database.LastUpdate}" );
+                }
+                      
                 else return false;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error {ex}");
-                if (ex.Message.Contains("UNIQUE")) return true; //it is not error
+                Debug.WriteLine($"Error------> {ex}");
+                if (ex.Message.Contains("UNIQUE")) 
+                {
+                    Debug.WriteLine("......> UNIQUE Exception");
+                    return true; //it is not error
+                }
                 return false;
             }
             return true;
         }
-
+        private async Task StartResume()
+        {
+            await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
+            if (await GetAsync())
+                database.LastUpdate = DateTime.Now;
+        }
         public App()
 		{
 			InitializeComponent();
 			SetDatabasename();
 
             Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            //Database.LastUpdate = DateTime.Parse("2026-07-25 19:09:00");
+            //Database.LastUpdate = DateTime.Parse("2026-07-28 23:59:00");
             httpMet = new HttpMethods();
-            Task.Run(async () =>
-            {
-                await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
-                if (await GetAsync())
-                    database.LastUpdate = DateTime.Now;
-            });
+            Task.Run(async() => await StartResume());
             
 
 
@@ -152,7 +167,6 @@ namespace IndDictionary
 #pragma warning restore CS0618 // Тип или член устарел
 
         }
-
         protected override Window CreateWindow(IActivationState? activationState)
         {
             var window = base.CreateWindow(activationState);
@@ -162,35 +176,29 @@ namespace IndDictionary
             {
 				OnSleep();
             };
-
             return window;
         }
-        
+
 
         protected override void OnStart()
 		{
-            
-            
+           
         }
-
-        
 		protected override void OnSleep()
 		{
             Task.Run(async () =>
             {
+                await GetAsync();
                 if (await PostAsync())
                 {
                     database.LastUpdate = DateTime.Now;
                     Preferences.Set("LastUpdateTime", DateTime.Now);
                 }
-            });
-            
-            
+            }); 
         }
-
 		protected override void OnResume()
 		{
-			// Handle when your app resumes
+            Task.Run(async () => await StartResume());
 		}
 	}
 }
