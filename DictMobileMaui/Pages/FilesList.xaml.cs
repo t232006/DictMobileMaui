@@ -86,8 +86,9 @@ namespace IndDictionary.Pages
 			FList.SelectedItem = Items.FindIndex(x => x.filename == filename);
 			App.Database.toReboot = true;
 			PageRefresh();
+			App.TopicsViewModel.GetTopicList();
 			App.Database.ResetSelection();
-			
+			Navigation.PopAsync();
 			//App.MainPage = new NavigationPage(new MainPage());
 		}
 	}
