@@ -109,7 +109,8 @@ namespace IndDictionary
 							Preferences.Set("current", st);
 							App.databasename = result.FileName;
 							App.Database.toReboot = true;
-							App.Database.ResetSelection();	
+							App.Database.ResetSelection();
+							App.TopicsViewModel.GetTopicList();
 						}
 					}
 					catch { }
@@ -158,6 +159,7 @@ namespace IndDictionary
                 } 
             App.CopyFilesFromResource(destination, App.DEFAULTDATABASENAME);
             App.LoadDBFirstTime(destination);
+			App.TopicsViewModel.GetTopicList();
         }
 		protected async void OnSynchr(object sender, EventArgs e)
 		{
