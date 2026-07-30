@@ -4,7 +4,7 @@ using SQLite;
 namespace DictMobile.models
 {
 	[Table ("Dict")]
-	public class dict
+	public class dict: ICloneable
     {
         private string dateRec;
         [PrimaryKey, AutoIncrement, Column("Number")]
@@ -25,6 +25,11 @@ namespace DictMobile.models
 		public string Modification_Time { get; set; }
 		public uint? DBID { get; set; }
 		bool Spot { get; set; }
+
+        public object Clone()
+        {
+			return MemberwiseClone();
+        }
     }
 	[Table ("topic")]
 	public class topic

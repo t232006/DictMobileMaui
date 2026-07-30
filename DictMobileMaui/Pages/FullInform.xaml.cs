@@ -9,7 +9,7 @@ namespace IndDictionary
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class FullInform : ContentPage
 	{
-		dict TempDict;
+		dict TempDict, OldDict;
 		bool blank;
 		//bool editable = false;
 		IEnumerable<topic> TempTop;
@@ -67,24 +67,36 @@ namespace IndDictionary
 		protected void onEditBut(object sender, EventArgs e)
 		{
 			EditBox.IsToggled = !EditBox.IsToggled;
-			if (EditBox.IsToggled)
-			{
-				//(sender as ToolbarItem).;
-				ToolbarItems.Add(DeleteItem); ToolbarItems.Add(ConfirmItem); ToolbarItems.Add(CancelItem);
-			} else
-			{
-				//(sender as Button).BackgroundColor = Color.Gainsboro;
-				ToolbarItems.Remove(DeleteItem); ToolbarItems.Remove(ConfirmItem); ToolbarItems.Remove(CancelItem);
-			}
+			
+			OldDict = (dict)TempDict.Clone();
 		}
+		protected void onEditBoxToggle(object sender, EventArgs e)
+		{
+            if (EditBox.IsToggled)
+            {
+                //(sender as ToolbarItem).;
+				if (!blank)
+				{
+					ToolbarItems.Add(DeleteItem); ToolbarItems.Add(ConfirmItem); ToolbarItems.Add(CancelItem);
+				}
+                
+            }
+            else
+            {
+                //(sender as Button).BackgroundColor = Color.Gainsboro;
+                ToolbarItems.Remove(DeleteItem); ToolbarItems.Remove(ConfirmItem); ToolbarItems.Remove(CancelItem);
+            }
+        }
 
 		async protected void onConfPress(object Sender, EventArgs e)
 		{
+			EditBox.IsToggled = false;
 			if (TopicSpace.SelectedItem != null)
 			{
 				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
                 //TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 				ObservableCollection<dict> found = await App.Database.findRecordsAsync(TempDict.Word, f=>f.Word);
+				if (blank)
 				foreach (dict d in found)
 				{
 					if (d.Word.IndexOf(TempDict.Word) >= 0) 
@@ -98,7 +110,7 @@ namespace IndDictionary
                         if (!result) return;
                     }
 				}
-				App.Database.saveRecD(TempDict, TopicSpace.SelectedItem.ToString()!);
+				App.Database.saveRecD(TempDict, OldDict, TopicSpace.SelectedItem.ToString()!);
 			}
 			
 			Navigation.PopAsync();

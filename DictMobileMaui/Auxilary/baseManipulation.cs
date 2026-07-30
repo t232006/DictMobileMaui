@@ -98,18 +98,14 @@ namespace IndDictionary
 		{
 			return itemsT;
 		}
-		private int insert_update(dict item)
+		private int insert_update(dict item, dict oldItem) //soft
 		{
 			item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
 			if (item.id != 0)
 			{
-				database.Update(item);
-				// обновляем кэш
-				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-				return item.id;
+				oldItem.IsDeleted = true;
+				database.Update(oldItem);
 			}
-			else
-			{
 				item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
 				item.DBID = FBDID;
 				item.IsDeleted = false;
@@ -117,20 +113,42 @@ namespace IndDictionary
 				// обновляем кэш
 				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 				return id;
-			}
+			
 		}
-		public int saveRecD(dict item)
+        private int insert_update(dict item)
+        {
+            if (item.id != 0)
+            {
+                database.Update(item);
+                // обновляем кэш
+                itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+                return item.id;
+			}
+			else
+			{
+				item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+				item.DBID = FBDID;
+				item.IsDeleted = false;
+				int id = database.Insert(item);
+            // обновляем кэш
+				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+				return id;
+			}
+            
+
+        }
+        public int saveRecD(dict item)
 		{
 			if (item == null) return -1;
 			return insert_update(item!);
 		}
-		public int saveRecD(dict item, string topic)
+		public int saveRecD(dict item, dict oldItem, string topic)
 		{
 			if (item == null) return -1;
 
 			int TopicID = database.Table<topic>().Where(t => t.Name == topic).Select(t => t.id).FirstOrDefault();
 			item.Topic = TopicID;
-			return insert_update(item!);
+			return insert_update(item!, oldItem);
 
 		}
 		public int saveRecT(topic item)
