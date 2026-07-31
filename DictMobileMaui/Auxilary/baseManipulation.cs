@@ -106,13 +106,18 @@ namespace IndDictionary
 				oldItem.IsDeleted = true;
 				database.Update(oldItem);
 			}
-				item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
-				item.DBID = FBDID;
-				item.IsDeleted = false;
-				int id = database.Insert(item);
-				// обновляем кэш
-				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-				return id;
+			item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+			item.DBID = FBDID;
+			item.IsDeleted = false;
+			int id = -1;
+			try
+			{
+				id = database.Insert(item);
+			}
+			finally { }	
+			// обновляем кэш
+			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+			return id;
 			
 		}
         private int insert_update(dict item)

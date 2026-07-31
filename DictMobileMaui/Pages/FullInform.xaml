@@ -55,10 +55,10 @@
                         Grid.Column="0" Grid.Row="0">
                 <Picker x:Name="TopicSpace" Margin="10, 10, 2, 4" HeightRequest="35"
                         ItemsSource="{Binding Source={x:Static inddictionary:App.TopicsViewModel},Path=TopicsList}"
-                        SelectedIndex="{Binding Source={x:Static inddictionary:App.TopicsViewModel},Path=CurrentItem}"
+                        SelectedIndex="{Binding Source={x:Static inddictionary:App.TopicsViewModel},Path=CurrentItem, Mode=TwoWay}"
                         IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled}" />
 
-                <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Reference TopicSpace}, Path=SelectedItem}"
+                <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Static inddictionary:App.TopicsViewModel}, Path=CurrentTopicName}"
                             IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled,
                             Converter={StaticResource boolConverter}}"/>
                 <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"

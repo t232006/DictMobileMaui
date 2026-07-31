@@ -118,28 +118,29 @@ namespace IndDictionary
 
 		protected void onDeclPress(object Sender, EventArgs e)
 		{
-			Navigation.PopAsync();
+            EditBox.IsToggled = false;
+            Navigation.PopAsync();
 		}
 
 		protected void onDelPress(object Sender, EventArgs e)
 		{
-			App.Database.deleteRecD((this.BindingContext as dict).id);
+            EditBox.IsToggled = false;
+            App.Database.deleteRecD((this.BindingContext as dict).id);
 			Navigation.PopAsync();
 		}
 
 		protected override void OnAppearing()
 		{
-			TempTop = App.Database.showTableTopic();	
+				
 			//TopicSpace.ItemsSource = TempTop.Select(p => p.Name).ToList();
 			
 			if (!blank)
 			{
-				TempDict = this.BindingContext as dict;
-				var temp = from p in TempTop
-						   where p.id == TempDict.Topic
-						   select p.Name;
-				
-					TempDict.Relevation++;
+                TempTop = App.Database.showTableTopic();
+                TempDict = this.BindingContext as dict;
+
+				App.TopicsViewModel.CurrentDict = TempDict!;
+				TempDict!.Relevation++;
 				App.Database.saveRecD(TempDict);	
 			}
 			else

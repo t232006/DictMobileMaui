@@ -1,6 +1,8 @@
-﻿using IndDictionary;
+﻿using DictMobile.models;
+using IndDictionary;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace DictMobile.ViewModels
@@ -14,14 +16,46 @@ namespace DictMobile.ViewModels
                     .OrderBy(i => i.id)
                     .Select(n => n.Name));
         }
-        private int currentItem=0;
-        public int CurrentItem { get => currentItem; set => currentItem = value; }
+        private int currentItem;
+        private dict currentDict;
+        private string currentTopicName;
+        public string CurrentTopicName
+        {
+            get
+            {
+                return currentTopicName;
+            }
+        }
+        public int CurrentItem 
+        { 
+            get => currentItem; 
+            set
+            {
+                if (currentItem != value)
+                {
+                    currentItem = value;
+                    OnPropertyChanged(nameof(CurrentItem));
+                    OnPropertyChanged(nameof(CurrentTopicName));
+                    currentTopicName = topicsList[value];
+                }
+            }
+        }
+        public dict CurrentDict 
+        { 
+            set
+            {
+                currentDict = value;
+                IEnumerable<topic> lt = App.Database.showTableTopic();
+                 currentTopicName = (from n in lt
+                                where n.id == currentDict.Topic
+                                select n.Name).FirstOrDefault()??"---";
+                OnPropertyChanged(nameof(CurrentTopicName));
+            } 
+        }
         public ListTopicsViewModel()
         {
             GetTopicList();
             if (topicsList!.Count == 0) currentItem = -1;
-            
-            
         }
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -35,6 +69,7 @@ namespace DictMobile.ViewModels
                 OnPropertyChanged(nameof(TopicsList)); // если используешь INotifyPropertyChanged
             }
         }
+
         private ObservableCollection<string> topicsList;
     }
 }
