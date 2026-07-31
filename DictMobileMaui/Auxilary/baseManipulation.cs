@@ -114,7 +114,7 @@ namespace IndDictionary
 			{
 				id = database.Insert(item);
 			}
-			finally { }	
+			catch { }	
 			// обновляем кэш
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 			return id;
