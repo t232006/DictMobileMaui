@@ -100,24 +100,39 @@ namespace IndDictionary
 		}
 		private int insert_update(dict item, dict oldItem) //soft
 		{
-			item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
+            int id = -1;
+            item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
 			if (item.id != 0)
 			{
 				oldItem.IsDeleted = true;
 				database.Update(oldItem);
-			}
-			item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
-			item.DBID = FBDID;
-			item.IsDeleted = false;
-			int id = -1;
-			try
+                Debug.WriteLine("==insert_update==>Record updatind, old is deleted");
+            }
+			dict? t = itemsD.FirstOrDefault(r => r.Word == item.Word && r.Translation == item.Translation && r.Topic == item.Topic && r.IsDeleted == true);
+			if (t!=null)
 			{
-				id = database.Insert(item);
+				t.IsDeleted = false;
+				id = database.Update(t);
+				Debug.WriteLine("==insert_update==>Record exists, isDeleted=false");
+				return id;
 			}
-			catch { }	
-			// обновляем кэш
-			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-			return id;
+			else
+			{
+				item.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
+				item.DBID = FBDID;
+				item.IsDeleted = false;
+				
+				try
+				{
+					id = database.Insert(item);
+                    Debug.WriteLine("==insert_update==>Record inserted");
+                }
+				catch { }	
+				// обновляем кэш
+				itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+				return id;
+			}
+			
 			
 		}
         private int insert_update(dict item)
@@ -153,6 +168,7 @@ namespace IndDictionary
 
 			int TopicID = database.Table<topic>().Where(t => t.Name == topic).Select(t => t.id).FirstOrDefault();
 			item.Topic = TopicID;
+
 			return insert_update(item!, oldItem);
 
 		}
@@ -167,9 +183,21 @@ namespace IndDictionary
 			}
 			else
 			{
-				item.DBID = FBDID;
-				item.IsDeleted = false;
-				result = database.Insert(item);
+				topic? t = showTableTopic().FirstOrDefault(r => r.Name == item.Name && r.IsDeleted == true);
+				if (t != null)
+				{
+					t.IsDeleted = false;
+					result = database.Update(t);
+					Debug.WriteLine("---saveRecT---> This topic have already exists. IsDeleted=false");
+				}
+				else
+				{
+					item.DBID = FBDID;
+					item.IsDeleted = false;
+					result = database.Insert(item);
+                    Debug.WriteLine("---saveRecT---> Topic inserted");
+                }
+				
 			}
 			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
 			return result;
@@ -322,10 +350,21 @@ namespace IndDictionary
 			{
 				try
 				{
-					saveRecT(t);
-                    Debug.WriteLine("Topic has written");
+					if (t.IsDeleted == true)
+					{
+						topic tt = itemsT.First(r => r.Name == t.Name);
+						tt.IsDeleted = true;
+						database.Update(tt);
+						Debug.WriteLine("===WriteTopicFromServer===>Topic has deleted");
+					}
+					else
+					{
+						saveRecT(t);
+						Debug.WriteLine("===WriteTopicFromServer===>Topic has written");
+					}
+					
                 }
-				finally { }
+				catch { }
 				;
 			}
 			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
@@ -336,17 +375,20 @@ namespace IndDictionary
 			{
 				try
 				{
-					if (d.IsDeleted == false)  //new record
+					if (d.IsDeleted == false)  //new record or topic
 					{
 						saveRecD(d);
-						Debug.WriteLine("Record has written");
+						Debug.WriteLine("===WriteDictFromServer===>Record has written");  
 					}
 					else
 					{
-						dict dd = itemsD.First(r => r.Word == d.Word && r.Translation == d.Translation);
-						dd.IsDeleted = true;
-						database.Update(dd);
-                        Debug.WriteLine("Record has deleted");
+						dict? dd = itemsD.FirstOrDefault(r => r.Word == d.Word && r.Translation == d.Translation && r.Topic == d.Topic);
+						if (dd != null)
+						{
+							dd.IsDeleted = true;
+							database.Update(dd);
+							Debug.WriteLine("===WriteDictFromServer===>Record has deleted");
+						}
                     }
 					
 				}

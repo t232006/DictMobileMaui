@@ -48,14 +48,12 @@ namespace DictMobile.httpMethods
             foreach( var s in ReceivedList)
             {
                 int? TopicId = App.Database.showTableTopic().FirstOrDefault(n => n.Name == s.TopicName)?.id;
-                /*if (TopicId == null)
+                if (TopicId == null)
                 {
                     App.Database.saveRecT(new topic { Name = s.TopicName });
-                    Debug.WriteLine("11");
-                    TopicId = App.Database.showTableTopic().FirstOrDefault(n => n.Name == s.TopicName)?.id;
-                }*/
-                if (App.Database.showTableTopic().FirstOrDefault(n => n.Name == s.TopicName).IsDeleted == true)
-                    App.Database.showTableTopic().FirstOrDefault(n => n.Name == s.TopicName).IsDeleted = false;
+                    Debug.WriteLine("===GetDictAsync===> no topic name. Creating one");
+                    TopicId = App.Database.showTableTopic().First(n => n.Name == s.TopicName).id;
+                }
                 Result.Add(new dict
                 {
                     DBID = DBID,

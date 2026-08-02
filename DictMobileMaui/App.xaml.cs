@@ -111,8 +111,8 @@ namespace IndDictionary
         {
             try
             {
-                topic num = database.showTableTopic().First();
-                List<topic>? t = await httpMet.GetListAsync<topic>(database.showTableTopic().First().DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                uint? num = database.showTableTopic().First().DBID;
+                List<topic>? t = await httpMet.GetListAsync<topic>(num, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
                 if (t != null)
                 {
                     database.WriteTopicFromServer(t);
@@ -122,7 +122,7 @@ namespace IndDictionary
                 else return false;
 
                 
-                List<dict>? d = await httpMet.GetDictAsync(num.DBID, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                List<dict>? d = await httpMet.GetDictAsync(num, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
                 if (d != null)
                 {
                     database.WriteDictFromServer(d);
@@ -145,7 +145,7 @@ namespace IndDictionary
         }
         private async Task StartResume()
         {
-            await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
+           // await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
             if (await GetAsync())
                 database.LastUpdate = DateTime.Now;
         }
@@ -155,7 +155,7 @@ namespace IndDictionary
 			SetDatabasename();
 
             Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            //Database.LastUpdate = DateTime.Parse("2026-07-28 23:59:00");
+            Database.LastUpdate = DateTime.Parse("2026-08-02 19:34:48");
             httpMet = new HttpMethods();
             Task.Run(async() => await StartResume());
             

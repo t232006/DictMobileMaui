@@ -95,7 +95,8 @@ namespace IndDictionary
 			{
 				TempDict.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 				DateTime dt = DateTime.Now.AddMilliseconds(1000);
-				OldDict.Modification_Time = datesCorrection.toCorrectDate(dt.ToString());
+				if (!blank)
+					OldDict.Modification_Time = datesCorrection.toCorrectDate(dt.ToString());
                 //TempDict.DateRec = datesCorrection.toCorrectDate(DateTime.Today.ToString());
                 ObservableCollection<dict> found = await App.Database.findRecordsAsync(TempDict.Word, f=>f.Word);
 				if (blank)
