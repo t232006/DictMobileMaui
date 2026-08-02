@@ -78,6 +78,7 @@ namespace IndDictionary
 				if (!blank)
 				{
 					ToolbarItems.Add(DeleteItem); ToolbarItems.Add(ConfirmItem); ToolbarItems.Add(CancelItem);
+					//TopicSpace.SelectedItem = App.TopicsViewModel.TopicsList.IndexOf(TopicSpaceLabel.Text);
 				}
                 
             }

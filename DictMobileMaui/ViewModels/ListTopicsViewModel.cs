@@ -50,6 +50,10 @@ namespace DictMobile.ViewModels
                                 where n.id == currentDict.Topic
                                 select n.Name).FirstOrDefault()??"---";
                 OnPropertyChanged(nameof(CurrentTopicName));
+                if (currentTopicName != "---")
+                    CurrentItem = topicsList.IndexOf(currentTopicName);
+                else
+                    CurrentItem = 0;
             } 
         }
         public ListTopicsViewModel()
@@ -66,7 +70,7 @@ namespace DictMobile.ViewModels
             set
             {
                 topicsList = value;
-                OnPropertyChanged(nameof(TopicsList)); // если используешь INotifyPropertyChanged
+                OnPropertyChanged(nameof(TopicsList));
             }
         }
 

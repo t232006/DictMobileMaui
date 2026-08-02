@@ -2,6 +2,7 @@
 using System.Reflection;
 using DictMobile.httpMethods;
 using DictMobile.models;
+using DictMobile.Pages;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
 using Path = System.IO.Path;
@@ -145,7 +146,7 @@ namespace IndDictionary
         }
         private async Task StartResume()
         {
-           // await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
+            await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
             if (await GetAsync())
                 database.LastUpdate = DateTime.Now;
         }
@@ -155,15 +156,15 @@ namespace IndDictionary
 			SetDatabasename();
 
             Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
-            Database.LastUpdate = DateTime.Parse("2026-08-02 19:34:48");
+            //Database.LastUpdate = DateTime.Parse("2026-08-02 19:34:48");
             httpMet = new HttpMethods();
-            Task.Run(async() => await StartResume());
+            
             
 
 
             //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел
-            MainPage = new Flyout_Page();
+            MainPage = new LoadingPage();
 #pragma warning restore CS0618 // Тип или член устарел
 
         }
@@ -180,9 +181,21 @@ namespace IndDictionary
         }
 
 
-        protected override void OnStart()
+        protected override async void OnStart()
 		{
-           
+            try
+            {
+                await StartResume();          // ждём завершения синхронизации
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"StartResume error: {ex}");
+            }
+            finally
+            {
+                // Только после синхронизации показываем основную страницу
+                MainPage = new Flyout_Page();
+            }
         }
 		protected override void OnSleep()
 		{

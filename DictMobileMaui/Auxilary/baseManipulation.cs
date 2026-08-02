@@ -106,14 +106,14 @@ namespace IndDictionary
 			{
 				oldItem.IsDeleted = true;
 				database.Update(oldItem);
-                Debug.WriteLine("==insert_update==>Record updatind, old is deleted");
+                Debug.WriteLine("==insert_update==>Record '{0}' updatind, old '{1}' is deleted", item.Word, oldItem.Word);
             }
 			dict? t = itemsD.FirstOrDefault(r => r.Word == item.Word && r.Translation == item.Translation && r.Topic == item.Topic && r.IsDeleted == true);
 			if (t!=null)
 			{
 				t.IsDeleted = false;
 				id = database.Update(t);
-				Debug.WriteLine("==insert_update==>Record exists, isDeleted=false");
+				Debug.WriteLine("==insert_update==>Record '{0}' exists, isDeleted=false",item.Word);
 				return id;
 			}
 			else
@@ -125,7 +125,7 @@ namespace IndDictionary
 				try
 				{
 					id = database.Insert(item);
-                    Debug.WriteLine("==insert_update==>Record inserted");
+                    Debug.WriteLine("==insert_update==>Record '{0}' inserted",item.Word);
                 }
 				catch { }	
 				// обновляем кэш
@@ -188,14 +188,14 @@ namespace IndDictionary
 				{
 					t.IsDeleted = false;
 					result = database.Update(t);
-					Debug.WriteLine("---saveRecT---> This topic have already exists. IsDeleted=false");
+					Debug.WriteLine("---saveRecT---> The topic '{0}' have already exists. IsDeleted=false", item.Name);
 				}
 				else
 				{
 					item.DBID = FBDID;
 					item.IsDeleted = false;
 					result = database.Insert(item);
-                    Debug.WriteLine("---saveRecT---> Topic inserted");
+                    Debug.WriteLine("---saveRecT---> Topic '{0}' inserted", item.Name);
                 }
 				
 			}
@@ -210,8 +210,9 @@ namespace IndDictionary
 			temp.IsDeleted = true;
 			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
-			// обновляем кэш
-			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+            Debug.WriteLine("Record '{0}' has deleted", temp.Word);
+            // обновляем кэш
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 		}
 		public void deleteRecT(string Name)
 		{
@@ -220,6 +221,7 @@ namespace IndDictionary
 			temp.IsDeleted = true;
 			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
+			Debug.WriteLine("Topic '{0}' has deleted", temp.Name);
 			// обновляем кэш
 			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
 		}
