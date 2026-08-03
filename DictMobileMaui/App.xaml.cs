@@ -11,7 +11,19 @@ using Path = System.IO.Path;
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace IndDictionary
 {
-	public partial class App : Application
+	public struct httpResponce
+    {
+        public bool success;
+        public int? topicCount;
+        public int? dictCount;
+        public string? message;
+        public httpResponce()
+        {
+            success = false; topicCount = null; dictCount = null; message = "";
+        }
+       
+    }
+    public partial class App : Application
 	{
 		public static string databasename;//!!reset after development
 		public const string DEFAULTDATABASENAME = "dictionary_empty.db";	//only for default!
@@ -93,28 +105,39 @@ namespace IndDictionary
 				return database!;
 			}
 		}
-        public static async Task<bool> PostAsync()
+        public static async Task<httpResponce> PostAsync()
         {
             HttpMethods httpMet = new HttpMethods();
+            httpResponce result = new(); httpResponce res = new();
             try
             {
-                var result = await httpMet.PostTopicAsync(database.GetListTopic());
-                Debug.WriteLine($"====> Topics {result} Time: {database.LastPostUpdate}");
-                result = await httpMet.PostDictAsync(database.GetListDict());
-                Debug.WriteLine($"====> Records {result} Time: {database.LastPostUpdate}");
+                res = await httpMet.PostTopicAsync(database.GetListTopic());
+                Debug.WriteLine($"====> Topics {result.dictCount} Time: {database.LastPostUpdate}");
+                if (!res.success) throw new Exception(res.message);
+                result.topicCount = res.topicCount;
+                
+
+                res = await httpMet.PostDictAsync(database.GetListDict());
+                Debug.WriteLine($"====> Records {result.dictCount} Time: {database.LastPostUpdate}");
+                if (!res.success) throw new Exception(res.message); 
+                result.dictCount = res.dictCount;
+                
+                result.success = true;
+                
                 database.LastPostUpdate = DateTime.Now;
                 Preferences.Set("LastPostUpdateTime", DateTime.Now);
-                return result.Contains("applied");
+                return result;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("error ====>", ex);
-                return false;
+                return result;
             }
         }
-        public static async Task<bool> GetAsync()
+        public static async Task<httpResponce> GetAsync()
         {
             HttpMethods httpMet = new HttpMethods();
+            httpResponce result = new();
             try
             {
                 uint? num = database.showTableTopic().First().DBID;
@@ -122,20 +145,22 @@ namespace IndDictionary
                 if (t != null)
                 {
                     database.WriteTopicFromServer(t);
+                    result.topicCount = t.Count;
                     Debug.WriteLine($"---->Received topics {t.Count} Time: {database.LastGetUpdate}" ); 
                 }
                     
-                else return false;
+                else return result;
 
                 
                 List<dict>? d = await httpMet.GetDictAsync(num, datesCorrection.toCorrectDate(database.LastGetUpdate.ToString()));
                 if (d != null)
                 {
                     database.WriteDictFromServer(d);
+                    result.dictCount = t.Count;
                     Debug.WriteLine($"------> Received words {t.Count} Time: {database.LastGetUpdate}" );
                 }
                       
-                else return false;
+                else return result;
             }
             catch (Exception ex)
             {
@@ -143,13 +168,15 @@ namespace IndDictionary
                 if (ex.Message.Contains("UNIQUE")) 
                 {
                     Debug.WriteLine("......> UNIQUE Exception");
-                    return true; //it is not error
+                    result.success = true; 
+                    return result; //it is not error
                 }
-                return false;
+                return result;
             }
             database.LastGetUpdate = DateTime.Now;
             Preferences.Set("LastGetUpdateTime", DateTime.Now);
-            return true;
+            result.success = true;
+            return result;
         }
         private async Task StartResume()
         {
@@ -204,7 +231,7 @@ namespace IndDictionary
         }
 		protected override void OnResume()
 		{
-            Task.Run(async () => await StartResume());
+            //Task.Run(async () => await StartResume());
 		}
 	}
 }

@@ -16,14 +16,25 @@ namespace DictMobile.httpMethods
         {
             public int applied { get; set; }
         }
-        private async Task<string> PostListAsync<T>(T DictOrTopic, string URL)
+        private async Task<httpResponce> PostListAsync<T>(T DictOrTopic, string URL)
         {
+            httpResponce result = new();
             var response = await client.PostAsJsonAsync(URL, DictOrTopic); 
-            var result = await response.Content.ReadFromJsonAsync<SyncResponse>();
+            var res = await response.Content.ReadFromJsonAsync<SyncResponse>();
             if (response.IsSuccessStatusCode)
-                return $"applied {result.applied}";
+            {
+                result.success = true;
+                if (typeof(T).Equals(typeof(List<DictVM>))) 
+                    result.dictCount = res.applied;
+                else 
+                    result.topicCount = res.applied;
+                return result;
+            }
             else
-                return result.ToString();
+            {
+                result.message=res.ToString();
+                return result;
+            }
             
         }
         public async Task<List<T>?> GetListAsync<T>(uint? DBID, string since)
@@ -72,16 +83,17 @@ namespace DictMobile.httpMethods
             return Result;
         }
 
-        public async Task<string> PostTopicAsync(IEnumerable<topic> Topic)
+        public async Task<httpResponce> PostTopicAsync(IEnumerable<topic> Topic)
         {
             List<topic> LTopic = [.. Topic]; //from IEnumerable to List
             var result = await PostListAsync<List<topic>>(LTopic, POST_TOPIC_URL);
             return result;
         }
-        public async Task<string> PostDictAsync(IEnumerable<DictVM> Dict)
+        public async Task<httpResponce> PostDictAsync(IEnumerable<DictVM> Dict)
         {
             List<DictVM> LDict = [.. Dict];
-            return await PostListAsync<List<DictVM>>(LDict, POST_DICT_URL);
+            var result = await PostListAsync<List<DictVM>>(LDict, POST_DICT_URL);
+            return result;
         }
        
         
