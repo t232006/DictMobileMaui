@@ -62,19 +62,28 @@
                     HorizontalOptions="Start" VerticalOptions="Start" Pressed="onGoPress"/>
                 </Grid>
                 <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
-                    <Button 
+                    <Button
                         Style="{StaticResource SmallButton}"
                         ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_from.png}"
+                        ContentLayout="Top, 10"
+                        Pressed="onGetSync"/>
+                    <Button 
+                        Style="{StaticResource SmallButton}"
+                        ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.drive_from.png}"
                         ContentLayout="Top, 10"
                         Pressed="OnSynchr"/>
                     <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.folder_small.png}"                        
                          Style="{StaticResource SmallButton}" 
                          Pressed="OpenLibrary"
                          ContentLayout="Top, 10"/>
-                    <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_to.png}"
+                    <Button  ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.drive_to.png}"
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
                          Pressed="SaveToCloud"/>
+                    <Button ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_to.png}"
+                         Style="{StaticResource SmallButton}"
+                         ContentLayout="Top, 10"
+                         Pressed="onPostSync"/>
                 </StackLayout>
 
             </StackLayout>

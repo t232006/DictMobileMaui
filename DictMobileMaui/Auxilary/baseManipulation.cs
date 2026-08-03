@@ -16,9 +16,11 @@ namespace IndDictionary
 	public class baseManipulation
 	{
 		private uint? FBDID;
-		private DateTime _LastUpdate;
-		public DateTime LastUpdate { set => _LastUpdate = value; get => _LastUpdate; }
-		public uint? BDID { get => FBDID; }
+		private DateTime _LastGetUpdate;
+		private DateTime _LastPostUpdate;
+		public DateTime LastGetUpdate { set => _LastGetUpdate = value; get => _LastGetUpdate; }
+        public DateTime LastPostUpdate { set => _LastPostUpdate = value; get => _LastPostUpdate; }
+        public uint? BDID { get => FBDID; }
 
 		SQLiteConnection database;
 		public bool toReboot = false;
@@ -331,7 +333,7 @@ namespace IndDictionary
 
 		public IEnumerable<DictVM> GetListDict()
 		{
-			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+			string trueDate = datesCorrection.toCorrectDate(_LastGetUpdate.ToString());
 			string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
 				$"from dict d join topic t on d.Topic=t.Id " +
 				$"where d.Modification_time>?";
@@ -341,7 +343,7 @@ namespace IndDictionary
 
 		public IEnumerable<topic> GetListTopic()
 		{
-			string trueDate = datesCorrection.toCorrectDate(_LastUpdate.ToString());
+			string trueDate = datesCorrection.toCorrectDate(_LastGetUpdate.ToString());
 			string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
 			return database.Query<topic>(query, trueDate);
 

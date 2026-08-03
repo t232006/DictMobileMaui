@@ -120,6 +120,22 @@ namespace IndDictionary
 			return result!;
 
 		}
+		protected async void onPostSync(object sender, EventArgs e)
+		{
+            if (await App.PostAsync())
+            {
+                //App.Database.LastPostUpdate = DateTime.Now;
+                //	Preferences.Set("LastPostUpdateTime", DateTime.Now);
+            }
+        }
+		protected async void onGetSync(object sender, EventArgs e)
+		{
+			if (await App.GetAsync())
+            {
+                //App.Database.LastGetUpdate = DateTime.Now;
+                Preferences.Set("LastGetUpdateTime", DateTime.Now);
+            }
+        }
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
             //App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, App.SECRETFILE), App.SECRETFILE);

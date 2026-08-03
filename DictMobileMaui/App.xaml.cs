@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using System.Reflection;
 using DictMobile.httpMethods;
 using DictMobile.models;
@@ -22,7 +23,7 @@ namespace IndDictionary
         static baseManipulation database;
         private static ListTopicsViewModel topicsViewModel;
 		private static WordsViewModel wordsViewModel;
-        HttpMethods httpMet;
+        
         public static ListTopicsViewModel TopicsViewModel 
         { 
             get 
@@ -92,14 +93,17 @@ namespace IndDictionary
 				return database!;
 			}
 		}
-        private async Task<bool> PostAsync()
+        public static async Task<bool> PostAsync()
         {
+            HttpMethods httpMet = new HttpMethods();
             try
             {
                 var result = await httpMet.PostTopicAsync(database.GetListTopic());
-                Debug.WriteLine($"====> Topics {result} Time: {database.LastUpdate}");
+                Debug.WriteLine($"====> Topics {result} Time: {database.LastPostUpdate}");
                 result = await httpMet.PostDictAsync(database.GetListDict());
-                Debug.WriteLine($"====> Records {result} Time: {database.LastUpdate}");
+                Debug.WriteLine($"====> Records {result} Time: {database.LastPostUpdate}");
+                database.LastPostUpdate = DateTime.Now;
+                Preferences.Set("LastPostUpdateTime", DateTime.Now);
                 return result.Contains("applied");
             }
             catch (Exception ex)
@@ -108,26 +112,27 @@ namespace IndDictionary
                 return false;
             }
         }
-        private async Task<bool> GetAsync()
+        public static async Task<bool> GetAsync()
         {
+            HttpMethods httpMet = new HttpMethods();
             try
             {
                 uint? num = database.showTableTopic().First().DBID;
-                List<topic>? t = await httpMet.GetListAsync<topic>(num, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                List<topic>? t = await httpMet.GetListAsync<topic>(num, datesCorrection.toCorrectDate(database.LastGetUpdate.ToString()));
                 if (t != null)
                 {
                     database.WriteTopicFromServer(t);
-                    Debug.WriteLine($"---->Received topics {t.Count} Time: {database.LastUpdate}" ); 
+                    Debug.WriteLine($"---->Received topics {t.Count} Time: {database.LastGetUpdate}" ); 
                 }
                     
                 else return false;
 
                 
-                List<dict>? d = await httpMet.GetDictAsync(num, datesCorrection.toCorrectDate(database.LastUpdate.ToString()));
+                List<dict>? d = await httpMet.GetDictAsync(num, datesCorrection.toCorrectDate(database.LastGetUpdate.ToString()));
                 if (d != null)
                 {
                     database.WriteDictFromServer(d);
-                    Debug.WriteLine($"------> Received words {t.Count} Time: {database.LastUpdate}" );
+                    Debug.WriteLine($"------> Received words {t.Count} Time: {database.LastGetUpdate}" );
                 }
                       
                 else return false;
@@ -142,24 +147,27 @@ namespace IndDictionary
                 }
                 return false;
             }
+            database.LastGetUpdate = DateTime.Now;
+            Preferences.Set("LastGetUpdateTime", DateTime.Now);
             return true;
         }
         private async Task StartResume()
         {
-            await PostAsync(); //send data if was unable do it last time (didn't have internet connection)
-            if (await GetAsync())
-                database.LastUpdate = DateTime.Now;
+            await PostAsync();                //send data if was unable do it last time (didn't have internet connection)
+            await GetAsync();
+               
         }
         public App()
 		{
 			InitializeComponent();
 			SetDatabasename();
 
-            Database.LastUpdate = Preferences.Get("LastUpdateTime", DateTime.Now);
+            Database.LastGetUpdate = Preferences.Get("LastGetUpdateTime", DateTime.Now);
+            Database.LastPostUpdate = Preferences.Get("LastPostUpdateTime", DateTime.Now);
             //Database.LastUpdate = DateTime.Parse("2026-08-02 19:34:48");
-            httpMet = new HttpMethods();
-            
-            
+            //httpMet = new HttpMethods();
+
+
 
 
             //MainPage = new NavigationPage(new WordPage(false));
@@ -167,19 +175,7 @@ namespace IndDictionary
             MainPage = new LoadingPage();
 #pragma warning restore CS0618 // Тип или член устарел
 
-        }
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            var window = base.CreateWindow(activationState);
-
-            // Вызывается, когда приложение полностью скрылось с экрана (свернуто или закрывается)
-            window.Destroying += (s, e) =>
-            {
-				OnSleep();
-            };
-            return window;
-        }
-
+        } 
 
         protected override async void OnStart()
 		{
@@ -202,11 +198,8 @@ namespace IndDictionary
             Task.Run(async () =>
             {
                 await GetAsync();
-                if (await PostAsync())
-                {
-                    database.LastUpdate = DateTime.Now;
-                    Preferences.Set("LastUpdateTime", DateTime.Now);
-                }
+                await PostAsync();
+                
             }); 
         }
 		protected override void OnResume()

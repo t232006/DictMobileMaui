@@ -76,6 +76,8 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Remove="Resources\Images\drive_from.png" />
+		<MauiImage Remove="Resources\Images\drive_to.png" />
 		<MauiImage Remove="Resources\Images\W.png" />
 
 		<!-- Custom Fonts -->
@@ -92,6 +94,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Resources\Images\drive_from.png" />
+		<EmbeddedResource Include="Resources\Images\drive_to.png" />
 		<EmbeddedResource Include="Resources\Raw\dictionary.db">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
