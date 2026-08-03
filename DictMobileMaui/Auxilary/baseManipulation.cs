@@ -110,7 +110,7 @@ namespace IndDictionary
 				database.Update(oldItem);
                 Debug.WriteLine("==insert_update==>Record '{0}' updatind, old '{1}' is deleted", item.Word, oldItem.Word);
             }
-			dict? t = itemsD.FirstOrDefault(r => r.Word == item.Word && r.Translation == item.Translation && r.Topic == item.Topic && r.IsDeleted == true);
+			dict? t = database.Table<dict>().FirstOrDefault(r => r.Word == item.Word && r.Translation == item.Translation && r.Topic == item.Topic && r.IsDeleted == true);
 			if (t!=null)
 			{
 				t.IsDeleted = false;
@@ -185,7 +185,7 @@ namespace IndDictionary
 			}
 			else
 			{
-				topic? t = showTableTopic().FirstOrDefault(r => r.Name == item.Name && r.IsDeleted == true);
+				topic? t = database.Table<topic>().FirstOrDefault(r => r.Name == item.Name && r.IsDeleted == true);
 				if (t != null)
 				{
 					t.IsDeleted = false;
@@ -348,9 +348,9 @@ namespace IndDictionary
 			return database.Query<topic>(query, trueDate);
 
 		}
-		public void WriteTopicFromServer(List<topic> topic)
+		public void WriteTopicFromServer(List<topic> topics)
 		{
-			foreach (topic t in topic)
+			foreach (topic t in topics)
 			{
 				try
 				{
