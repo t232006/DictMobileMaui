@@ -331,9 +331,9 @@ namespace IndDictionary
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 		}
 
-		public IEnumerable<DictVM> GetListDict()
+		public IEnumerable<DictVM> ListDictToPost()
 		{
-			string trueDate = datesCorrection.toCorrectDate(_LastGetUpdate.ToString());
+			string trueDate = datesCorrection.toCorrectDate(_LastPostUpdate.ToString());
 			string query = $"SELECT d.DBID, Word, Translation, Name as TopicName, DateRec, Score, Usersel, Phrase, Relevation, d.IsDeleted, d.Modification_Time " +
 				$"from dict d join topic t on d.Topic=t.Id " +
 				$"where d.Modification_time>?";
@@ -341,9 +341,9 @@ namespace IndDictionary
 			return database.Query<DictVM>(query, trueDate);
 		}
 
-		public IEnumerable<topic> GetListTopic()
+		public IEnumerable<topic> ListTopicToPost()
 		{
-			string trueDate = datesCorrection.toCorrectDate(_LastGetUpdate.ToString());
+			string trueDate = datesCorrection.toCorrectDate(_LastPostUpdate.ToString());
 			string query = $"SELECT DBID, Name, IsDeleted, Modification_Time from topic where Modification_time>?";
 			return database.Query<topic>(query, trueDate);
 

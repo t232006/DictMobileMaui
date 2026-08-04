@@ -111,13 +111,13 @@ namespace IndDictionary
             httpResponce result = new(); httpResponce res = new();
             try
             {
-                res = await httpMet.PostTopicAsync(database.GetListTopic());
+                res = await httpMet.PostTopicAsync(database.ListTopicToPost());
                 Debug.WriteLine($"====> Topics {result.dictCount} Time: {database.LastPostUpdate}");
                 if (!res.success) throw new Exception(res.message);
                 result.topicCount = res.topicCount;
                 
 
-                res = await httpMet.PostDictAsync(database.GetListDict());
+                res = await httpMet.PostDictAsync(database.ListDictToPost());
                 Debug.WriteLine($"====> Records {result.dictCount} Time: {database.LastPostUpdate}");
                 if (!res.success) throw new Exception(res.message); 
                 result.dictCount = res.dictCount;
@@ -130,7 +130,7 @@ namespace IndDictionary
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("error ====>", ex);
+                Debug.WriteLine("error ====>", ex.Message);
                 return result;
             }
         }
@@ -191,7 +191,7 @@ namespace IndDictionary
 
             Database.LastGetUpdate = Preferences.Get("LastGetUpdateTime", DateTime.Now);
             Database.LastPostUpdate = Preferences.Get("LastPostUpdateTime", DateTime.Now);
-            //Database.LastUpdate = DateTime.Parse("2026-08-02 19:34:48");
+            Database.LastPostUpdate = DateTime.Parse("2026-08-04 15:10:48");
             //httpMet = new HttpMethods();
 
 

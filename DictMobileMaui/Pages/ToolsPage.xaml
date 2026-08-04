@@ -9,13 +9,16 @@
     <StackLayout>
         <StackLayout >
             <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup Name="AsaptiveStates">
+                <VisualStateGroup Name="AdaptiveStates">
                     <VisualState Name="SmallHeight">
                         <VisualState.StateTriggers>
                             <AdaptiveTrigger MinWindowHeight="0"/>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="SelectSpace"
+                                    Property="Orientation"
+                                    Value="Horizontal"/>
+                            <Setter TargetName="BaseInfo"
                                     Property="Orientation"
                                     Value="Horizontal"/>
                         </VisualState.Setters>
@@ -27,7 +30,10 @@
                         <VisualState.Setters>
                             <Setter TargetName="SelectSpace"
                                     Property="Orientation"
-                                    Value="Vertical"/>    
+                                    Value="Vertical"/>
+                            <Setter TargetName="BaseInfo"
+                                    Property="Orientation"
+                                    Value="Vertical"/>        
                         </VisualState.Setters>
                     </VisualState>
 
@@ -47,12 +53,12 @@
                     </StackLayout>
                 </StackLayout>
                 <StackLayout Orientation="Vertical">
-                        <Label Text="Select" Style="{StaticResource LabelStyle}"/>
-                        <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
-                        <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
-                        <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
-                        <Button Text="Reset rating" BackgroundColor="#ffa500" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
-                        
+                    <Label Text="Select" Style="{StaticResource LabelStyle}"/>
+                    <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
+                    <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
+                    <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
+                    <Button Text="Reset rating" BackgroundColor="#ffa500" Style="{StaticResource ButtonStyle}" Pressed="onResetRating"/>
+
                 </StackLayout>
                 <Grid>
 
@@ -61,7 +67,11 @@
                     <Button x:Name="GoButton" Text="Go" BackgroundColor="SlateBlue" IsVisible="False" Style="{StaticResource GoButton}"
                     HorizontalOptions="Start" VerticalOptions="Start" Pressed="onGoPress"/>
                 </Grid>
-                <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center">
+                <FlexLayout Direction="Row" 
+                            Wrap="Wrap"
+                            HorizontalOptions="StartAndExpand"
+                            JustifyContent="Center"
+                            >
                     <Button
                         Style="{StaticResource SmallButton}"
                         ImageSource="{res:ImageResourceExt DictMobile.Resources.Images.cloud_from.png}"
@@ -84,13 +94,13 @@
                          Style="{StaticResource SmallButton}"
                          ContentLayout="Top, 10"
                          Pressed="onPostSync"/>
-                </StackLayout>
-
+                </FlexLayout>
+                
+            </StackLayout >
+            <StackLayout x:Name="BaseInfo">
+                <Label x:Name="CountLabel" Padding="0,0,100,0" Style="{StaticResource LabelStyle}" />
+                <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
             </StackLayout>
-
-            
-            <Label x:Name="CountLabel" Style="{StaticResource LabelStyle}"/>
-            <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
             <Button Text="+New dictionary" WidthRequest="140" BackgroundColor="Thistle" Margin="10,0,0,0" HorizontalOptions="Start" Pressed="onNewDict"/>
         </StackLayout>
         <StackLayout x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>

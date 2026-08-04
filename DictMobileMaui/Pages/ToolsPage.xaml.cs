@@ -125,7 +125,7 @@ namespace IndDictionary
 			httpResponce ps=await App.PostAsync();
 			if (ps.success)
             {
-				await DisplayAlert("Sending", $"Topics: {ps.dictCount}; records: {ps.topicCount} are sent ", "OK");
+				await DisplayAlert("Sending", $"Topics sent: {ps.topicCount};\nRecords sent: {ps.dictCount}", "OK");
                 //App.Database.LastPostUpdate = DateTime.Now;
                 //	Preferences.Set("LastPostUpdateTime", DateTime.Now);
             }
@@ -139,7 +139,7 @@ namespace IndDictionary
 				//App.Database.LastGetUpdate = DateTime.Now;
 				//Preferences.Set("LastGetUpdateTime", DateTime.Now);
 				if ((hr.topicCount != null) || (hr.dictCount != 0))
-					await DisplayAlert("Receiving", $"Topics received: {hr.topicCount}; Records reveived: {hr.dictCount}", "OK");
+					await DisplayAlert("Receiving", $"Topics received: {hr.topicCount};\nRecords reveived: {hr.dictCount}", "OK");
             }
         }
 		protected async void SaveToCloud(object sender, EventArgs e)

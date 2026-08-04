@@ -19,6 +19,8 @@ namespace DictMobile.httpMethods
         private async Task<httpResponce> PostListAsync<T>(T DictOrTopic, string URL)
         {
             httpResponce result = new();
+            /*var json = System.Text.Json.JsonSerializer.Serialize(DictOrTopic);
+            Debug.WriteLine($"REQUEST JSON:\n{json}");*/
             var response = await client.PostAsJsonAsync(URL, DictOrTopic); 
             var res = await response.Content.ReadFromJsonAsync<SyncResponse>();
             if (response.IsSuccessStatusCode)
@@ -32,7 +34,7 @@ namespace DictMobile.httpMethods
             }
             else
             {
-                result.message=res.ToString();
+                result.message=String.Concat(response.StatusCode.ToString()," ",response.ReasonPhrase.ToString());
                 return result;
             }
             
@@ -86,13 +88,28 @@ namespace DictMobile.httpMethods
         public async Task<httpResponce> PostTopicAsync(IEnumerable<topic> Topic)
         {
             List<topic> LTopic = [.. Topic]; //from IEnumerable to List
-            var result = await PostListAsync<List<topic>>(LTopic, POST_TOPIC_URL);
+            httpResponce result = new();
+            if (LTopic.Count > 0)
+                result = await PostListAsync<List<topic>>(LTopic, POST_TOPIC_URL);
+            else
+            {
+                result.topicCount = 0;
+                result.success = true;
+            }
             return result;
         }
         public async Task<httpResponce> PostDictAsync(IEnumerable<DictVM> Dict)
         {
             List<DictVM> LDict = [.. Dict];
-            var result = await PostListAsync<List<DictVM>>(LDict, POST_DICT_URL);
+            httpResponce result = new();
+            if (LDict.Count > 0)
+                result = await PostListAsync<List<DictVM>>(LDict, POST_DICT_URL);
+            else
+            {
+                result.dictCount = 0;
+                result.success = true;
+            }
+                
             return result;
         }
        
