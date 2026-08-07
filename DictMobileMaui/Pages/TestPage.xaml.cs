@@ -1,4 +1,5 @@
-﻿using DictMobileMaui.games;
+﻿using DictMobile.games;
+using DictMobile.models;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Controls.StyleSheets;
 using System;
@@ -34,7 +35,7 @@ namespace IndDictionary
 						Style = (Style)App.Current.Resources["var1"],
 						
 					};
-					num.SetBinding(Border.WidthRequestProperty, new Binding(path: "BorderWidth", source: this));
+					num.SetBinding(Border.WidthRequestProperty, new Binding(path: nameof(BorderWidth), source: this));
 
 					if (word_translation) num.Content.SetBinding(Label.TextProperty, "Translation", BindingMode.OneWay);
 					else
@@ -46,7 +47,6 @@ namespace IndDictionary
 				})
 			};
 
-			//this.Resources.Add(StyleSheet.FromResource("styles/testStyles.css", IntrospectionExtensions.GetTypeInfo(typeof(TestPage)).Assembly));
 			Answer.BindingContext = test;
 			if (word_translation) Answer.SetBinding(Label.TextProperty, "Answer.Word");
 			else
@@ -61,24 +61,25 @@ namespace IndDictionary
 		{
 			Variants.RowHeight = Convert.ToInt32(this.Height * 0.13);
 			BorderWidth = this.Width * 0.7;
+			Variants.HeightRequest = this.Height * 0.9;
 		}
 
 		private void OnVariantTapped(object sender, ItemTappedEventArgs e)
 		{
 			dict selected = (dict)e.Item;
 
-			if (selected.Number == test.Answer.Number)
+			if (selected.id == test.Answer.id)
 			{
 				if (word_translation)
 				DisplayAlert("Correct!", $"{test.Answer.Word} - {selected.Translation}", "OK"); else
 				DisplayAlert("Correct!", $"{test.Answer.Translation} - {selected.Word}", "OK");
-				App.Database.GetReward(selected.Number, true);
-				test.generateQuestion();
+				App.Database.GetReward(selected.id, true);
+				test.Generate();
 			}
 			else
 			{
 				DisplayAlert("Incorrect", $"Sorry, that is not the correct answer.", "Try Again");
-				App.Database.GetReward(selected.Number, false);
+				App.Database.GetReward(selected.id, false);
 			}
 		}
 	}

@@ -1,5 +1,7 @@
-﻿using IndDictionary.addition;
+﻿using DictMobile.models;
+using IndDictionary.addition;
 using IndDictionary.Pages;
+using System.Collections.ObjectModel;
 
 namespace IndDictionary
 {
@@ -8,15 +10,12 @@ namespace IndDictionary
 	{
 		bool showAll = true;
 		WhatToShow wts = WhatToShow.alltogether;
-
 		WordPage detail;
-
 		public ToolsPage(WordPage Detail)
 		{
 			InitializeComponent();
 			//if (Detail.transl) Title = "Translation"; else Title = "Word";
 			detail = Detail;
-			
 			NavigationButtons navButtons = new NavigationButtons(Detail);
 			forNavButtons.Children.Add(navButtons);
 		}
@@ -26,10 +25,22 @@ namespace IndDictionary
 			base.OnDisappearing();
 		}
 
+		protected void onToCopySelected(object Sender, EventArgs e)
+		{
+			GoButton.IsVisible = true;
+		}
+		protected void onGoPress(object Sender, EventArgs e)
+		{
+			GoButton.IsVisible = false;
+			App.Database.doSelectedToTopic(CopyToTopic.SelectedItem.ToString());
+		}
+		
 		protected override void OnAppearing()
 		{
-			DateLabel.Text = "Last record: " + App.Database.getInfo(2);
+			ShowSelected.IsChecked = App.Database.AnySelection(wts);
+            DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
+			CopyToTopic.ItemsSource = App.Database.showTableTopic().Select(n=>n.Name).ToList();
 			base.OnAppearing();
 		}
 		protected void OnAll(object sender, EventArgs e)
@@ -47,12 +58,20 @@ namespace IndDictionary
 			wts = WhatToShow.words;
 			//detail.Refresh(showAll, wts);
 		}
-		protected void onReset(object sender, EventArgs e)
+		protected async void onReset(object sender, EventArgs e)
 		{
-			App.Database.ResetSelection();
-			//detail.Refresh(showAll, wts);
-		}
-		protected void OnChecking(object sender, EventArgs e)
+			App.Database.ResetSelection(); App.Database.ResetSelection(); //double reset. Unknown error!
+            await DisplayAlert("Confirmation", "Selection has been droped", "OK");
+            ShowSelected.IsChecked = App.Database.AnySelection(wts);
+            //detail.Refresh(showAll, wts);
+        }
+        protected async void onResetRating(object sender, EventArgs e)
+        {
+            App.Database.ResetRating();
+			await DisplayAlert("Confirmation", "Rating has been droped", "OK");
+            //detail.Refresh(showAll, wts);
+        }
+        protected void OnChecking(object sender, EventArgs e)
 		{
 			showAll = !(sender as CheckBox)!.IsChecked;
 			//detail.Refresh(showAll, wts);
@@ -90,7 +109,8 @@ namespace IndDictionary
 							Preferences.Set("current", st);
 							App.databasename = result.FileName;
 							App.Database.toReboot = true;
-							App.Database.ResetSelection();	
+							App.Database.ResetSelection();
+							App.TopicsViewModel.GetTopicList();
 						}
 					}
 					catch { }
@@ -100,15 +120,69 @@ namespace IndDictionary
 			return result!;
 
 		}
+		protected async void onPostSync(object sender, EventArgs e)
+		{
+			httpResponce ps=await App.PostAsync();
+			if (ps.success)
+            {
+				await DisplayAlert("Sending", $"Topics sent: {ps.topicCount};\nRecords sent: {ps.dictCount}", "OK");
+                //App.Database.LastPostUpdate = DateTime.Now;
+                //	Preferences.Set("LastPostUpdateTime", DateTime.Now);
+            }
+        }
+		protected async void onGetSync(object sender, EventArgs e)
+		{
+			httpResponce hr;
+			hr = await App.GetAsync();
+			if (hr.success)
+            {
+				//App.Database.LastGetUpdate = DateTime.Now;
+				//Preferences.Set("LastGetUpdateTime", DateTime.Now);
+				if ((hr.topicCount != null) || (hr.dictCount != 0))
+					await DisplayAlert("Receiving", $"Topics received: {hr.topicCount};\nRecords reveived: {hr.dictCount}", "OK");
+            }
+        }
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
-			string currentDB = Preferences.Get("current","");
+            //App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, App.SECRETFILE), App.SECRETFILE);
+
+            string currentDB = Preferences.Get("current", "");
 			string DBName = Path.GetFileName(currentDB);
 			string? DBPath = Path.GetDirectoryName(currentDB);
 			App.Database.dispose();
-			await SyncCloud.SaveToCloud("client_secret.json", DBPath!, DBName);
+			try
+			{
+				string mes = await SyncCloud.SaveToCloud(App.SECRETFILE, DBPath!, DBName);
+				if (mes == DBName)
+					await DisplayAlert("Copied", $"Dictionary {DBName} has been saved", "OK");
+				else
+					await DisplayAlert("Error", mes, "OK");
+
+            }
+			catch (Exception Ex)
+			{
+				await DisplayAlert("Error!", Ex.Message, "OK");
+			}
+			App.Database.toReboot = true; 
 		}
-		
+
+		protected void onNewDict(object sender, EventArgs e)
+		{
+			//string destination = Path.GetDirectoryName(App.databasename)!;
+			string filename = App.DEFAULTDATABASENAME;
+			string folder = App.APPFOLDER;
+			string destination = Path.Combine(folder, filename);
+			byte adder = 1;
+
+			while (File.Exists(destination))
+                {
+                    destination = Path.Combine(folder,String.Concat(Path.GetFileNameWithoutExtension(filename),Convert.ToString(adder++),Path.GetExtension(filename)));
+
+                } 
+            App.CopyFilesFromResource(destination, App.DEFAULTDATABASENAME);
+            App.LoadDBFirstTime(destination);
+			App.TopicsViewModel.GetTopicList();
+        }
 		protected async void OnSynchr(object sender, EventArgs e)
 		{
 			var options = new PickOptions
@@ -122,6 +196,7 @@ namespace IndDictionary
 				PickerTitle = "Please, select database file"
 			};
 			await PickAndShow(options);
+			await DisplayAlert("Success!", "Dictionary has been copied from cloud", "OK");
 
 		}
 		protected async void OpenLibrary(object sender, EventArgs e)
@@ -130,8 +205,8 @@ namespace IndDictionary
 		}
 		protected async void onDates(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
-			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(!ShowSelected.IsChecked);
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
+			IEnumerable<dict> tempcont = App.Database.showTopicsDates<dict>(showAll);
 			foreach (dict t in tempcont)
 			{
 				conteiner.Add(new DateOrTopicClassAux { DaOrTo = t.DateRec, Spoted = false });
@@ -142,8 +217,8 @@ namespace IndDictionary
 
 		protected async void onTopics(object sender, EventArgs e)
 		{
-			List<DateOrTopicClassAux> conteiner = new List<DateOrTopicClassAux>();
-			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(!ShowSelected.IsChecked);
+            ObservableCollection<DateOrTopicClassAux> conteiner = new ObservableCollection<DateOrTopicClassAux>();
+			IEnumerable<topic> tempcont = App.Database.showTopicsDates<topic>(showAll);
 			foreach (topic t in tempcont)
 			{
 				conteiner.Add(new DateOrTopicClassAux { DaOrTo = t.Name, Spoted = false });

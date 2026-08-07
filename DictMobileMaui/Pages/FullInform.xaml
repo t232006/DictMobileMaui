@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:IndDictionary.Converters"
+             xmlns:viewmodels="clr-namespace:DictMobile.ViewModels"
              xmlns:inddictionary="clr-namespace:IndDictionary"
              xmlns:res="clr-namespace:IndDictionary.addition"
              x:Class="IndDictionary.FullInform">
@@ -14,7 +15,8 @@
             <Style x:Key="forEntrys" TargetType="Entry" >
                 <Setter Property="FontSize" Value="Large"/>
                 <Setter Property="Margin" Value="10, 7, 10, 10"/>
-                <!--Setter Property="HeightRequest" Value="300"/-->
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                Light={StaticResource BackgroundLight}}"/>
             </Style>
             <Style x:Key="forFlex" TargetType="FlexLayout">
                 <Setter Property="Direction" Value="Row"/>
@@ -22,7 +24,12 @@
                 <Setter Property="JustifyContent" Value="SpaceBetween"/>
             </Style>
             <Style x:Key="MainSpace" TargetType="Entry" BasedOn="{StaticResource forEntrys}">
-                <Setter Property="TextColor" Value="DarkBlue"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource PrimaryDark},
+                                                                Light={StaticResource PrimaryLight}}"/>
+            </Style>
+            <Style x:Key="SecondSpace" TargetType="Entry" BasedOn="{StaticResource forEntrys}">
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextDark},
+                                                                Light={StaticResource TextLight}}"/>
             </Style>
             <loc:BoolConverter x:Key="boolConverter"/>
             <loc:CheckBoxToString x:Key="checkBoxToString"/>
@@ -31,7 +38,8 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid x:Name="BaseLayout">
+        <Grid x:Name="BaseLayout" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                                                Light={StaticResource BackgroundLight}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="4*"/>
@@ -41,18 +49,20 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <inddictionary:ExtSwitch x:Name="EditBox" IsVisible="false" Grid.Column="0" Grid.Row="0"/>
+            <inddictionary:ExtSwitch x:Name="EditBox" IsVisible="false" Grid.Column="0" Grid.Row="0" Toggled="onEditBoxToggle"/>
             <FlexLayout x:Name="TopControls"
                         Style="{StaticResource forFlex}"
                         Grid.Column="0" Grid.Row="0">
                 <Picker x:Name="TopicSpace" Margin="10, 10, 2, 4" HeightRequest="35"
+                        ItemsSource="{Binding Source={x:Static inddictionary:App.TopicsViewModel},Path=TopicsList}"
+                        SelectedIndex="{Binding Source={x:Static inddictionary:App.TopicsViewModel},Path=CurrentItem, Mode=TwoWay}"
                         IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled}" />
 
-                <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Reference TopicSpace}, Path=SelectedItem}"
+                <Label x:Name="TopicSpaceLabel" Text="{Binding Source={x:Static inddictionary:App.TopicsViewModel}, Path=CurrentTopicName}"
                             IsVisible="{Binding Source={x:Reference EditBox}, Path=IsToggled,
                             Converter={StaticResource boolConverter}}"/>
                 <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"
-                    Margin="10,7,10,10"     />
+                            Margin="10,7,10,10"     />
             </FlexLayout>
             <Editor x:Name="WordSpace" Text="{Binding Word}" Style="{StaticResource MainSpace}" 
                     Placeholder="Слово"

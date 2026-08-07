@@ -1,4 +1,4 @@
-﻿namespace DictMobileMaui
+﻿namespace DictMobile
 {
     public partial class AppShell : Shell
     {

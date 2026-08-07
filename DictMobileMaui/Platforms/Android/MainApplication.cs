@@ -2,7 +2,7 @@
 using Android.Runtime;
 using IndDictionary;
 
-namespace DictMobileMaui
+namespace DictMobile
 {
     [Application]
     public class MainApplication : MauiApplication

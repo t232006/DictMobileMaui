@@ -1,7 +1,7 @@
 ﻿using Foundation;
 using IndDictionary;
 
-namespace DictMobileMaui
+namespace DictMobile
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

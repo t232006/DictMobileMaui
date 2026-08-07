@@ -1,4 +1,4 @@
-﻿namespace DictMobileMaui
+﻿namespace DictMobile
 {
     public partial class MainPage : ContentPage
     {

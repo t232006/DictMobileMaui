@@ -35,7 +35,9 @@ namespace IndDictionary.Pages
 		{
 			
 			Items = new List<BaseInfo>();
-			IEnumerable<string> fileList = Directory.GetFiles(App.APPFOLDER).Select(fi => Path.GetFileName(fi));
+			IEnumerable<string> fileList = Directory.GetFiles(App.APPFOLDER)
+													.Select(fi => Path.GetFileName(fi))
+													.Where(fi => Path.GetExtension(fi)==".db");
 			byte o=0; byte k=0; // o - index of current database; k - iterator
 			foreach (string s in fileList)
 			{
@@ -84,8 +86,9 @@ namespace IndDictionary.Pages
 			FList.SelectedItem = Items.FindIndex(x => x.filename == filename);
 			App.Database.toReboot = true;
 			PageRefresh();
+			App.TopicsViewModel.GetTopicList();
 			App.Database.ResetSelection();
-			
+			Navigation.PopAsync();
 			//App.MainPage = new NavigationPage(new MainPage());
 		}
 	}
