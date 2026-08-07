@@ -159,6 +159,15 @@
 		<Compile Update="Pages\AccordancePage.xaml.cs">
 			<DependentUpon>AccordancePage.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="Pages\Card\Card.xaml.cs">
+		  <DependentUpon>Card.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Card\Know_Dont.xaml.cs">
+		  <DependentUpon>Know_Dont.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Card\CardGame.xaml.cs">
+		  <DependentUpon>CardGame.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -181,6 +190,12 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\Card\Card.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Card\Know_Dont.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Card\CardGame.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\LoadingPage.xaml">

@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace IndDictionary
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Card : ContentPage, INotifyPropertyChanged
+    public partial class Know_Dont : Card, INotifyPropertyChanged
     {
         double cardHeight; double cardWidth;
         bool isAnimating;
@@ -32,11 +32,21 @@ namespace IndDictionary
                 OnPropertyChanged();
             }
         }
+        bool _isWord;
         CarouselView _Cards;
-        protected abstract Task MySwipe(SwipeDirection dir);
 
-        public Card(bool _word)
+        public bool isWord
         {
+            get => _isWord;
+            set
+            {
+                _isWord = value;
+                OnPropertyChanged(nameof(isWord));
+            }
+        }
+        public Know_Dont(bool _word)
+        {
+            _isWord = _word;
             Cards cards = new Cards();
             InitializeComponent();
             DeviceDisplay.Current.MainDisplayInfoChanged += OnMainDisplayInfoChanged;
@@ -46,6 +56,7 @@ namespace IndDictionary
                 IsSwipeEnabled = false,
                 Loop = true
             };
+            _Cards.ItemsSource = cards.CardSeq;
             _Cards.ItemTemplate = new DataTemplate(() =>
             {
                 Grid grid = new Grid
@@ -96,33 +107,83 @@ namespace IndDictionary
                 {
                     Content = overlayGrid
                 };
-                
+                async Task MySwipe(SwipeDirection dir)
+                {
+                    
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    switch (dir)
+                    {
+                        case SwipeDirection.Up:
+                            await CardBorder.TranslateTo(0, -cardHeight, 300, Easing.SinIn);
+                            App.Database.GetReward((_Cards.CurrentItem as dict)!.id, true);
+                            break;
+                        case SwipeDirection.Down:
+                            await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
+                            App.Database.GetReward((_Cards.CurrentItem as dict)!.id, false);
+                            break;
+                        case SwipeDirection.Left:
+                            await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);
+                            break;
+                        case SwipeDirection.Right:
+                            await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
+                            break;
+                    };
+                    CardBorder.Opacity = 0;
+                    if (dir != SwipeDirection.Right)
+                        _Cards.Position = (_Cards.Position + 1) % cards.CardSeq.Count;
+                    else
+                        _Cards.Position = (_Cards.Position - 1 + cards.CardSeq.Count) % cards.CardSeq.Count;
+                    CardBorder.TranslationY = 0;
+                    CardBorder.TranslationX = 0;
+                    CardBorder.Opacity = 1;
+                    isAnimating = false;
+                }
+                Binding bindBorderStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderStyle());
+                Binding bindTextStyle = new Binding(path: nameof(isWord), source: this, converter: new BoolToBorderLabelStyle());
                 MultiBinding MultiBind = new MultiBinding
                 {
                     Converter = new BoolToBorderText(),
                 };
-                
+                Binding bind = new Binding(
+                    path: nameof(isWord),
+                    source: this
+                    );
                 Binding param = new Binding(path: ".");
-               
+                MultiBind.Bindings.Add(bind); MultiBind.Bindings.Add(param);
+                CardBorder.SetBinding(Border.StyleProperty, bindBorderStyle);
+                contentLabel.SetBinding(Label.StyleProperty, bindTextStyle);
+                contentLabel.SetBinding(Label.TextProperty, MultiBind);
+
+                CardBorder.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(async () =>
+                    {
+                        await CardBorder.ScaleXTo(0.001, 250, Easing.SinInOut);
+                        isWord = !isWord;
+                        //rotate(isWord);
+                        await CardBorder.ScaleXTo(1, 250, Easing.SinInOut);
+                    })
+                });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Up,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Up))
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Up))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Down,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Down))
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Down))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Left,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Left))
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Left))
                 });
                 CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Right,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Right))
+                    Command = new Command(async () => await MySwipe(SwipeDirection.Right))
                 });
                 grid.Add(CardBorder);
                 return grid;
