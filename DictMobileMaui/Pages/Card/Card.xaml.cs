@@ -68,9 +68,44 @@ namespace IndDictionary
                 grid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
                 grid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
 
+                var contentLabel = new Label
+                {
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center
+                };
+
+                var overlayGrid = new Grid();
+
+                // основной текст карточки
+                overlayGrid.Children.Add(contentLabel);
+
+                // "+" сверху
+                overlayGrid.Children.Add(new Label
+                {
+                    FontFamily = "Wingdings",
+                    Text = $"{(char)0xFD}",
+                    FontSize = 40,
+                    TextColor = Colors.Green,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Start,
+                    Margin = new Thickness(0, 10, 0, 0)
+                });
+
+                // "-" снизу
+                overlayGrid.Children.Add(new Label
+                {
+                    FontFamily = "Wingdings",
+                    Text = $"{(char)0xFE}",
+                    FontSize = 40,
+                    TextColor = Colors.Red,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.End,
+                    Margin = new Thickness(0, 0, 0, 10)
+                });
+
                 Border CardBorder = new Border
                 {
-                    Content = new Label() { },
+                    Content = overlayGrid
                 };
                 async Task MySwipe(SwipeDirection dir)
                 {
@@ -117,9 +152,8 @@ namespace IndDictionary
                 Binding param = new Binding(path: ".");
                 MultiBind.Bindings.Add(bind); MultiBind.Bindings.Add(param);
                 CardBorder.SetBinding(Border.StyleProperty, bindBorderStyle);
-                CardBorder.Content.SetBinding(Label.StyleProperty, bindTextStyle);
-
-                CardBorder.Content.SetBinding(Label.TextProperty, MultiBind);
+                contentLabel.SetBinding(Label.StyleProperty, bindTextStyle);
+                contentLabel.SetBinding(Label.TextProperty, MultiBind);
 
                 CardBorder.GestureRecognizers.Add(new TapGestureRecognizer
                 {
