@@ -32,8 +32,10 @@ namespace IndDictionary
 			database = new SQLiteConnection(databasePath);
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
-			LastGetUpdate = DateTime.Now;
-			LastPostUpdate = DateTime.Now;
+			DateTime last1 = DateTime.Parse(database.Table<dict>().Max(mt => mt.Modification_Time));
+			DateTime last2 = DateTime.Parse(database.Table<topic>().Max(mt => mt.Modification_Time));
+			LastGetUpdate = (last1 > last2) ? last1 : last2;
+			LastPostUpdate = LastGetUpdate;
 			if (itemsD.Count > 0) FBDID = itemsD.Select(d => d.DBID).First();
 			else
 			{

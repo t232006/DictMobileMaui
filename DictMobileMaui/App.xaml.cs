@@ -101,6 +101,7 @@ namespace IndDictionary
 					string dbPath = databasename;
 					CopyFilesFromResource(dbPath, DEFAULTDATABASENAME);
 					LoadDBFirstTime(dbPath);
+                    
 				}
 				return database!;
 			}
@@ -156,7 +157,7 @@ namespace IndDictionary
                 if (d != null)
                 {
                     database.WriteDictFromServer(d);
-                    result.dictCount = t.Count;
+                    result.dictCount = d.Count;
                     Debug.WriteLine($"------> Received words {t.Count} Time: {database.LastGetUpdate}" );
                 }
                       
@@ -191,7 +192,7 @@ namespace IndDictionary
 
             Database.LastGetUpdate = Preferences.Get("LastGetUpdateTime", DateTime.Now);
             Database.LastPostUpdate = Preferences.Get("LastPostUpdateTime", DateTime.Now);
-            Database.LastPostUpdate = DateTime.Parse("2026-08-04 15:10:48");
+           // Database.LastPostUpdate = DateTime.Parse("2026-08-04 15:10:48");
             //httpMet = new HttpMethods();
 
 

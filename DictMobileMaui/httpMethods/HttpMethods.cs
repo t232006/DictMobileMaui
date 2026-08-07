@@ -19,8 +19,8 @@ namespace DictMobile.httpMethods
         private async Task<httpResponce> PostListAsync<T>(T DictOrTopic, string URL)
         {
             httpResponce result = new();
-            /*var json = System.Text.Json.JsonSerializer.Serialize(DictOrTopic);
-            Debug.WriteLine($"REQUEST JSON:\n{json}");*/
+            var json = System.Text.Json.JsonSerializer.Serialize(DictOrTopic);
+            Debug.WriteLine($"REQUEST JSON:\n{json}");
             var response = await client.PostAsJsonAsync(URL, DictOrTopic); 
             var res = await response.Content.ReadFromJsonAsync<SyncResponse>();
             if (response.IsSuccessStatusCode)
