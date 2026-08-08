@@ -10,10 +10,24 @@ using System.ComponentModel;
 namespace IndDictionary
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Card : ContentPage, INotifyPropertyChanged
+    public abstract partial class Card : ContentPage, INotifyPropertyChanged
     {
-        double cardHeight; double cardWidth;
-        bool isAnimating;
+        Grid supergrid = new Grid
+        {
+            Margin = new Thickness(0, 15, 0, 0)
+        };
+        protected double cardHeight; protected double cardWidth;
+        protected bool isAnimating;
+        //===================
+        protected Border CardBorder;
+        protected Grid overlayGrid = new Grid();
+        protected Label contentLabel = new Label
+        {
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        //====================
+
         public double CardWidth
         {
             get => cardWidth;
@@ -32,10 +46,89 @@ namespace IndDictionary
                 OnPropertyChanged();
             }
         }
-        CarouselView _Cards;
+        protected CarouselView _Cards;
         protected abstract Task MySwipe(SwipeDirection dir);
 
-        public Card(bool _word)
+        protected virtual DataTemplate CreateCardTemplate()
+        {
+            return new DataTemplate(() =>
+            {
+                SetupCardBorder();
+                //SetupBindings();
+                //SetupGestureRecognizers();
+
+                supergrid.Add(CardBorder);
+                return supergrid;
+            });
+        }
+
+        protected virtual void SetupGestureRecognizers()
+        {
+            CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Up,
+                Command = new Command(async () => await MySwipe(SwipeDirection.Up))
+            });
+            CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Down,
+                Command = new Command(async () => await MySwipe(SwipeDirection.Down))
+            });
+            CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Left,
+                Command = new Command(async () => await MySwipe(SwipeDirection.Left))
+            });
+            CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Right,
+                Command = new Command(async () => await MySwipe(SwipeDirection.Right))
+            });
+        }
+
+        protected virtual    void SetupBindings()
+        {
+            supergrid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
+            supergrid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
+
+            Binding param = new Binding(path: ".");
+        }
+
+        protected virtual void SetupCardBorder()
+        {
+            overlayGrid.Children.Add(contentLabel);
+
+            // "+" сверху
+            overlayGrid.Children.Add(new Label
+            {
+                FontFamily = "Wingdings",
+                Text = $"{(char)0xFD}",
+                FontSize = 40,
+                TextColor = Colors.Green,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Start,
+                Margin = new Thickness(0, 10, 0, 0)
+            });
+
+            // "-" снизу
+            overlayGrid.Children.Add(new Label
+            {
+                FontFamily = "Wingdings",
+                Text = $"{(char)0xFE}",
+                FontSize = 40,
+                TextColor = Colors.Red,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.End,
+                Margin = new Thickness(0, 0, 0, 10)
+            });
+
+            CardBorder = new Border
+            {
+                Content = overlayGrid
+            };
+        }
+
+        public Card()
         {
             Cards cards = new Cards();
             InitializeComponent();
@@ -46,89 +139,13 @@ namespace IndDictionary
                 IsSwipeEnabled = false,
                 Loop = true
             };
-            _Cards.ItemTemplate = new DataTemplate(() =>
-            {
-                Grid grid = new Grid
-                {
-                    Margin = new Thickness(0, 15, 0, 0)
-                };
-
-                // bind WidthRequest/HeightRequest к свойствам страницы, чтобы шаблон реагировал на изменения размеров
-                grid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
-                grid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
-
-                var contentLabel = new Label
-                {
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center
-                };
-
-                var overlayGrid = new Grid();
-
-                // основной текст карточки
-                overlayGrid.Children.Add(contentLabel);
-
-                // "+" сверху
-                overlayGrid.Children.Add(new Label
-                {
-                    FontFamily = "Wingdings",
-                    Text = $"{(char)0xFD}",
-                    FontSize = 40,
-                    TextColor = Colors.Green,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Start,
-                    Margin = new Thickness(0, 10, 0, 0)
-                });
-
-                // "-" снизу
-                overlayGrid.Children.Add(new Label
-                {
-                    FontFamily = "Wingdings",
-                    Text = $"{(char)0xFE}",
-                    FontSize = 40,
-                    TextColor = Colors.Red,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.End,
-                    Margin = new Thickness(0, 0, 0, 10)
-                });
-
-                Border CardBorder = new Border
-                {
-                    Content = overlayGrid
-                };
-                
-                MultiBinding MultiBind = new MultiBinding
-                {
-                    Converter = new BoolToBorderText(),
-                };
-                
-                Binding param = new Binding(path: ".");
-               
-                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
-                {
-                    Direction = SwipeDirection.Up,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Up))
-                });
-                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
-                {
-                    Direction = SwipeDirection.Down,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Down))
-                });
-                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
-                {
-                    Direction = SwipeDirection.Left,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Left))
-                });
-                CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
-                {
-                    Direction = SwipeDirection.Right,
-                    //Command = new Command(async () => await MySwipe(SwipeDirection.Right))
-                });
-                grid.Add(CardBorder);
-                return grid;
-            });
+            _Cards.ItemTemplate = CreateCardTemplate();
             MainStack.Add(_Cards);
         }
+        /*protected virtual void InitializeCardTemplate()
+        {
+            _Cards.ItemTemplate = CreateCardTemplate();
+        }*/
 
         void UpdateCardSize(double widthDp, double heightDp)
         {
@@ -174,6 +191,7 @@ namespace IndDictionary
 
         protected override void OnAppearing()
         {
+            //InitializeCardTemplate();
             // При появлении используем текущие значения окна или DeviceDisplay
             double widthDp = 0, heightDp = 0;
             if (this.Window != null && this.Window.Width > 0 && this.Window.Height > 0)
