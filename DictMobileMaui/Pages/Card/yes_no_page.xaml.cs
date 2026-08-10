@@ -8,6 +8,8 @@ namespace IndDictionary
         yes_no Cards;
         public Yes_No_Page()
         {
+            Yes_No_Progress.IsVisible = true;
+            CurrentRecord.Text = Preferences.Get("CurrentRecord", 0).ToString();
             Cards = new yes_no();
             _Cards.ItemsSource = Cards.Output;
             Cards.toPunish += MakeMistake;
@@ -15,7 +17,7 @@ namespace IndDictionary
         public async void MakeMistake()
         {
             VisualStateManager.GoToState(MainStack, "Error");
-            await Task.Delay(500);
+            await Task.Delay(400);
             VisualStateManager.GoToState(MainStack, "Normal");
         }
         protected override void CustomizeCard(Border cardBorder, Label contentLabel)

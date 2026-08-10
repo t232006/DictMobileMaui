@@ -12,20 +12,32 @@
         </ResourceDictionary>
         <res:BoolToBorderStyle x:Key="boolToBorderStyle"/>
     </ContentPage.Resources>
-    <StackLayout x:Name="MainStack" x:FieldModifier="protected">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="NormalGroup">
-                <VisualState x:Name="Error">
-                    <VisualState.Setters>
-                        <Setter Property="BackgroundColor" Value="DarkSalmon"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Normal">
-                    <VisualState.Setters>
-                        <Setter Property="BackgroundColor" Value="White"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-    </StackLayout>
+    <Grid RowDefinitions="*, Auto" x:Name="MainFraim" x:FieldModifier="protected">
+        <StackLayout x:Name="MainStack" x:FieldModifier="protected" Grid.Row="0">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="NormalGroup">
+                    <VisualState x:Name="Error">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="DarkSalmon"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </StackLayout>
+        <Grid x:Name="Yes_No_Progress" 
+              Grid.Row="1"  
+              ColumnDefinitions="auto,auto,auto,10,*,10"
+              x:FieldModifier="protected">
+            <Label Grid.Column="0" x:Name="TrueAnswers" Text="0" Style="{StaticResource var5Text}" x:FieldModifier="protected"/>
+            <Label Grid.Column="1" Text="/" Style="{StaticResource var5Text}"/>
+            <Label Grid.Column="2" x:Name="CurrentRecord" Text="0" Style="{StaticResource var5Text}" x:FieldModifier="protected" />
+            <ProgressBar Grid.Column="4" x:Name="TimerBar" Progress=".9"  HeightRequest="10"  />
+        </Grid> 
+        
+    </Grid>
 </ContentPage>
