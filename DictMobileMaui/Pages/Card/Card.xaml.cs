@@ -211,28 +211,6 @@ namespace IndDictionary
             base.OnAppearing();
         }
 
-        protected async Task Swipers(SwipeDirection dir, Border CardBorder)
-        {
-            switch (dir)
-            {
-                case SwipeDirection.Up:
-                    await CardBorder.TranslateTo(0, -cardHeight, 300, Easing.SinIn);
-                    App.Database.GetReward((_Cards.CurrentItem as dict)!.id, true);
-                    break;
-                case SwipeDirection.Down:
-                    await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
-                    App.Database.GetReward((_Cards.CurrentItem as dict)!.id, false);
-                    break;
-                case SwipeDirection.Left:
-                    await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);
-                    break;
-                case SwipeDirection.Right:
-                    await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
-                    break;
-            }
-        }
-
-
     }
 
 }

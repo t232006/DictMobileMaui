@@ -12,6 +12,20 @@
         </ResourceDictionary>
         <res:BoolToBorderStyle x:Key="boolToBorderStyle"/>
     </ContentPage.Resources>
-    <StackLayout x:Name="MainStack">
+    <StackLayout x:Name="MainStack" x:FieldModifier="protected">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="NormalGroup">
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="DarkSalmon"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="White"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </StackLayout>
 </ContentPage>

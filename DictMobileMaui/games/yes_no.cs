@@ -6,6 +6,8 @@ namespace DictMobile.games
 {
     public class yesnoModel
     {
+        public delegate void Punish();
+        public event Punish onPunish;
         void GetRewordLocal(bool forward)
         {
             if ((word.Word == translation.Word) || (word.Translation == translation.Translation))
@@ -13,11 +15,13 @@ namespace DictMobile.games
                 App.Database.GetReward(word.id, forward);
                 if (word.id != translation.id) //if there are not the same, but words are equal
                     App.Database.GetReward(translation.id, forward);
+                if (forward == false) onPunish?.Invoke();
             }
             else
             {
                 App.Database.GetReward(word.id, !forward);
                 App.Database.GetReward(translation.id, !forward);
+                if (forward == true) onPunish?.Invoke();
             }
         }
         //string quantor;
@@ -51,6 +55,8 @@ namespace DictMobile.games
     }
     public class yes_no:Games
     {
+        public delegate void Punish();
+        public event Punish toPunish;
         ObservableCollection<yesnoModel> output;
         public ObservableCollection<yesnoModel> Output
         {
@@ -66,6 +72,7 @@ namespace DictMobile.games
                 int bit = r.Next(2);
                 yesnoModel m = new();
                 m.Word = d;
+                m.onPunish += ()=> toPunish?.Invoke();
                 if (bit == 1)
                 {
                     int randVar = r.Next(yes_no_seq.Count);
