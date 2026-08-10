@@ -12,22 +12,8 @@ namespace IndDictionary
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public abstract partial class Card : ContentPage, INotifyPropertyChanged
     {
-        Grid supergrid = new Grid
-        {
-            Margin = new Thickness(0, 15, 0, 0)
-        };
         protected double cardHeight; protected double cardWidth;
         protected bool isAnimating;
-        //===================
-        protected Border CardBorder;
-        protected Grid overlayGrid = new Grid();
-        protected Label contentLabel = new Label
-        {
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-        };
-        //====================
-
         public double CardWidth
         {
             get => cardWidth;
@@ -47,85 +33,98 @@ namespace IndDictionary
             }
         }
         protected CarouselView _Cards;
-        protected abstract Task MySwipe(SwipeDirection dir);
+        protected abstract Task OnCardSwiped(SwipeDirection dir, Border cardBorder);
 
         protected virtual DataTemplate CreateCardTemplate()
         {
             return new DataTemplate(() =>
             {
-                SetupCardBorder();
-                //SetupBindings();
-                //SetupGestureRecognizers();
+                var supergrid = new Grid { Margin = new Thickness(0, 15, 0, 0) };
+                supergrid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
+                supergrid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
 
-                supergrid.Add(CardBorder);
+                var contentLabel = new Label
+                {
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center
+                };
+
+                var overlayGrid = new Grid();
+                overlayGrid.Children.Add(contentLabel);
+
+                // "+" сверху
+                overlayGrid.Children.Add(new Label
+                {
+                    FontFamily = "Wingdings",
+                    Text = $"{(char)0xFD}",
+                    FontSize = 40,
+                    TextColor = Colors.Green,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Start,
+                    Margin = new Thickness(0, 10, 0, 0)
+                });
+
+                // "-" снизу
+                overlayGrid.Children.Add(new Label
+                {
+                    FontFamily = "Wingdings",
+                    Text = $"{(char)0xFE}",
+                    FontSize = 40,
+                    TextColor = Colors.Red,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.End,
+                    Margin = new Thickness(0, 0, 0, 10)
+                });
+                var cardBorder = new Border { Content = overlayGrid };
+                // === Общие жесты свайпа (наследуются всеми потомками) ===
+                AddCommonSwipeGestures(cardBorder);
+
+                // === Хук для потомка: добавить свои биндинги / жесты / контент ===
+                CustomizeCard(cardBorder, contentLabel);
+
+                supergrid.Add(cardBorder);
                 return supergrid;
             });
         }
 
-        protected virtual void SetupGestureRecognizers()
+        protected abstract void CustomizeCard(Border cardBorder, Label contentLabel);
+
+        protected virtual void AddCommonSwipeGestures(Border CardBorder)
         {
             CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
             {
                 Direction = SwipeDirection.Up,
-                Command = new Command(async () => await MySwipe(SwipeDirection.Up))
+                Command = new Command(async () => await SafeSwipe(SwipeDirection.Up, CardBorder))
             });
             CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
             {
                 Direction = SwipeDirection.Down,
-                Command = new Command(async () => await MySwipe(SwipeDirection.Down))
+                Command = new Command(async () => await SafeSwipe(SwipeDirection.Down, CardBorder))
             });
             CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
             {
                 Direction = SwipeDirection.Left,
-                Command = new Command(async () => await MySwipe(SwipeDirection.Left))
+                Command = new Command(async () => await SafeSwipe(SwipeDirection.Left, CardBorder))
             });
             CardBorder.GestureRecognizers.Add(new SwipeGestureRecognizer
             {
                 Direction = SwipeDirection.Right,
-                Command = new Command(async () => await MySwipe(SwipeDirection.Right))
+                Command = new Command(async () => await SafeSwipe(SwipeDirection.Right, CardBorder))
             });
         }
 
-        protected virtual    void SetupBindings()
+        private async Task SafeSwipe(SwipeDirection dir, Border cardBorder)
         {
-            supergrid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
-            supergrid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
-
-            Binding param = new Binding(path: ".");
-        }
-
-        protected virtual void SetupCardBorder()
-        {
-            overlayGrid.Children.Add(contentLabel);
-
-            // "+" сверху
-            overlayGrid.Children.Add(new Label
+            if (isAnimating) return;
+            isAnimating = true;
+            try
             {
-                FontFamily = "Wingdings",
-                Text = $"{(char)0xFD}",
-                FontSize = 40,
-                TextColor = Colors.Green,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(0, 10, 0, 0)
-            });
-
-            // "-" снизу
-            overlayGrid.Children.Add(new Label
+                await OnCardSwiped(dir, cardBorder);
+            }
+            finally
             {
-                FontFamily = "Wingdings",
-                Text = $"{(char)0xFE}",
-                FontSize = 40,
-                TextColor = Colors.Red,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.End,
-                Margin = new Thickness(0, 0, 0, 10)
-            });
-
-            CardBorder = new Border
-            {
-                Content = overlayGrid
-            };
+                isAnimating = false;
+            }
         }
 
         public Card()
@@ -142,11 +141,7 @@ namespace IndDictionary
             _Cards.ItemTemplate = CreateCardTemplate();
             MainStack.Add(_Cards);
         }
-        /*protected virtual void InitializeCardTemplate()
-        {
-            _Cards.ItemTemplate = CreateCardTemplate();
-        }*/
-
+      
         void UpdateCardSize(double widthDp, double heightDp)
         {
             if (widthDp <= 0 || heightDp <= 0) return;
@@ -209,6 +204,27 @@ namespace IndDictionary
             UpdateCardSize(widthDp, heightDp);
 
             base.OnAppearing();
+        }
+
+        protected async Task Swipers(SwipeDirection dir, Border CardBorder)
+        {
+            switch (dir)
+            {
+                case SwipeDirection.Up:
+                    await CardBorder.TranslateTo(0, -cardHeight, 300, Easing.SinIn);
+                    App.Database.GetReward((_Cards.CurrentItem as dict)!.id, true);
+                    break;
+                case SwipeDirection.Down:
+                    await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
+                    App.Database.GetReward((_Cards.CurrentItem as dict)!.id, false);
+                    break;
+                case SwipeDirection.Left:
+                    await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);
+                    break;
+                case SwipeDirection.Right:
+                    await CardBorder.TranslateTo(cardWidth, 0, 300, Easing.SinIn);
+                    break;
+            }
         }
 
 

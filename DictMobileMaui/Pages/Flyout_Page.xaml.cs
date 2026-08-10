@@ -35,11 +35,15 @@ namespace IndDictionary
                     }
                 case 2:
                     {
-                        Detail = new NavigationPage(new Card(Xmode)); break;
+                        Detail = new NavigationPage(new Know_Dont(Xmode)); break;
                     }
                 case 3:
                     {
                         Detail = new NavigationPage(new AccordancePage()); break;
+                    }
+                case 4:
+                    {
+                        Detail = new NavigationPage(new Yes_No_Page()); break;
                     }
             }
             actPage = (byte)e.SelectedItemIndex;

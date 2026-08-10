@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace IndDictionary.Converters
 {
-	class BoolConverter : IValueConverter
+	public class BoolConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -17,7 +17,7 @@ namespace IndDictionary.Converters
 			return temp;
 		}
 	}
-	class CheckBoxToString : IValueConverter
+	public class CheckBoxToString : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -31,7 +31,7 @@ namespace IndDictionary.Converters
 			return temp;
 		}
 	}
-	class stringToDate : IValueConverter
+	public class stringToDate : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -47,7 +47,7 @@ namespace IndDictionary.Converters
 			return ((DateTime)value).ToString("dd.MM.yyyy");
 		}
 	}
-	class BoolToBorderStyle: IValueConverter
+	public class BoolToBorderStyle: IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -59,7 +59,7 @@ namespace IndDictionary.Converters
 			throw new NotImplementedException();
 		}
 	}
-	class BoolToBorderLabelStyle : IValueConverter
+	public class BoolToBorderLabelStyle : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -71,7 +71,7 @@ namespace IndDictionary.Converters
 			throw new NotImplementedException();
 		}
 	}
-	class BoolToBorderText : IMultiValueConverter
+	public class BoolToBorderText : IMultiValueConverter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 		{
