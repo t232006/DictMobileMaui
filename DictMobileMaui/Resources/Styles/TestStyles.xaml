@@ -119,8 +119,7 @@
     <Setter Property="StrokeThickness" Value="1"/>
     <Setter Property="BackgroundColor" Value="White"/>
     <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
-    <Setter Property="WidthRequest" Value="300"/>
-        <Setter Property="HeightRequest" Value="100"/>
+    
         <Setter Property="Shadow">
             <Setter.Value>
                 <Shadow Brush="Black"

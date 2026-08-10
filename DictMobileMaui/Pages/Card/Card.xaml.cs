@@ -76,6 +76,11 @@ namespace IndDictionary
                     Margin = new Thickness(0, 0, 0, 10)
                 });
                 var cardBorder = new Border { Content = overlayGrid };
+                // Сделать Border и внутреннюю сетку растягивающимися, чтобы рамка занимала доступное пространство
+                /*cardBorder.HorizontalOptions = LayoutOptions.Fill;
+                cardBorder.VerticalOptions = LayoutOptions.Fill;
+                overlayGrid.HorizontalOptions = LayoutOptions.Fill;
+                overlayGrid.VerticalOptions = LayoutOptions.Fill;*/
                 // === Общие жесты свайпа (наследуются всеми потомками) ===
                 AddCommonSwipeGestures(cardBorder);
 
@@ -155,13 +160,13 @@ namespace IndDictionary
             {
                 if (this.Window != null)
                 {
-                    CardHeight = this.Window.Height * 0.75;
+                    CardHeight = this.Window.Height * 0.72;
                     CardWidth = this.Window.Width * 0.4;
                 }
                 else
                 {
                     CardWidth = widthDp * 0.4;
-                    CardHeight = heightDp * 0.75;
+                    CardHeight = heightDp * 0.72;
                 }
             }
         }

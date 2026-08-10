@@ -13,8 +13,10 @@ namespace IndDictionary
         }
         protected override void CustomizeCard(Border cardBorder, Label contentLabel)
         {
-            contentLabel.BindingContext = _Cards;
+            //contentLabel.BindingContext = _Cards.CurrentItem;
             contentLabel.SetBinding(Label.TextProperty, "Quantor");
+            cardBorder.Style = (Style)App.Current.Resources["var5"];
+            contentLabel.Style = (Style)App.Current.Resources["var5Text"];
         }
 
         protected override async Task OnCardSwiped(SwipeDirection dir, Border CardBorder)
