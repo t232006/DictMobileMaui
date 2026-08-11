@@ -23,7 +23,7 @@
             <VerticalStackLayout>
 
 
-                <ListView x:Name="Sections" 
+                <ListView x:Name="Sections" x:FieldModifier="public"
                           ItemsSource="{StaticResource Key=SectionsArray}"
                           ItemSelected="onSelected">
                     <ListView.ItemTemplate>

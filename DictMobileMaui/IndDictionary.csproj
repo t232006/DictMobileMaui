@@ -186,6 +186,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Pages\AfterYes_NoPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Pages\BasePage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</MauiXaml>

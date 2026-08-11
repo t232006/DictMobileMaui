@@ -12,7 +12,7 @@ namespace IndDictionary
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Flyout_Page : FlyoutPage
     {
-        bool Xmode=false;
+        public bool Xmode=false;
         byte actPage = 0;
 		//public bool Transl { set => transl = value; }
 		public Flyout_Page()

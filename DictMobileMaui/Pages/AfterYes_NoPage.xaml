@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DictMobile.Pages.AfterYes_NoPage"
+             BackgroundColor="White"
+             Title="">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ResultButtonStyle" TargetType="Button">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Padding" Value="30,15"/>
+                <Setter Property="BorderWidth" Value="1"/>
+                <Setter Property="BorderColor" Value="#D3D1C7"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="TextColor" Value="#3d3d3a"/>
+            </Style>
+
+            <Style x:Key="StatLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="TextColor" Value="#888780"/>
+                <Setter Property="FontAttributes" Value="None"/>
+            </Style>
+
+            <Style x:Key="StatValueStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#378ADD"/>
+            </Style>
+
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="28"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#3d3d3a"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout 
+        Padding="20"
+        Spacing="0"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        MaximumWidthRequest="400">
+
+        <Label 
+            Text="Time is over."
+            Style="{StaticResource TitleStyle}"
+            Margin="0,0,0,48"/>
+
+        <VerticalStackLayout Spacing="24" Margin="0,0,0,48">
+
+            <HorizontalStackLayout 
+                Spacing="12"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Label 
+                    Text="Your result:"
+                    Style="{StaticResource StatLabelStyle}"
+                    VerticalOptions="Center"/>
+                <Label 
+                    x:Name="ResultLabel"
+                    Text="25"
+                    Style="{StaticResource StatValueStyle}"
+                    VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout 
+                Spacing="12"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Label 
+                    Text="Your record:"
+                    Style="{StaticResource StatLabelStyle}"
+                    VerticalOptions="Center"/>
+                <Label 
+                    x:Name="RecordLabel"
+                    Text="30"
+                    Style="{StaticResource StatValueStyle}"
+                    VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        <HorizontalStackLayout 
+            Spacing="16"
+            HorizontalOptions="Center">
+            <Button 
+                x:Name="RetryBut"
+                Text="Retry"
+                Style="{StaticResource ResultButtonStyle}"
+                Pressed="onRetryPress"
+                WidthRequest="120"/>
+            <Button 
+                x:Name="BackBut"
+                Text="Back"
+                Pressed="onBackPress"
+                Style="{StaticResource ResultButtonStyle}"
+                WidthRequest="120"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

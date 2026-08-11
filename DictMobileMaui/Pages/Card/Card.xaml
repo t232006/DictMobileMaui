@@ -36,7 +36,7 @@
             <Label Grid.Column="0" x:Name="TrueAnswers" Text="0" Style="{StaticResource var5Text}" x:FieldModifier="protected"/>
             <Label Grid.Column="1" Text="/" Style="{StaticResource var5Text}"/>
             <Label Grid.Column="2" x:Name="CurrentRecord" Text="0" Style="{StaticResource var5Text}" x:FieldModifier="protected" />
-            <ProgressBar Grid.Column="4" x:Name="TimerBar" Progress=".9"  HeightRequest="10"  />
+            <ProgressBar Grid.Column="4" x:Name="TimerBar" Progress=".9"  HeightRequest="10" x:FieldModifier="protected"  />
         </Grid> 
         
     </Grid>
