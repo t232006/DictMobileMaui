@@ -1,18 +1,10 @@
 ﻿using DictMobile.games;
 using DictMobile.models;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Controls.StyleSheets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace IndDictionary
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class TestPage : ContentPage
+	public partial class TestPage : BaseGamePage
 	{
 		Tests test = new Tests();
 		bool word_translation;
@@ -20,9 +12,27 @@ namespace IndDictionary
 		ListView Variants;
 		public TestPage(bool _word_translation)
 		{
-			InitializeComponent();
-			
-			word_translation = _word_translation;
+            //InitializeComponent();
+
+            var MainStack = new VerticalStackLayout()
+			{
+				BackgroundColor = Application.Current.UserAppTheme == AppTheme.Dark
+					? (Color)Application.Current.Resources["BackgroundDark"]
+					: (Color)Application.Current.Resources["BackgroundLight"]
+			};
+
+            var Answer = new Label
+            {
+                FontSize = 16,
+                Margin = new Thickness(15, 10, 0, 20),
+                TextColor = Application.Current.RequestedTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["TextDark"]
+					: (Color)Application.Current.Resources["TextLight"]
+            };
+            MainStack.Add(Answer);
+            SetPageContent(MainStack);
+
+            word_translation = _word_translation;
 			Variants = new ListView
 			{
 				ItemsSource = test.Pool,

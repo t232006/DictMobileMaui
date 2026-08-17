@@ -22,6 +22,7 @@ namespace IndDictionary
             TimerBar.Progress = 1;
             timer.Interval = TimeSpan.FromSeconds(1);
             Cards.toPunish += MakeMistake;
+
         }
         private void onTimerTick(object sender, EventArgs e)
         {

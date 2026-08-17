@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<loc:BaseGamePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:IndDictionary"
-             x:Class="IndDictionary.TestPage"
-             Title="Tests">
+             x:Class="IndDictionary.TestPage">
 
         <VerticalStackLayout x:Name="MainStack" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
                                          Light={StaticResource BackgroundLight}}">
         <Label x:Name="Answer" FontSize="Medium" Margin="15,10,0,20" TextColor="{AppThemeBinding Dark={StaticResource TextDark},
                                                     Light={StaticResource TextLight}}"/>
     </VerticalStackLayout>
-</ContentPage> 
+</loc:BaseGamePage> 

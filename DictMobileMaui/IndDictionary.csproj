@@ -156,19 +156,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Pages\AccordancePage.xaml.cs">
+		<Compile Update="Pages\GamesPages\AccordancePage.xaml.cs">
 			<DependentUpon>AccordancePage.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Pages\Card\Card.xaml.cs">
+		<Compile Update="Pages\GamesPages\Card\Card.xaml.cs">
 		  <DependentUpon>Card.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Pages\Card\Know_Dont.xaml.cs">
+		<Compile Update="Pages\GamesPages\Card\Know_Dont.xaml.cs">
 		  <DependentUpon>Know_Dont.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Pages\Card\CardGame.xaml.cs">
-		  <DependentUpon>CardGame.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="Pages\Card\yes_no_page.xaml.cs">
+		<Compile Update="Pages\GamesPages\Card\yes_no_page.xaml.cs">
 		  <DependentUpon>Yes_No_Page.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="Properties\Resources.Designer.cs">
@@ -189,28 +186,25 @@
 		<MauiXaml Update="Pages\AfterYes_NoPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\BasePage.xaml">
+		<MauiXaml Update="Pages\GamesPages\BaseGamePage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\AccordancePage.xaml">
+		<MauiXaml Update="Pages\GamesPages\AccordancePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\Card\Card.xaml">
+		<MauiXaml Update="Pages\GamesPages\Card\Card.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\Card\Know_Dont.xaml">
+		<MauiXaml Update="Pages\GamesPages\Card\Know_Dont.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\Card\CardGame.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Pages\Card\Yes_No_Page.xaml">
+		<MauiXaml Update="Pages\GamesPages\Card\Yes_No_Page.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\LoadingPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\TestPage.xaml">
+		<MauiXaml Update="Pages\GamesPages\TestPage.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\CardStyles.xaml">

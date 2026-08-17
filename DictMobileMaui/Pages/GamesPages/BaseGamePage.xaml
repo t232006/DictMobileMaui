@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.BaseGamePage">
+    <ContentPage.Resources>
+        
+    </ContentPage.Resources>
+    <Grid RowDefinitions="15,*"
+          BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                             Light={StaticResource BackgroundLight}}">
+        <!-- ProgressBar -->
+        <ProgressBar x:Name="LoadingProgress" 
+                     IsVisible="True"
+                     Margin="10,0,10,0"
+                     Progress=".5"
+                     Grid.Row="0"/>
+        <!-- Контентная область для дочерних классов -->
+        <ContentView x:Name="ContentArea" Grid.Row="1"/>
+    </Grid>
+</ContentPage>

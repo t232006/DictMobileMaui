@@ -8,11 +8,15 @@ using Microsoft.Maui.Layouts;
 
 
 namespace IndDictionary
-{
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	
-	public partial class AccordancePage : ContentPage, INotifyPropertyChanged
+{	
+	public partial class AccordancePage : BaseGamePage
 	{
+        FlexLayout MainStack = new()
+        {
+            BackgroundColor = Application.Current.UserAppTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["BackgroundDark"]
+                    : (Color)Application.Current.Resources["BackgroundLight"]
+        };
         FlexLayout fl1 = new FlexLayout { Direction = FlexDirection.Column };
         FlexLayout fl2 = new FlexLayout { Direction = FlexDirection.Column };
         void DrawNewPage()
@@ -38,9 +42,9 @@ namespace IndDictionary
         }
         public AccordancePage()
 		{
-			InitializeComponent();
-            
-            
+            InitializeComponent();
+            SetPageContent(MainStack);
+
             MainStack.Direction = (DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
                  ? FlexDirection.Row
                  : FlexDirection.Column;
