@@ -68,12 +68,14 @@
                     Placeholder="Слово"
                     IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled, 
                                  Converter={StaticResource boolConverter}}"  
-                    Grid.Row="1" Grid.Column="0"/>
+                    Grid.Row="1" Grid.Column="0"
+                    TextChanged="onTextChanged"/>
             <Editor x:Name="TransSpace" Text="{Binding Translation}" Style="{StaticResource forEntrys}" 
                          Placeholder="Translation"
                         IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled,
                     Converter={StaticResource boolConverter}}"
-                    Grid.Row="2" Grid.Column="0"/>
+                    Grid.Row="2" Grid.Column="0"
+                    TextChanged="onTextChanged"/>
             <FlexLayout x:Name="LabelSpace" Style="{StaticResource forFlex}"
                         Grid.Row="3" Grid.Column="0">
                 <Label x:Name="RelSpace" Text="{Binding Relevation, StringFormat='Открывалось {0} раз'}"/>

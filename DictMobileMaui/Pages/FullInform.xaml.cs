@@ -1,4 +1,5 @@
 ﻿
+using DictMobile.addition;
 using DictMobile.models;
 using DictMobile.ViewModels;
 using IndDictionary.addition;
@@ -88,6 +89,10 @@ namespace IndDictionary
                 ToolbarItems.Remove(DeleteItem); ToolbarItems.Remove(ConfirmItem); ToolbarItems.Remove(CancelItem);
             }
         }
+		protected void onTextChanged(object Sender, TextChangedEventArgs e)
+		{
+			(Sender as Editor).Text = serbian_letters_exchange.MakeSerbian(e.NewTextValue);
+		}
 
 		async protected void onConfPress(object Sender, EventArgs e)
 		{
