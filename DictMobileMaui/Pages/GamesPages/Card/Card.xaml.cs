@@ -83,7 +83,8 @@ namespace IndDictionary
                     Margin = new Thickness(0, 0, 0, 10)
                 });
                 var cardBorder = new Border { Content = overlayGrid };
-                
+                //cardBorder.ScaleX = 1; cardBorder.ScaleY = 1;
+
                 AddCommonSwipeGestures(cardBorder);
 
                 // === Хук для потомка: добавить свои биндинги / жесты / контент ===
@@ -178,59 +179,7 @@ namespace IndDictionary
             Grid.SetRow(MainStack, 0);
             MainFraim.Children.Add(MainStack);
 
-            // === Нижний Grid (Yes_No_Progress) ===
-            Yes_No_Progress = new Grid
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = 10 },
-                    new ColumnDefinition { Width = GridLength.Star },
-                    new ColumnDefinition { Width = 10 }
-                }
-            };
-
-            // TrueAnswers
-            TrueAnswers = new Label
-            {
-                Text = "0",
-                Style = (Style)Application.Current.Resources["var5Text"]   // или из Resources страницы, если определено там
-            };
-            Grid.SetColumn(TrueAnswers, 0);
-            Yes_No_Progress.Children.Add(TrueAnswers);
-
-            // "/"
-            var slashLabel = new Label
-            {
-                Text = "/",
-                Style = (Style)Application.Current.Resources["var5Text"]
-            };
-            Grid.SetColumn(slashLabel, 1);
-            Yes_No_Progress.Children.Add(slashLabel);
-
-            // CurrentRecord
-            CurrentRecord = new Label
-            {
-                Text = "0",
-                Style = (Style)Application.Current.Resources["var5Text"]
-            };
-            Grid.SetColumn(CurrentRecord, 2);
-            Yes_No_Progress.Children.Add(CurrentRecord);
-
-            // TimerBar
-            TimerBar = new ProgressBar
-            {
-                Progress = 0.9,
-                HeightRequest = 10
-            };
-            Grid.SetColumn(TimerBar, 4);
-            Yes_No_Progress.Children.Add(TimerBar);
-
-            // Добавляем нижний Grid во вторую строку
-            Grid.SetRow(Yes_No_Progress, 1);
-            MainFraim.Children.Add(Yes_No_Progress);
+                
 
             // Устанавливаем Content страницы
             //Content = MainFraim;
@@ -245,7 +194,8 @@ namespace IndDictionary
             {
                 VerticalOptions = LayoutOptions.Start,
                 IsSwipeEnabled = false,
-                Loop = true
+                Loop = false,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
             };
             _Cards.ItemTemplate = CreateCardTemplate();
             MainStack.Add(_Cards);

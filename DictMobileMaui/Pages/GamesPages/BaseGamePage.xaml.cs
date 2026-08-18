@@ -11,6 +11,7 @@ namespace IndDictionary
 		public BaseGamePage()
 		{
 			InitializeComponent();
+			BindingContext = App.Database;
 		}
         protected void SetPageContent(View content)
         {

@@ -12,11 +12,66 @@ namespace IndDictionary
         short rec;
         public Yes_No_Page()
         {
+            // === Нижний Grid (Yes_No_Progress) ===
+            Yes_No_Progress = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = 10 },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = 10 }
+                }
+            };
+
+            // TrueAnswers
+            TrueAnswers = new Label
+            {
+                Text = "0",
+                Style = (Style)Application.Current.Resources["var5Text"]   // или из Resources страницы, если определено там
+            };
+            Grid.SetColumn(TrueAnswers, 0);
+            Yes_No_Progress.Children.Add(TrueAnswers);
+
+            // "/"
+            var slashLabel = new Label
+            {
+                Text = "/",
+                Style = (Style)Application.Current.Resources["var5Text"]
+            };
+            Grid.SetColumn(slashLabel, 1);
+            Yes_No_Progress.Children.Add(slashLabel);
+
+            // CurrentRecord
+            CurrentRecord = new Label
+            {
+                Text = "0",
+                Style = (Style)Application.Current.Resources["var5Text"]
+            };
+            Grid.SetColumn(CurrentRecord, 2);
+            Yes_No_Progress.Children.Add(CurrentRecord);
+
+            // TimerBar
+            TimerBar = new ProgressBar
+            {
+                //Progress = 0.9,
+                HeightRequest = 10
+            };
+            Grid.SetColumn(TimerBar, 4);
+            Yes_No_Progress.Children.Add(TimerBar);
+
+            // Добавляем нижний Grid во вторую строку
+            Grid.SetRow(Yes_No_Progress, 1);
+            MainFraim.Children.Add(Yes_No_Progress);
+
             Yes_No_Progress.IsVisible = true;
             CurrentRecord.Text = Preferences.Get("CurrentRecord", 0).ToString();
             rec = Int16.Parse(CurrentRecord.Text);
             Cards = new yes_no();
             _Cards.ItemsSource = Cards.Output;
+            //_Cards.Position = 0;
             timer = Dispatcher.CreateTimer();
             timer.Tick += onTimerTick;
             TimerBar.Progress = 1;
@@ -87,13 +142,14 @@ namespace IndDictionary
                     break;
             }
             TrueAnswers.Text = ta.ToString();
+            CardBorder.TranslationY = 0;
+            CardBorder.TranslationX = 0;
             CardBorder.Opacity = 0;
             if (dir != SwipeDirection.Right)
                 _Cards.Position = (_Cards.Position + 1) % Cards.Output.Count;
             else
                 _Cards.Position = (_Cards.Position - 1 + Cards.Output.Count) % Cards.Output.Count;
-            CardBorder.TranslationY = 0;
-            CardBorder.TranslationX = 0;
+            
             CardBorder.Opacity = 1;
             isAnimating = false;
         }

@@ -10,9 +10,9 @@
                                              Light={StaticResource BackgroundLight}}">
         <!-- ProgressBar -->
         <ProgressBar x:Name="LoadingProgress" 
+                     Progress="{Binding Progress}"
                      IsVisible="True"
                      Margin="10,0,10,0"
-                     Progress=".5"
                      Grid.Row="0"/>
         <!-- Контентная область для дочерних классов -->
         <ContentView x:Name="ContentArea" Grid.Row="1"/>

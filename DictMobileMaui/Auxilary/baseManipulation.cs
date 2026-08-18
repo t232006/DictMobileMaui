@@ -7,17 +7,44 @@ using System.Text.Json;
 using DictMobile.models;
 using DictMobile.httpMethods;
 using System.Diagnostics;
+using System.ComponentModel;
 //using Android.OS;
 
 namespace IndDictionary
 {
 	public enum WhatToShow { words, phrases, alltogether }
 	public enum WhatToSelect { dates, topics }
-	public class baseManipulation
+	public class baseManipulation: INotifyPropertyChanged
 	{
 		private uint? FBDID;
 		private DateTime _LastGetUpdate;
 		private DateTime _LastPostUpdate;
+
+		private double _progress;
+		public double Progress
+		{
+			get => _progress;
+			set
+			{
+				if (_progress != value)
+				{
+					_progress = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+		private void ProgressUpdate()
+		{
+            int total = database.Table<dict>().Where(r => r.IsDeleted == false && r.Usersel == true).Sum(r => r.Grade);
+            int potential = database.Table<dict>().Where(r => r.IsDeleted == false && r.Usersel == true).Count() * 6;
+            Progress = potential>0? (double) total / potential : 0;
+        }
+
+		public static readonly BindableProperty ProgressProperty =
+			BindableProperty.Create("Progress",
+				typeof(double),
+				typeof(baseManipulation), 0);
+
 		public DateTime LastGetUpdate { set => _LastGetUpdate = value; get => _LastGetUpdate; }
         public DateTime LastPostUpdate { set => _LastPostUpdate = value; get => _LastPostUpdate; }
         public uint? BDID { get => FBDID; }
@@ -27,7 +54,13 @@ namespace IndDictionary
 		List<dict> itemsD;
 		List<topic> itemsT;
 
-		public baseManipulation(string databasePath)
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Progress"));
+        }
+
+        public baseManipulation(string databasePath)
 		{
 			database = new SQLiteConnection(databasePath);
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
@@ -57,6 +90,7 @@ namespace IndDictionary
 					if (item.Grade > 0) item.Grade -= 1;
 				}
 				saveRecD(item);
+				ProgressUpdate();
 			}
 		}
 		public void dispose()
@@ -216,6 +250,7 @@ namespace IndDictionary
 			temp.IsDeleted = true;
 			temp.Modification_Time = datesCorrection.toCorrectDate(DateTime.Now.ToString());
 			database.Update(temp);
+			ProgressUpdate();
             Debug.WriteLine("Record '{0}' has deleted", temp.Word);
             // обновляем кэш
             itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
