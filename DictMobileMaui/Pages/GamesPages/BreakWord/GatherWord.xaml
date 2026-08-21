@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IndDictionary.GatherWord"
+             Title="GatherWord">
+    <Grid RowDefinitions=".3*,.60*,.1*" ColumnDefinitions=".9*">
+        
+        
+        <!-- Editor занимает верхнюю 1/3 высоты -->
+        <VerticalStackLayout Grid.Row="0" 
+                             Grid.Column="0" 
+                             HorizontalOptions="Fill">
+            <Label x:Name="WordSpace" 
+                   FontSize="Medium"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+        
+            <Editor x:Name="EnterSpace"
+                    BackgroundColor="LightYellow"
+                    Margin="50"
+                    AutoSize="TextChanges"
+                    HorizontalOptions="Fill"
+                    TextChanged="onTextChanged"
+                    /> 
+        </VerticalStackLayout>
+        
+
+        <!-- Grid с 10 столбцами и 5 строками, начиная со второй половины высоты, по центру по X -->
+        <Grid x:Name="WorkingArea"
+              Grid.Row="1" Grid.Column="0"
+              
+              ColumnDefinitions="*,*,*,*,*,*,*,*,*,*"
+              RowDefinitions="*,*,*,*,*"
+              HorizontalOptions="Center"
+              VerticalOptions="Start"
+              Padding="5"
+              ColumnSpacing="2"
+              RowSpacing="2">
+
+        </Grid>
+        <Button x:Name="AgainButton" 
+                Text="Again" 
+                Pressed="onAgainPress" 
+                Grid.Row="2" 
+                Grid.Column="0"
+                Margin="10,0,10,10">
+        </Button>
+
+    </Grid>
+</ContentPage>

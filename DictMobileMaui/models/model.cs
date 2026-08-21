@@ -19,7 +19,7 @@ namespace DictMobile.models
 		[Column ("Score")]
 		public byte Grade { get; set; }
 		public bool Usersel { get; set; }
-		public bool? Phrase { get; set; }
+		public bool Phrase { get; set; }
 		public byte Relevation { get; set; }
 		public bool IsDeleted { get; set; }
 		public string Modification_Time { get; set; }

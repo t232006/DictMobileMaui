@@ -1,9 +1,8 @@
-﻿
-using IndDictionary;
+﻿using IndDictionary;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace DictMobile.Auxilary
+namespace DictMobile.Pages.GamesPages.Accordance
 {
     public class ShapeComponent : ContentView
     {

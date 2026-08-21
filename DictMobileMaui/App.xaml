@@ -7,9 +7,10 @@
 
         <ResourceDictionary Source="/Resources/Styles/TestStyles.xaml"/>
         <ResourceDictionary Source="/Resources/Styles/CardStyles.xaml"/>
+        
+        <ResourceDictionary Source="/Resources/Styles/Styles.xaml"/>
 
         <ResourceDictionary>
-
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="#3fcc62" />
                 <Setter Property="BarTextColor" Value="White" />

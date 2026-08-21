@@ -140,11 +140,9 @@
         <Setter Property="Stroke" Value="#FF9800"/>
         <Setter Property="StrokeThickness" Value="3"/>
         <Setter Property="BackgroundColor" Value="#FFF8E1"/>
-        <Setter Property="StrokeShape" Value="RoundRectangle 25"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 5"/>
         <Setter Property="StrokeDashArray" Value="5,3"/>
         <Setter Property="StrokeDashOffset" Value="2"/>
-        <Setter Property="WidthRequest" Value="300"/>
-        <Setter Property="HeightRequest" Value="100"/>
     </Style>
     <Style x:Key="var6Text" TargetType="Label" >
         <Setter Property="FontSize" Value="16"/>
@@ -152,4 +150,13 @@
         <Setter Property="HorizontalOptions" Value="Center"/>
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
+    <Style x:Key="var6Selected" TargetType="Border">
+        <Setter Property="Stroke" Value="#6B5B95"/>
+        <Setter Property="StrokeThickness" Value="4"/>
+        <Setter Property="BackgroundColor" Value="#E8E4F3"/>
+    </Style>
+    <Style x:Key="var6TextSelected" TargetType="Label" BasedOn="{StaticResource var6Text}">
+        <Setter Property="TextColor" Value="#6B5B95"/>
+    </Style>
+
 </ResourceDictionary>

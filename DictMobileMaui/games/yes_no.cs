@@ -64,7 +64,7 @@ namespace DictMobile.games
         }
         public yes_no()
         {
-            yes_no_seq = GetPool();
+            yes_no_seq = GetPool(false);
             output = new();
             Random r = new Random();
             foreach (dict d in yes_no_seq)

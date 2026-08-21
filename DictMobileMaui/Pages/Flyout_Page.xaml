@@ -13,6 +13,7 @@
                         <x:String>Cards</x:String>
                         <x:String>Accordance</x:String>
                         <x:String>Yes-No</x:String>
+                        <x:String>Gather text</x:String>
                     </x:Array>
                     <x:Array x:Key="xMode" Type="{x:Type x:String}">
                         <x:String>Word</x:String>

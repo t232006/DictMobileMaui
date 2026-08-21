@@ -45,6 +45,10 @@ namespace IndDictionary
                     {
                         Detail = new NavigationPage(new Yes_No_Page()); break;
                     }
+                case 5:
+                    {
+                        Detail = new NavigationPage(new GatherWord()); break;
+                    }
             }
             actPage = (byte)e.SelectedItemIndex;
 			//Detail = new NavigationPage(new WordPage(transl));

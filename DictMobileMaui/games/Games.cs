@@ -8,17 +8,18 @@ namespace DictMobile.games
     public class Games : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler? PropertyChanged;
-		protected ObservableCollection<dict> selList = new ObservableCollection<dict>(App.Database.getSelected());
+		protected ObservableCollection<dict> selList;
 		protected void OnPropertyChanged(string propName)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 		}
 
-		public ObservableCollection<dict> GetPool()
+		public ObservableCollection<dict> GetPool(bool need_6)  //take all
 		{
-			return GetPool(selList.Count, selList);
+			selList = new ObservableCollection<dict>(App.Database.getSelected(need_6));
+            return GetPool(selList.Count, selList);
 		}
-		public ObservableCollection<dict> GetPool(int count, ObservableCollection<dict> Source)
+		public ObservableCollection<dict> GetPool(int count, ObservableCollection<dict> Source) //take by some count (likely 6)
 		{
 			ObservableCollection<dict> pool = new ObservableCollection<dict>();
 			Random rand = new Random();

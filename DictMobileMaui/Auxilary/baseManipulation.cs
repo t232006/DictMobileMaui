@@ -314,10 +314,11 @@ namespace IndDictionary
 			database.Query<dict>(request);
 		}
 
-		public IEnumerable<dict> getSelected()
+		public IEnumerable<dict> getSelected(bool need_6)
 		{
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
-			if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
+			if (need_6)
+				if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
 			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
