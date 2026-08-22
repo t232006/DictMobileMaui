@@ -8,15 +8,29 @@ public partial class GatherWord : ContentPage
 	BreakWord bw;
 	//Dictionary<string, byte> WordsDict = new();
 	//Dictionary<char, byte> LettersDict = new();
-	public delegate void WrittenDel(int num);
-	public event WrittenDel onEnterText;
-	protected void onTextChanged (object sender, EventArgs e)
+	private List<LetterBorder> borders;
+	protected void onTextChanged (object sender, TextChangedEventArgs e)
 	{
-		if (bw.Words.Length>0)
-			for (int i=0; i<bw.Words.Length; i++)
+		if (bw.Words.Length > 0)
+		{
+			string hailstack = e.NewTextValue;
+			foreach (LetterBorder lb in borders)
 			{
-				if ((sender as Editor)!.Text.Contains(bw.Words[i])) onEnterText?.Invoke(i);
+				string needle = (lb.Shape.Content as Label)!.Text;
+				if (hailstack.Contains(needle))
+				{
+					//lb.OnLetterTapped();
+					hailstack.Remove(hailstack.IndexOf(needle));
+					lb.Selected = true;
+				}
+				else
+				{
+					lb.Selected = false;
+				}
+					
 			}
+		}
+			
 	}
 	private void PrintText(bool toPrint, string Text)
 	{
@@ -34,6 +48,8 @@ public partial class GatherWord : ContentPage
 	private void Init()
 	{
 		bw = new();
+		borders = new();
+		EnterSpace.Text = "";
 		WorkingArea.Clear();
 		dict theWord = bw.TheWord;
 		WordSpace.Text = theWord.Word;
@@ -46,8 +62,9 @@ public partial class GatherWord : ContentPage
 				{
 					int index = i * 10 + j;
 					if ( index > bw.Words.Length-1) return;
-                    LetterBorder border = new(bw.Words[index]);
+                    LetterBorder border = new(bw.Words[index], index, this);
 					border.LetterTapped += PrintText;
+					borders.Add(border);
 					WorkingArea.Add(border.Shape,j,i);
 				}
 		}

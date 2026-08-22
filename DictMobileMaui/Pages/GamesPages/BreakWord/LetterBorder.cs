@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+﻿using IndDictionary;
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace DictMobile.Pages.GamesPages.BreakWord
@@ -15,21 +9,20 @@ namespace DictMobile.Pages.GamesPages.BreakWord
         public event MethodLetterTapped LetterTapped;
         public Border Shape;
         Label l;
-        private int number;
+        //private int number;
         private bool selected = false;
-        public bool Selected { get => selected; }
-        public Point coord { get; set; }
-        private void textFound(int num)
-        {
-            if (num==number)
+        public bool Selected 
+        { 
+            get => selected; set
             {
-                selected = true;
-                OnLetterTapped();
+                if (value == true) selectOn(); else selectOff();
             }
         }
+        //public Point coord { get; set; }
+        
         private void Init()
         {
-            Application.MainPage
+            //_page.onEnterText += textFound;
             Shape = new Border
             {
                 Style = (Style)Application.Current.Resources["var6"],
@@ -48,30 +41,38 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             };
             Shape.Content = l;
         }
-        public LetterBorder(char Letter, int _number)
+        public LetterBorder(char Letter, int _number, GatherWord _page)
         {
             Init();
-            number = _number;
+            
             l.Text = Letter.ToString();
         }
-        public LetterBorder(string Word, int _number)
+        public LetterBorder(string Word, int _number, GatherWord _page)
         {
             Init();
-            number = _number;
+            
             l.Text = Word;
         }
-        private void OnLetterTapped()
+        private void selectOn()
+        {
+                Shape.Style = (Style)Application.Current.Resources["var6Selected"];
+                l.Style = (Style)Application.Current.Resources["var6TextSelected"];
+        }
+        private void selectOff()
+        {
+                Shape.Style = (Style)Application.Current.Resources["var6"];
+                l.Style = (Style)Application.Current.Resources["var6Text"];
+        }
+        public void OnLetterTapped()
         {
             selected = !selected;
             if (!selected)
             {
-                Shape.Style = (Style)Application.Current.Resources["var6"];
-                l.Style = (Style)Application.Current.Resources["var6Text"];
+                selectOff();
             }
             else
             {
-                Shape.Style = (Style)Application.Current.Resources["var6Selected"];
-                l.Style = (Style)Application.Current.Resources["var6TextSelected"];
+                selectOn();
             }
             LetterTapped?.Invoke(Selected, l.Text);
         }
