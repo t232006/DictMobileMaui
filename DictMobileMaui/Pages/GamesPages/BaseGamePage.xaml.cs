@@ -17,5 +17,13 @@ namespace IndDictionary
         {
             ContentArea.Content = content;
         }
+		protected async void ShowMistake()
+		{
+            VisualStateManager.GoToState(ContentArea, "Error");
+            VisualStateManager.GoToState(forBar, "ErrorBar");
+            await Task.Delay(400);
+            VisualStateManager.GoToState(forBar, "NormalBar");
+            VisualStateManager.GoToState(ContentArea, "Normal");
+        }
     } 
 }

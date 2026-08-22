@@ -104,9 +104,7 @@ namespace IndDictionary
                 ta--;
                 TrueAnswers.Text = ta.ToString();
             }
-            VisualStateManager.GoToState(MainStack, "Error");
-            await Task.Delay(400);
-            VisualStateManager.GoToState(MainStack, "Normal");
+            ShowMistake();
             
         }
         protected override void CustomizeCard(Border cardBorder, Label contentLabel)

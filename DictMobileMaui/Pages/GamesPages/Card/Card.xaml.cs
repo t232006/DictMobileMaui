@@ -153,42 +153,11 @@ namespace IndDictionary
             // === StackLayout (MainStack) ===
             MainStack = new StackLayout();
 
-            // VisualStateManager для MainStack
-            var normalGroup = new VisualStateGroup { Name = "NormalGroup" };
-
-            var errorState = new VisualState { Name = "Error" };
-            errorState.Setters.Add(new Setter
-            {
-                Property = BackgroundColorProperty,
-                Value = Colors.DarkSalmon
-            });
-
-            var normalState = new VisualState { Name = "Normal" };
-            normalState.Setters.Add(new Setter
-            {
-                Property = BackgroundColorProperty,
-                Value = Colors.White
-            });
-
-            normalGroup.States.Add(errorState);
-            normalGroup.States.Add(normalState);
-
-            VisualStateManager.GetVisualStateGroups(MainStack).Add(normalGroup);
-
             // Добавляем MainStack в первую строку
             Grid.SetRow(MainStack, 0);
             MainFraim.Children.Add(MainStack);
 
-                
-
-            // Устанавливаем Content страницы
-            //Content = MainFraim;
-
             Cards cards = new Cards();
-            
-
-
-
             DeviceDisplay.Current.MainDisplayInfoChanged += OnMainDisplayInfoChanged;
             _Cards = new CarouselView
             {

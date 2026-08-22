@@ -21,6 +21,7 @@ namespace DictMobile.games
 		}
 		public ObservableCollection<dict> GetPool(int count, ObservableCollection<dict> Source) //take by some count (likely 6)
 		{
+			if (Source == null) Source = GetPool(true);
 			ObservableCollection<dict> pool = new ObservableCollection<dict>();
 			Random rand = new Random();
 			pool.Clear();

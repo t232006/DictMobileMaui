@@ -5,30 +5,51 @@
     <ContentPage.Resources>
         
     </ContentPage.Resources>
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup x:Name="NormalGroup">
-            <VisualState x:Name="Error">
-                <VisualState.Setters>
-                    <Setter Property="BackgroundColor" Value="DarkSalmon"/>
-                </VisualState.Setters>
-            </VisualState>
-            <VisualState x:Name="Normal">
-                <VisualState.Setters>
-                    <Setter Property="BackgroundColor" Value="White"/>
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
+    
     <Grid RowDefinitions="15,*"
           BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
                                              Light={StaticResource BackgroundLight}}">
         <!-- ProgressBar -->
-        <ProgressBar x:Name="LoadingProgress" 
+        <StackLayout x:Name="forBar" 
+                     Grid.Row="0" 
+                     HeightRequest="20">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="NormalGroup">
+                    <VisualState x:Name="ErrorBar">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="DarkSalmon"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="NormalBar">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ProgressBar x:Name="LoadingProgress" 
                      Progress="{Binding Progress}"
                      IsVisible="True"
-                     Margin="10,0,10,0"
-                     Grid.Row="0"/>
+                     Margin="0,10,0,0">
+        </ProgressBar>
+        </StackLayout>
+        
         <!-- Контентная область для дочерних классов -->
-        <ContentView x:Name="ContentArea" Grid.Row="1"/>
+        <ContentView x:Name="ContentArea" Grid.Row="1" x:FieldModifier="protected">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="NormalGroup">
+                    <VisualState x:Name="Error">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="DarkSalmon"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="White"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </ContentView>
     </Grid>
 </ContentPage>

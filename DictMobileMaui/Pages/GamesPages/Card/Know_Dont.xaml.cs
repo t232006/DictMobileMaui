@@ -35,6 +35,7 @@ namespace IndDictionary
                 case SwipeDirection.Down:
                     await CardBorder.TranslateTo(0, cardHeight, 300, Easing.SinIn);
                     App.Database.GetReward((_Cards.CurrentItem as dict)!.id, false);
+                    ShowMistake();
                     break;
                 case SwipeDirection.Left:
                     await CardBorder.TranslateTo(-cardWidth, 0, 300, Easing.SinIn);

@@ -88,8 +88,9 @@ namespace IndDictionary
 			}
 			else
 			{
-				DisplayAlert("Incorrect", $"Sorry, that is not the correct answer.", "Try Again");
+				//DisplayAlert("Incorrect", $"Sorry, that is not the correct answer.", "Try Again");
 				App.Database.GetReward(selected.id, false);
+				ShowMistake();
 			}
 		}
 	}
