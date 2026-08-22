@@ -41,13 +41,13 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             };
             Shape.Content = l;
         }
-        public LetterBorder(char Letter, int _number, GatherWord _page)
+        public LetterBorder(char Letter)
         {
             Init();
             
             l.Text = Letter.ToString();
         }
-        public LetterBorder(string Word, int _number, GatherWord _page)
+        public LetterBorder(string Word)
         {
             Init();
             

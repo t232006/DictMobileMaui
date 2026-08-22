@@ -5,6 +5,20 @@
     <ContentPage.Resources>
         
     </ContentPage.Resources>
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="NormalGroup">
+            <VisualState x:Name="Error">
+                <VisualState.Setters>
+                    <Setter Property="BackgroundColor" Value="DarkSalmon"/>
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="Normal">
+                <VisualState.Setters>
+                    <Setter Property="BackgroundColor" Value="White"/>
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
     <Grid RowDefinitions="15,*"
           BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
                                              Light={StaticResource BackgroundLight}}">
