@@ -80,14 +80,16 @@ namespace IndDictionary.Pages
 		protected void OnOpen(Object Sender, EventArgs e)
 		{
 			Button button = (Button)Sender;
-			string filename = (button.CommandParameter as BaseInfo).filename;
+			string filename = (button.CommandParameter as BaseInfo)!.filename;
 			Preferences.Remove("current");
 			Preferences.Set("current", Path.Combine(App.APPFOLDER, filename));
 			FList.SelectedItem = Items.FindIndex(x => x.filename == filename);
 			App.Database.toReboot = true;
+			Task.Run(async ()=> { await App.GetAsync();});
 			PageRefresh();
 			App.TopicsViewModel.GetTopicList();
 			App.Database.ResetSelection();
+			
 			Navigation.PopAsync();
 			//App.MainPage = new NavigationPage(new MainPage());
 		}
