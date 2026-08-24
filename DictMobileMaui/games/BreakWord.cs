@@ -24,32 +24,28 @@ namespace DictMobile.games
             Random r = new();
             string[] s = theWord.Translation.Split(' ');   
             string oneWord = "";
+            List<string> conteinter = s.ToList();
             List<string> ss = new();
-            for (byte i = 0; i < s.Length; i++)
+            while (conteinter.Any())
             {
-                do
-                {
-                    oneWord = s[r.Next(s.Length)];
-                } while (ss.Contains(oneWord));
+                oneWord = conteinter[r.Next(conteinter.Count)];
                 ss.Add(oneWord);
-            }    
+                conteinter.Remove(oneWord);
+            }  
            words = ss.ToArray();
         }
         private void getLetters()
         {
             Random r = new();
-            string s = theWord.Translation;
             char oneLetter = 'a';
+            List<char> conteinter = theWord.Translation.ToList();
             List<char> ss = new();
-            for (byte i = 0; i < s.Length; i++)
+            while (conteinter.Any())
             {
-                do
-                {
-                    oneLetter = s[r.Next(s.Length)];
-                } while (ss.Contains(oneLetter));
+                oneLetter = conteinter[r.Next(conteinter.Count)];
                 ss.Add(oneLetter);
-            }
-                    
+                conteinter.Remove(oneLetter);
+            }        
             letters = ss.ToArray();
         }
     }

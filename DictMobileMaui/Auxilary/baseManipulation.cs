@@ -75,6 +75,7 @@ namespace IndDictionary
 				Random r = new Random();
 				FBDID = (uint)r.Next(1, 65535);
 			}
+			ProgressUpdate();
 		}
 		public void GetReward(int id, bool increase)
 		{
@@ -89,7 +90,7 @@ namespace IndDictionary
 				{
 					if (item.Grade > 0) item.Grade -= 1;
 				}
-				saveRecD(item);
+				saveRecD(item, false);
 				ProgressUpdate();
 			}
 		}
@@ -197,9 +198,10 @@ namespace IndDictionary
             
 
         }
-        public int saveRecD(dict item)
+        public int saveRecD(dict item, bool togglePress)
 		{
 			if (item == null) return -1;
+			if (togglePress) ProgressUpdate();
 			return insert_update(item!);
 		}
 		public int saveRecD(dict item, dict oldItem, string topic)
@@ -421,7 +423,7 @@ namespace IndDictionary
 				{
 					if (d.IsDeleted == false)  //new record or topic
 					{
-						saveRecD(d);
+						saveRecD(d, false);
 						Debug.WriteLine("===WriteDictFromServer===>Record has written");  
 					}
 					else

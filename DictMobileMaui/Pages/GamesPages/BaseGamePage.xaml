@@ -30,7 +30,7 @@
             <ProgressBar x:Name="LoadingProgress" 
                      Progress="{Binding Progress}"
                      IsVisible="True"
-                     Margin="0,10,0,0">
+                     Margin="5,10,5,0">
         </ProgressBar>
         </StackLayout>
         

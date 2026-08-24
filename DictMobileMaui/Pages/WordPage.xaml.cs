@@ -14,6 +14,7 @@ namespace IndDictionary
 	{
 		dict focusedItem;
 		bool side;
+		bool ignoreToggle = false;
 		FullInform fullinform;
 		//ListTopicsViewModel lt;
         //bool earlyopen = false; //shows whether page has already opened
@@ -151,11 +152,12 @@ namespace IndDictionary
 		}
 		protected void OnToggled(object sender, ToggledEventArgs e)
 		{
+			if (ignoreToggle) return;
 			focusedItem = App.Database.findOneRecord((sender as ExtSwitch)!.ID)!;
 			if (focusedItem != null)
 			{
 				focusedItem.Usersel = e.Value;
-				App.Database.saveRecD(focusedItem);
+				App.Database.saveRecD(focusedItem, true);
 			}
 		}
 		protected async void OnAddPressed(object sender, EventArgs e)
@@ -197,9 +199,17 @@ namespace IndDictionary
 				await wvm.Search(searchBar.Text);
 			else
 				await wvm.LoadAsync();
+			ignoreToggle = true;
 			ListTable.ItemsSource = wvm.WordsList;
+			ignoreToggle = false;
 			
 			//earlyopen = true;
+        }
+        protected override void OnDisappearing()
+        {
+			ignoreToggle = true;
+			base.OnDisappearing();
+
         }
     }
 }

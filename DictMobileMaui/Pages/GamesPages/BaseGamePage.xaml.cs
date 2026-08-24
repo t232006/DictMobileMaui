@@ -12,6 +12,7 @@ namespace IndDictionary
 		{
 			InitializeComponent();
 			BindingContext = App.Database;
+            
 		}
         protected void SetPageContent(View content)
         {

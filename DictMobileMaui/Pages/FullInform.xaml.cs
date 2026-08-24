@@ -150,7 +150,7 @@ namespace IndDictionary
 
 				App.TopicsViewModel.CurrentDict = TempDict!;
 				TempDict!.Relevation++;
-				App.Database.saveRecD(TempDict);	
+				App.Database.saveRecD(TempDict, false);	
 			}
 			else
 			{
