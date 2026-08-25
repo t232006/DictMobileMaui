@@ -43,7 +43,7 @@ namespace IndDictionary
 		public static readonly BindableProperty ProgressProperty =
 			BindableProperty.Create("Progress",
 				typeof(double),
-				typeof(baseManipulation), 0);
+				typeof(baseManipulation), 0.0);
 
 		public DateTime LastGetUpdate { set => _LastGetUpdate = value; get => _LastGetUpdate; }
         public DateTime LastPostUpdate { set => _LastPostUpdate = value; get => _LastPostUpdate; }

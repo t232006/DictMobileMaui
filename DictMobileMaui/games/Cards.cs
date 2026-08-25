@@ -7,7 +7,7 @@ namespace DictMobile.games
 	{
 		public ObservableCollection<dict> CardSeq 
 		{ 
-			get => GetPool(selList.Count, selList);
+			get => GetPool(false);
 		}
 	}
 }

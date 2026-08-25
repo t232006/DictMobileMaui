@@ -15,6 +15,9 @@
                             <AdaptiveTrigger MinWindowHeight="0"/>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
+                            <Setter TargetName="RadioGroup"
+                                    Property="Orientation"
+                                    Value="Horizontal"/>
                             <Setter TargetName="SelectSpace"
                                     Property="Orientation"
                                     Value="Horizontal"/>
@@ -28,6 +31,9 @@
                             <AdaptiveTrigger MinWindowHeight="600"/>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
+                            <Setter TargetName="RadioGroup"
+                                    Property="Orientation"
+                                    Value="Vertical"/>        
                             <Setter TargetName="SelectSpace"
                                     Property="Orientation"
                                     Value="Vertical"/>
@@ -45,11 +51,15 @@
                         <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
                         <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
                     </StackLayout>
-                    <StackLayout Orientation="Vertical" x:Name="RadioGroup">
+                    <StackLayout Orientation="Vertical" 
+                                 x:Name="RadioGroup"
+                                 Spacing="0">
                         <Label Text="Show"/>
-                        <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
-                        <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords"/>
-                        <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
+                            <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords" />
+                            <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
                 <StackLayout Orientation="Vertical">

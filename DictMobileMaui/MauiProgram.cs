@@ -13,6 +13,9 @@ namespace IndDictionary
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("WINGDING.TTF", "Wingdings");
+                    fonts.AddFont("WINGDING2.ttf", "Wingdings2");
+                    fonts.AddFont("WINGDING3.ttf", "Wingdings3");
                 });
 
 #if DEBUG
