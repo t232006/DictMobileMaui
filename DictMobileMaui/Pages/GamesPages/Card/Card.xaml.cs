@@ -62,8 +62,8 @@ namespace IndDictionary
                 // "+" сверху
                 overlayGrid.Children.Add(new Label
                 {
-                    FontFamily = "Wingdings",
-                    Text = $"{(char)0xFD}",
+                    //FontFamily = "Wingdings",
+                    Text = "\u2713",
                     FontSize = 40,
                     TextColor = Colors.Green,
                     HorizontalOptions = LayoutOptions.Center,
@@ -74,8 +74,8 @@ namespace IndDictionary
                 // "-" снизу
                 overlayGrid.Children.Add(new Label
                 {
-                    FontFamily = "Wingdings",
-                    Text = $"{(char)0xFE}",
+                    //FontFamily = "Wingdings",
+                    Text = "\u2717",
                     FontSize = 40,
                     TextColor = Colors.Red,
                     HorizontalOptions = LayoutOptions.Center,

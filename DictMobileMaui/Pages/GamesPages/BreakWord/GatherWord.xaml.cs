@@ -207,7 +207,7 @@ public partial class GatherWord : BaseGamePage
         // ===== Кнопка Again (Row 2) =====
         AgainButton = new Button
         {
-            Text = "Next",
+            Text = "\u21BB Next",
             Margin = new Thickness(10, 0, 10, 10)
         };
         AgainButton.Pressed += onAgainPress;
