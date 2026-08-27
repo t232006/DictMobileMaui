@@ -151,7 +151,12 @@ namespace IndDictionary
             };
 
             // === StackLayout (MainStack) ===
-            MainStack = new StackLayout();
+            MainStack = new StackLayout()
+            {
+                BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["BackgroundDark"]
+                    : (Color)Application.Current.Resources["BackgroundLight"]
+            };
 
             // Добавляем MainStack в первую строку
             Grid.SetRow(MainStack, 0);

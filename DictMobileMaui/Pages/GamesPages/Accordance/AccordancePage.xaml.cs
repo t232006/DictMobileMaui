@@ -14,7 +14,7 @@ namespace IndDictionary
 	{
         FlexLayout MainStack = new()
         {
-            BackgroundColor = Application.Current.UserAppTheme == AppTheme.Dark
+            BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
                     ? (Color)Application.Current.Resources["BackgroundDark"]
                     : (Color)Application.Current.Resources["BackgroundLight"]
         };

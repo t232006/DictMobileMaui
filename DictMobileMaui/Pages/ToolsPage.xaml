@@ -6,8 +6,16 @@
              x:Class="IndDictionary.ToolsPage"
              Title="Tools">
     
-    <StackLayout>
-        <StackLayout >
+    <Grid>
+        <StackLayout Grid.Row="0">
+            <StackLayout.Resources>
+                <ResourceDictionary>
+                    <Style TargetType="Label">
+                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="FontSize" Value="Subtitle"/>
+                    </Style>
+                </ResourceDictionary>
+            </StackLayout.Resources>
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup Name="AdaptiveStates">
                     <VisualState Name="SmallHeight">
@@ -17,13 +25,11 @@
                         <VisualState.Setters>
                             <Setter TargetName="RadioGroup"
                                     Property="Orientation"
-                                    Value="Horizontal"/>
+                                    Value="Vertical"/>
                             <Setter TargetName="SelectSpace"
                                     Property="Orientation"
                                     Value="Horizontal"/>
-                            <Setter TargetName="BaseInfo"
-                                    Property="Orientation"
-                                    Value="Horizontal"/>
+                            
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState Name="NormalHeight">
@@ -33,13 +39,11 @@
                         <VisualState.Setters>
                             <Setter TargetName="RadioGroup"
                                     Property="Orientation"
-                                    Value="Vertical"/>        
+                                    Value="Horizontal"/>        
                             <Setter TargetName="SelectSpace"
                                     Property="Orientation"
                                     Value="Vertical"/>
-                            <Setter TargetName="BaseInfo"
-                                    Property="Orientation"
-                                    Value="Vertical"/>        
+                                 
                         </VisualState.Setters>
                     </VisualState>
 
@@ -49,13 +53,12 @@
                 <StackLayout>
                     <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
                         <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
-                        <Label Text="Show Selected" Style="{StaticResource LabelStyle}"/>
+                        <Label Text="Show Selected"/>
                     </StackLayout>
-                    <StackLayout Orientation="Vertical" 
-                                 x:Name="RadioGroup"
+                    <StackLayout Orientation="Vertical"   
                                  Spacing="0">
-                        <Label Text="Show"/>
-                        <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Label Text="Show" />
+                        <StackLayout Orientation="Horizontal" x:Name="RadioGroup" Spacing="10">
                             <RadioButton Content="Phrases" Style="{StaticResource LabelStyle}" CheckedChanged="OnPhrases" />
                             <RadioButton Content="Words" Style="{StaticResource LabelStyle}" CheckedChanged="OnWords" />
                             <RadioButton Content="All together" Style="{StaticResource LabelStyle}" IsChecked="True" CheckedChanged="OnAll"/>
@@ -63,7 +66,7 @@
                     </StackLayout>
                 </StackLayout>
                 <StackLayout Orientation="Vertical">
-                    <Label Text="Select" Style="{StaticResource LabelStyle}"/>
+                    <Label Text="Select"/>
                     <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
                     <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
                     <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
@@ -72,7 +75,7 @@
                 </StackLayout>
                 <Grid>
 
-                    <Picker x:Name="CopyToTopic" BackgroundColor="SlateBlue"  Title="Selected to topic" SelectedIndexChanged="onToCopySelected"
+                    <Picker x:Name="CopyToTopic" BackgroundColor="SlateBlue"  Title="Selected to topic" SelectedIndexChanged="onToCopySelected" FontSize="Subtitle"
                                             Style="{StaticResource ButtonStyle}"/>
                     <Button x:Name="GoButton" Text="Go" BackgroundColor="SlateBlue" IsVisible="False" Style="{StaticResource GoButton}"
                     HorizontalOptions="Start" VerticalOptions="Start" Pressed="onGoPress"/>
@@ -107,12 +110,17 @@
                 </FlexLayout>
                 
             </StackLayout >
-            <StackLayout x:Name="BaseInfo">
-                <Label x:Name="CountLabel" Padding="0,0,100,0" Style="{StaticResource LabelStyle}" />
-                <Label x:Name="DateLabel" Style="{StaticResource LabelStyle}"/>
-            </StackLayout>
-            <Button Text="+New dictionary" WidthRequest="140" BackgroundColor="Thistle" Margin="10,0,0,0" HorizontalOptions="Start" Pressed="onNewDict"/>
+            <HorizontalStackLayout x:Name="BaseInfo">
+                <Label x:Name="CountLabel" Padding="0,0,100,0"  />
+                <Label x:Name="DateLabel" />
+            </HorizontalStackLayout>
+            <Button Text="+New dictionary" 
+                    WidthRequest="140" HeightRequest="35"
+                    BackgroundColor="Thistle" 
+                    Margin="10,0,0,0" 
+                    HorizontalOptions="Start" 
+                    Pressed="onNewDict"/>
         </StackLayout>
-        <StackLayout x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
-    </StackLayout>
+        <StackLayout Grid.Row="1"  x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
+    </Grid>
 </ContentPage>

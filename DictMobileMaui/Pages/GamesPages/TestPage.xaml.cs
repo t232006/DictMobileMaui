@@ -16,7 +16,7 @@ namespace IndDictionary
 
             var MainStack = new VerticalStackLayout()
 			{
-				BackgroundColor = Application.Current.UserAppTheme == AppTheme.Dark
+				BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
 					? (Color)Application.Current.Resources["BackgroundDark"]
 					: (Color)Application.Current.Resources["BackgroundLight"]
 			};
@@ -42,8 +42,7 @@ namespace IndDictionary
 					Border num = new Border
 					{
 						Content = new Label() { Style = (Style)App.Current.Resources["var1Text"] },
-						Style = (Style)App.Current.Resources["var1"],
-						
+						Style = (Style)App.Current.Resources["var1"]
 					};
 					num.SetBinding(Border.WidthRequestProperty, new Binding(path: nameof(BorderWidth), source: this));
 

@@ -131,6 +131,9 @@ public partial class GatherWord : BaseGamePage
         // Основной Grid: 3 строки, 1 колонка
         var mainGrid = new Grid
         {
+            BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["BackgroundDark"]
+                    : (Color)Application.Current.Resources["BackgroundLight"],
             RowDefinitions =
             {
                 new RowDefinition { Height = new GridLength(0.3, GridUnitType.Star) },
@@ -146,7 +149,8 @@ public partial class GatherWord : BaseGamePage
         // ===== Верхняя часть (Row 0) =====
         var topStack = new VerticalStackLayout
         {
-            HorizontalOptions = LayoutOptions.Fill
+            
+            HorizontalOptions = LayoutOptions.Fill,
         };
 
         WordSpace = new Label
