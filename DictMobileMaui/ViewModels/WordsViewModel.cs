@@ -40,9 +40,13 @@ namespace DictMobile.ViewModels
                 var result = await App.Database.showTableDictAsync(_showAll, _wts);
                 WordsList = new ObservableCollection<dict>(result);
             }
-            WordsList = _side
+            /*WordsList = _side
                 ? await App.Database.findRecordsAsync(needle, f => f.Translation)
-                : await App.Database.findRecordsAsync(needle, f => f.Word);
+                : await App.Database.findRecordsAsync(needle, f => f.Word);*/
+            ObservableCollection<dict> WList = await App.Database.findRecordsAsync(needle, f => f.Word);
+            ObservableCollection<dict> TList = await App.Database.findRecordsAsync(needle, f => f.Translation);
+            WordsList = new ObservableCollection<dict>(WList.Union(TList).Distinct());
+
         }
         public async Task LoadAsync()
         {
