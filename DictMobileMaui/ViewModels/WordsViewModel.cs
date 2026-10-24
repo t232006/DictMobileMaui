@@ -33,7 +33,7 @@ namespace DictMobile.ViewModels
         }
 
         // Загружает список слов из базы (на фоновой задаче) и обновляет коллекцию на UI-потоке
-        public async Task Search(string needle)
+        private async Task Presearch(string needle)
         {
             if (string.IsNullOrEmpty(needle))
             {
@@ -46,6 +46,13 @@ namespace DictMobile.ViewModels
             ObservableCollection<dict> WList = await App.Database.findRecordsAsync(needle, f => f.Word);
             ObservableCollection<dict> TList = await App.Database.findRecordsAsync(needle, f => f.Translation);
             WordsList = new ObservableCollection<dict>(WList.Union(TList).Distinct());
+        }
+        
+        public async Task Search(string needle)
+        {
+            if (needle == "")
+                await LoadAsync();
+            else await Presearch(needle);
 
         }
         public async Task LoadAsync()
