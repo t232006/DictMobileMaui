@@ -17,6 +17,7 @@ namespace IndDictionary
 	public class baseManipulation: INotifyPropertyChanged
 	{
 		private uint? FBDID;
+		private bool showAll;
 		private DateTime _LastGetUpdate;
 		private DateTime _LastPostUpdate;
 
@@ -119,19 +120,17 @@ namespace IndDictionary
 
 		public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
-			string request = "SELECT * FROM Dict WHERE isDeleted=false ";
-			if (!allrec) request += "AND usersel=true ";
-
+			var result = itemsD.Where(u => u.Usersel == !allrec).ToList();
 			switch (wts)
 			{
 				case WhatToShow.words:
-					request += "AND phrase=false";
+					result = result.Where(u => u.Phrase == false).ToList();
 					break;
 				case WhatToShow.phrases:
-					request += "AND phrase=true";
+					result = result.Where(u => u.Phrase == true).ToList();
 					break;
 			}
-			return await Task.Run(() => database.Query<dict>(request));
+			return await Task.Run(() => result);
 
 		}
 
@@ -324,8 +323,9 @@ namespace IndDictionary
 			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
-		public IEnumerable<T> showTopicsDates<T>(bool showAll) where T : new()
+		public IEnumerable<T> showTopicsDates<T>(bool _showAll) where T : new()
 		{
+			showAll = _showAll;
 			string request;
 			if (typeof(T).Equals(typeof(dict)))
 			{
@@ -361,16 +361,35 @@ namespace IndDictionary
 		{
 			IEnumerable<string> l = from sl in datesList
 									where sl.Spoted == true
-									select sl.DaOrTo;
-			string collect = string.Join("','", l);
-			collect = "'" + collect + "'";
-			string requestString = wtsel == WhatToSelect.dates ?
-				"Update Dict set Usersel=true where isDeleted=false and daterec in (" + collect + ")" :
-				"UPDATE Dict SET Usersel=true WHERE isDeleted=false and Topic in (SELECT id FROM Topic WHERE Name in (" + collect + "))";
-			ResetSelection();
-			database.Execute(requestString);
-			database.Commit();
-			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+									select sl.DaOrTo;		//selected items
+
+			List<dict> pool;
+			if (wtsel == WhatToSelect.dates)
+			{
+				pool = (showAll)
+					? itemsD.Where(d => d.Usersel == true || l.Contains(d.DateRec)).ToList() //select from all records
+					: itemsD.Where(d => d.Usersel == true && l.Contains(d.DateRec)).ToList();//select from selected 	
+			}
+				
+			else
+			{
+				IEnumerable<int?> topicNum = from top in itemsT
+											 where l.Contains(top.Name)
+											 select (int?)top.id;
+				pool = (showAll)
+					? itemsD.Where(t => t.Usersel == true || topicNum.Contains(t.Topic)).ToList()
+					: itemsD.Where(t => t.Usersel == true && topicNum.Contains(t.Topic)).ToList();
+			}
+
+            database.Execute("Update Dict set Usersel=false");  //eliminate selection
+            database.Commit();
+
+            foreach (dict d in pool)
+            {
+                d.Usersel = true;
+                database.Update(d);
+            }
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 		}
 
 		public IEnumerable<DictVM> ListDictToPost()

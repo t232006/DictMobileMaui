@@ -57,9 +57,9 @@ namespace DictMobile.ViewModels
         }
         public async Task LoadAsync()
         {
+            var raw = await App.Database.showTableDictAsync(_showAll, _wts);
             var items = await Task.Run(() =>
             {
-                var raw = App.Database.showTableDict(_showAll, _wts);
                 return _side ? raw.OrderBy(t => t.Translation).ToList() : raw.OrderBy(t => t.Word).ToList();
             });
 
