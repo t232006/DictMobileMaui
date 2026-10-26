@@ -11,7 +11,7 @@ namespace DictMobile.addition
 		static public bool isItPhrase(string str)
 		{
 			string s1= str.Replace(", ","");
-			return s1.Count(c => c == ' ') > 3? true: false;
+			return s1.Count(c => c == ' ') > 2? true: false;
 		}
 	}
 }

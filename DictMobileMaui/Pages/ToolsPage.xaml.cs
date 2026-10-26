@@ -1,4 +1,4 @@
-﻿using DictMobile.models;
+using DictMobile.models;
 using IndDictionary.addition;
 using IndDictionary.Pages;
 using System.Collections.ObjectModel;
@@ -41,6 +41,7 @@ namespace IndDictionary
             DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
 			CopyToTopic.ItemsSource = App.Database.showTableTopic().Select(n=>n.Name).ToList();
+
 			base.OnAppearing();
 		}
 		protected void OnAll(object sender, EventArgs e)

@@ -5,8 +5,6 @@ namespace IndDictionary
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class NavigationButtons : ContentView
 	{
-		bool translationShow = false;
-		public bool TranslationShow { set { translationShow = value; } }
 		WordPage WordPage { get; set; }
 		public NavigationButtons(WordPage _WordPage)
 		{

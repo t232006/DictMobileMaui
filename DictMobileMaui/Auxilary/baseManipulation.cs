@@ -18,6 +18,7 @@ namespace IndDictionary
 	{
 		private uint? FBDID;
 		private bool showAll;
+		private WhatToShow wts;
 		private DateTime _LastGetUpdate;
 		private DateTime _LastPostUpdate;
 
@@ -100,23 +101,22 @@ namespace IndDictionary
 			database.Dispose();
 		}
 
-		public IEnumerable<dict> showTableDict(bool allrec, WhatToShow wts)
+		public IEnumerable<dict> showTableDict(bool _showAll, WhatToShow _wts)
 		{
-			string request = "SELECT * FROM Dict WHERE isDeleted=false ";
-			if (!allrec) request += "AND usersel=true ";
+            wts = _wts;
+            showAll = _showAll;
 
-			switch (wts)
-			{
-				case WhatToShow.words:
-					request += "AND phrase=false";
-					break;
-				case WhatToShow.phrases:
-					request += "AND phrase=true";
-					break;
-			}
-			return database.Query<dict>(request);
+            return itemsD
+                .Where(d => showAll || d.Usersel)
+                .Where(d => wts switch
+                {
+                    WhatToShow.words => !d.Phrase,
+                    WhatToShow.phrases => d.Phrase,
+                    _ => true
+                })
+                .ToList();
 
-		}
+        }
 
 		public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
@@ -141,7 +141,7 @@ namespace IndDictionary
 		private int insert_update(dict item, dict oldItem) //soft
 		{
             int id = -1;
-            item.Phrase = IsItPhrase.isItPhrase(item.Word) || IsItPhrase.isItPhrase(item.Translation);
+            item.Phrase = IsItPhrase.isItPhrase(item.Word) && IsItPhrase.isItPhrase(item.Translation);
 			if (item.id != 0)
 			{
 				oldItem.IsDeleted = true;
@@ -363,12 +363,12 @@ namespace IndDictionary
 									where sl.Spoted == true
 									select sl.DaOrTo;		//selected items
 
-			List<dict> pool;
+			IEnumerable<dict> pool;
 			if (wtsel == WhatToSelect.dates)
 			{
-				pool = (showAll)
-					? itemsD.Where(d => d.Usersel == true || l.Contains(d.DateRec)).ToList() //select from all records
-					: itemsD.Where(d => d.Usersel == true && l.Contains(d.DateRec)).ToList();//select from selected 	
+				pool = itemsD.Where(d => showAll	?(d.Usersel || l.Contains(d.DateRec)) //select from all records
+													:(d.Usersel && l.Contains(d.DateRec)))
+							;//select from selected 	
 			}
 				
 			else
@@ -376,10 +376,15 @@ namespace IndDictionary
 				IEnumerable<int?> topicNum = from top in itemsT
 											 where l.Contains(top.Name)
 											 select (int?)top.id;
-				pool = (showAll)
-					? itemsD.Where(t => t.Usersel == true || topicNum.Contains(t.Topic)).ToList()
-					: itemsD.Where(t => t.Usersel == true && topicNum.Contains(t.Topic)).ToList();
+				pool = itemsD.Where(t => showAll	? (t.Usersel || topicNum.Contains(t.Topic))
+													: (t.Usersel && topicNum.Contains(t.Topic)));
 			}
+			pool = pool.Where(d => wts switch
+			{
+				WhatToShow.words => !d.Phrase,
+				WhatToShow.phrases => d.Phrase,
+				_ => true
+			}).ToList();
 
             database.Execute("Update Dict set Usersel=false");  //eliminate selection
             database.Commit();
