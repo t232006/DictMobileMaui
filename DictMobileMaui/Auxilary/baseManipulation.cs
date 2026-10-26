@@ -320,7 +320,7 @@ namespace IndDictionary
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
 			if (need_6)
 				if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
-			return database.Table<dict>().Where(d => d.Usersel == true).ToList();
+			return database.Table<dict>().Where(d => d.Usersel == true && d.IsDeleted == false).ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
 		public IEnumerable<T> showTopicsDates<T>(bool _showAll) where T : new()
