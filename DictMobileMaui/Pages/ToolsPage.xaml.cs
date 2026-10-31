@@ -123,7 +123,8 @@ namespace IndDictionary
 		}
 		protected async void onPostSync(object sender, EventArgs e)
 		{
-			httpResponce ps=await App.PostAsync();
+            App.Database.LastGetUpdate = Preferences.Get($"LastPostUpdateTime{App.Database.BDID}", DateTime.MinValue);
+            httpResponce ps=await App.PostAsync();
 			if (ps.success)
             {
 				await DisplayAlert("Sending", $"Topics sent: {ps.topicCount};\nRecords sent: {ps.dictCount}", "OK");
@@ -134,7 +135,8 @@ namespace IndDictionary
 		protected async void onGetSync(object sender, EventArgs e)
 		{
 			httpResponce hr;
-			hr = await App.GetAsync();
+            App.Database.LastGetUpdate = Preferences.Get($"LastGetUpdateTime{App.Database.BDID}", DateTime.MinValue);
+            hr = await App.GetAsync();
 			if (hr.success)
             {
 				//App.Database.LastGetUpdate = DateTime.Now;

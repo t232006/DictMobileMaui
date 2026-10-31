@@ -125,7 +125,7 @@ namespace IndDictionary
                 result.success = true;
 
                 database.LastPostUpdate = DateTime.Now;
-                Preferences.Set("LastPostUpdateTime", DateTime.Now);
+                Preferences.Set($"LastPostUpdateTime{database.BDID}", DateTime.Now);
                 return result;
             }
             catch (Exception ex)
@@ -174,7 +174,7 @@ namespace IndDictionary
                 return result;
             }
             database.LastGetUpdate = DateTime.Now;
-            Preferences.Set("LastGetUpdateTime", DateTime.Now);
+            Preferences.Set($"LastGetUpdateTime{database.BDID}", DateTime.Now );
             result.success = true;
             return result;
         }
@@ -189,15 +189,13 @@ namespace IndDictionary
             InitializeComponent();
             SetDatabasename();
 
-            Database.LastGetUpdate = Preferences.Get("LastGetUpdateTime", DateTime.Now);
-            Database.LastPostUpdate = Preferences.Get("LastPostUpdateTime", DateTime.Now);
-            // Database.LastPostUpdate = DateTime.Parse("2026-08-04 15:10:48");
+            //Preferences.Default.Remove("LastGetUpdateTime2");
+            Database.LastGetUpdate = Preferences.Get($"LastGetUpdateTime{database.BDID}", DateTime.MinValue);
+            Database.LastPostUpdate = Preferences.Get($"LastPostUpdateTime{database.BDID}", DateTime.MinValue);
+            //Database.LastGetUpdate = DateTime.Parse("2026-09-04 15:10:48");
             //httpMet = new HttpMethods();
 
 
-
-
-            //MainPage = new NavigationPage(new WordPage(false));
 #pragma warning disable CS0618 // Тип или член устарел
             MainPage = new LoadingPage();
 #pragma warning restore CS0618 // Тип или член устарел
