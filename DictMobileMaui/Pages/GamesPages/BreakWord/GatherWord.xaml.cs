@@ -1,6 +1,14 @@
 using DictMobile.games;
 using DictMobile.models;
 using DictMobile.Pages.GamesPages.BreakWord;
+using TextAlignment = Microsoft.Maui.TextAlignment;
+using Button = Microsoft.Maui.Controls.Button;
+using DictMobile.addition;
+using System.Text.RegularExpressions;
+
+
+
+
 #if ANDROID
 using Android.Views;
 using Android.Views.InputMethods;
@@ -14,7 +22,7 @@ public partial class GatherWord : BaseGamePage
     public Label WordSpace { get; private set; }
     public Editor EnterSpace { get; private set; }
     public Grid WorkingArea { get; private set; }
-    public Button AgainButton { get; private set; }
+    public Microsoft.Maui.Controls.Button AgainButton { get; private set; }
     private dict theWord;
     private bool manualInput = true;
     BreakWord bw;
@@ -24,8 +32,10 @@ public partial class GatherWord : BaseGamePage
 	private void TextColor()
     {
         if (theWord == null) return;
-        if (theWord.Translation == EnterSpace.Text.Trim())
-        
+        string prelim = theWord.Translation;
+        prelim = Regex.Replace(prelim, @"\[.*?\]", ""); //remove text inside '[ ]'
+        if (prelim.ManyWordsComparier(EnterSpace.Text.Trim()))
+
             EnterSpace.TextColor = Colors.Green;
         else
             EnterSpace.TextColor = Colors.LightPink;
@@ -35,6 +45,14 @@ public partial class GatherWord : BaseGamePage
     {
         if (!manualInput) return;
         if (e.NewTextValue == null) return;
+
+        if (e.NewTextValue.Contains('\r'))
+        {
+            var cleanText = e.NewTextValue.Replace("\r", "").Replace("\n", "");
+            (sender as Editor).Text = cleanText;
+            onAgainPress(this, new EventArgs());
+            return;
+        }
 
         string hailstack = e.NewTextValue.ToLower();
         foreach (LetterBorder lb in borders)
@@ -260,7 +278,10 @@ public partial class GatherWord : BaseGamePage
 
     protected void onAgainPress(object sender, EventArgs e)
 	{
-		if (theWord.Translation == EnterSpace.Text.Trim())
+        //if (theWord.Translation == EnterSpace.Text.Trim())
+        string prelim = theWord.Translation;
+        prelim = Regex.Replace(prelim, @"\[.*?\]", ""); //remove text inside '[ ]'
+        if (prelim.ManyWordsComparier(EnterSpace.Text.Trim()))
             App.Database.GetReward(theWord.id, true);  
         else
             DisplayAlert("Wrong!", $"{theWord.Word} - {theWord.Translation}", "OK");
