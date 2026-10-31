@@ -1,4 +1,6 @@
 ﻿using DictMobile.models;
+using System.Text.RegularExpressions;
+using static Android.Renderscripts.ScriptGroup;
 
 namespace DictMobile.games
 {
@@ -22,7 +24,9 @@ namespace DictMobile.games
         private void getWords()
         {
             Random r = new();
-            string[] s = theWord.Translation.Split(' ');   
+            string prelim = theWord.Translation; 
+            prelim = Regex.Replace(prelim, @"\[.*?\]", ""); //remove text inside '[ ]'
+            string[] s = prelim.Split(' ');   
             string oneWord = "";
             List<string> conteinter = s.ToList();
             List<string> ss = new();

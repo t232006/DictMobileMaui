@@ -1,6 +1,12 @@
 using DictMobile.games;
 using DictMobile.models;
 using DictMobile.Pages.GamesPages.BreakWord;
+#if ANDROID
+using Android.Views;
+using Android.Views.InputMethods;
+using Android.Widget;
+using AndroidX.AppCompat.Widget;
+#endif
 namespace IndDictionary;
 
 public partial class GatherWord : BaseGamePage
@@ -29,14 +35,6 @@ public partial class GatherWord : BaseGamePage
     {
         if (!manualInput) return;
         if (e.NewTextValue == null) return;
-
-        if (e.NewTextValue.Contains('\r'))
-        {
-            var cleanText = e.NewTextValue.Replace("\r", "").Replace("\n", "");
-            (sender as Editor).Text = cleanText;
-            onAgainPress(this, new EventArgs());
-            return;
-        }
 
         string hailstack = e.NewTextValue.ToLower();
         foreach (LetterBorder lb in borders)
@@ -89,6 +87,23 @@ public partial class GatherWord : BaseGamePage
         manualInput = true;
         TextColor();
     }
+    private void ConfigureWorkingArea(bool isPortrait)
+    {
+        WorkingArea.Clear();
+        WorkingArea.RowDefinitions.Clear();
+        WorkingArea.ColumnDefinitions.Clear();
+
+        int columns = isPortrait ? 5 : 10;
+        int rows = isPortrait ? 10 : 5;
+
+        for (int i = 0; i < columns; i++)
+            WorkingArea.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = GridLength.Star });
+
+        for (int i = 0; i < rows; i++)
+            WorkingArea.RowDefinitions.Add(
+                new RowDefinition { Height = GridLength.Star });
+    }
 
     private void Init()
 	{
@@ -99,29 +114,37 @@ public partial class GatherWord : BaseGamePage
         EnterSpace.TextColor = Colors.LightPink;
 		theWord = bw.TheWord;
 		WordSpace.Text = theWord.Word;
-			//WordsDict = bw.Words.Select((word, index) => new { word, index }).ToDictionary(x => x.word, x => (byte)x.index);
-		for (byte i=0; i<5; i++)
-		for (byte j=0; j<10; j++)
-		{
-			LetterBorder border;
-			int index = i * 10 + j;
-			if (theWord.Phrase)
-			{
-				if ( index > bw.Words.Length-1) return;
-				border = new(bw.Words[index]);
-				border.LetterTapped += PrintText;
-			}
-			else
-			{
-				if (index > bw.Letters.Length - 1) return;
-				border = new(bw.Letters[index]);
-					border.LetterTapped += PrintLetter;
-			}
-            
+        //WordsDict = bw.Words.Select((word, index) => new { word, index }).ToDictionary(x => x.word, x => (byte)x.index);
+        bool isPortrait = DeviceDisplay.MainDisplayInfo.Orientation
+                  == DisplayOrientation.Portrait;
+
+        ConfigureWorkingArea(isPortrait);
+
+        int columns = isPortrait ? 5 : 10;
+        int rows = isPortrait ? 10 : 5;
+
+        for (int i = 0; i < rows; i++)
+        for (int j = 0; j < columns; j++)
+        {
+            int index = i * columns + j;
+            LetterBorder border;
+            if (theWord.Phrase)
+            {
+                if (index >= bw.Words.Length) break;
+
+                border = new(bw.Words[index]);
+                border.LetterTapped += PrintText;
+            }
+            else
+            {
+                if (index >= bw.Letters.Length) break;
+                border = new(bw.Letters[index]);
+                border.LetterTapped += PrintLetter;
+            }
+
             borders.Add(border);
             WorkingArea.Add(border.Shape, j, i);
         }
-		
 	}
 	public GatherWord()
 	{
@@ -169,6 +192,10 @@ public partial class GatherWord : BaseGamePage
             
         };
         EnterSpace.TextChanged += onTextChanged;
+#if ANDROID
+        EnterSpace.HandlerChanged += (s, e) =>
+            AttachAndroidEditor();
+#endif
 
         topStack.Children.Add(WordSpace);
         topStack.Children.Add(EnterSpace);
@@ -218,10 +245,20 @@ public partial class GatherWord : BaseGamePage
         mainGrid.Add(AgainButton, 0, 2);
         SetPageContent(mainGrid);
         //Content = mainGrid;
-        Init();
+        Init(); 
+        DeviceDisplay.MainDisplayInfoChanged += OnDisplayInfoChanged;
     }
-    
-	protected void onAgainPress(object sender, EventArgs e)
+    private void OnDisplayInfoChanged(
+    object sender,
+    DisplayInfoChangedEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Init();
+        });
+    }
+
+    protected void onAgainPress(object sender, EventArgs e)
 	{
 		if (theWord.Translation == EnterSpace.Text.Trim())
             App.Database.GetReward(theWord.id, true);  
@@ -230,4 +267,111 @@ public partial class GatherWord : BaseGamePage
         Init();
         
 	}
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        DeviceDisplay.MainDisplayInfoChanged -= OnDisplayInfoChanged;
+#if ANDROID
+        DetachAndroidEditor();
+#endif
+
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+#if ANDROID
+        EnterSpace.HandlerChanged += (s, e) =>
+            AttachAndroidEditor();
+#endif
+
+        DeviceDisplay.MainDisplayInfoChanged -= OnDisplayInfoChanged;
+        DeviceDisplay.MainDisplayInfoChanged += OnDisplayInfoChanged;
+    }
+
+#if ANDROID
+
+    private AppCompatEditText? nativeEditor;
+    private EnterKeyListener? enterKeyListener;
+
+    private class EnterKeyListener : Java.Lang.Object,
+        Android.Views.View.IOnKeyListener
+    {
+        private readonly Action onEnter;
+
+        public EnterKeyListener(Action action)
+        {
+            onEnter = action;
+        }
+
+        public bool OnKey(
+            Android.Views.View? v,
+            Keycode keyCode,
+            KeyEvent? e)
+        {
+            if (keyCode != Keycode.Enter)
+                return false;
+
+            if (e?.Action == KeyEventActions.Up)
+                onEnter();
+
+            // Не позволяем Enter добавлять новую строку
+            return true;
+        }
+    }
+    private void AttachAndroidEditor()
+    {
+        DetachAndroidEditor();
+
+        nativeEditor = EnterSpace.Handler?.PlatformView
+                       as AppCompatEditText;
+
+        if (nativeEditor == null)
+            return;
+
+        // Делаем ввод однострочным
+        nativeEditor.SetSingleLine(true);
+
+        // Меняем Enter на Done на экранной клавиатуре
+        nativeEditor.ImeOptions = ImeAction.Done;
+
+        // Обрабатываем нажатие Done
+        nativeEditor.EditorAction += NativeEditor_EditorAction;
+
+        // Обрабатываем физическую клавишу Enter
+        enterKeyListener = new EnterKeyListener(() =>
+        {
+            onAgainPress(this, EventArgs.Empty);
+        });
+
+        nativeEditor.SetOnKeyListener(enterKeyListener);
+    }
+
+    private void DetachAndroidEditor()
+    {
+        if (nativeEditor != null)
+        {
+            nativeEditor.EditorAction -= NativeEditor_EditorAction;
+            nativeEditor.SetOnKeyListener(null);
+        }
+
+        enterKeyListener?.Dispose();
+        enterKeyListener = null;
+        nativeEditor = null;
+    }
+
+    private void NativeEditor_EditorAction(
+        object? sender,
+        TextView.EditorActionEventArgs e)
+    {
+        if (e.ActionId == ImeAction.Done)
+        {
+            e.Handled = true;
+            onAgainPress(this, EventArgs.Empty);
+        }
+    }
+
+#endif
 }
