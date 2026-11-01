@@ -110,12 +110,12 @@ namespace IndDictionary
 				{
 					if (d.Word.IndexOf(TempDict.Word) >= 0) 
 					{
-						bool result=await DisplayAlert($"Phrase '{TempDict.Word}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+						bool result=await DisplayAlert($"Phrase '{TempDict.Word}' already presents in dictionary as part of {d.Word}", "Add anyway?", "Yes", "Cancel");
 						if (!result) return;
 					}	
 					if (d.Translation.IndexOf(TempDict.Translation) >= 0)
 					{
-                        bool result = await DisplayAlert($"Phrase '{TempDict.Translation}' already presents in dictionary", "Add anyway?", "Yes", "Cancel");
+                        bool result = await DisplayAlert($"Phrase '{TempDict.Translation}' already presents in dictionary as part of {d.Translation}", "Add anyway?", "Yes", "Cancel");
                         if (!result) return;
                     }
 				}

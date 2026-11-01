@@ -315,10 +315,9 @@ namespace IndDictionary
 			database.Query<dict>(request);
 		}
 
-		public IEnumerable<dict> getSelected(bool need_6)
+		public IEnumerable<dict> getSelected()
 		{
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
-			if (need_6)
 				if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
 			return database.Table<dict>().Where(d => d.Usersel == true && d.IsDeleted == false).ToList();
 		}

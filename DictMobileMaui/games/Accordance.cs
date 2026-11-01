@@ -21,8 +21,8 @@ namespace DictMobile.games
         public void Init()
         {
             poolword.Clear(); pooltrans.Clear();   
-            poolword = GetPool(6, selList);
-            pooltrans = GetPool(6, poolword);
+            poolword = GetPool(selList);
+            pooltrans = GetPool(poolword);
         }
     }
 }

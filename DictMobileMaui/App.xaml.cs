@@ -180,8 +180,8 @@ namespace IndDictionary
         }
         private async Task StartResume()
         {
-            await PostAsync();                //send data if was unable do it last time (didn't have internet connection)
-            await GetAsync();
+            /*await PostAsync();                //send data if was unable do it last time (didn't have internet connection)
+            await GetAsync();*/
 
         }
         public App()

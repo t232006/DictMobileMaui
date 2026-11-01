@@ -29,7 +29,7 @@ namespace DictMobile.games
 		}
 		public void Generate()
 		{
-            var newPool = GetPool(6, selList);
+            var newPool = GetPool(selList);
             Random rand = new Random();
             Answer = newPool[rand.Next(0, 6)];
 			pool.Clear();

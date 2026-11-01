@@ -16,7 +16,7 @@ namespace DictMobile.games
             get
             {
                 Random r = new Random();
-                theWord = GetPool(false)[r.Next(selList.Count)];
+                theWord = selList[r.Next(selList.Count)];
                 if (theWord.Phrase) getWords(); else getLetters();    
                 return theWord;
             }

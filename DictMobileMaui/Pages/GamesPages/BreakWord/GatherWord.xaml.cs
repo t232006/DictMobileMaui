@@ -111,8 +111,8 @@ public partial class GatherWord : BaseGamePage
         WorkingArea.RowDefinitions.Clear();
         WorkingArea.ColumnDefinitions.Clear();
 
-        int columns = isPortrait ? 5 : 10;
-        int rows = isPortrait ? 10 : 5;
+        int columns = isPortrait ? 5 : 9;
+        int rows = isPortrait ? 9 : 5;
 
         for (int i = 0; i < columns; i++)
             WorkingArea.ColumnDefinitions.Add(
