@@ -47,17 +47,17 @@ namespace IndDictionary
 		protected void OnAll(object sender, EventArgs e)
 		{
 			wts = WhatToShow.alltogether;
-			//detail.Refresh(showAll, wts);
-		}
+            
+        }
 		protected void OnPhrases(object sender, EventArgs e)
 		{
 			wts = WhatToShow.phrases;
-			//detail.Refresh(showAll, wts);
-		}
+
+        }
 		protected void OnWords(object sender, EventArgs e)
 		{
 			wts = WhatToShow.words;
-			//detail.Refresh(showAll, wts);
+
 		}
 		protected async void onReset(object sender, EventArgs e)
 		{

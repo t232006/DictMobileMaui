@@ -8,6 +8,7 @@ using DictMobile.models;
 using DictMobile.httpMethods;
 using System.Diagnostics;
 using System.ComponentModel;
+//using Android.Net.Wifi.Aware;
 //using Android.OS;
 
 namespace IndDictionary
@@ -100,15 +101,14 @@ namespace IndDictionary
 		{
 			database.Dispose();
 		}
-
-		public IEnumerable<dict> showTableDict(bool _showAll, WhatToShow _wts)
+		private IEnumerable<dict> showTableDict(bool _showAll, WhatToShow _wts)
 		{
-            wts = _wts;
+            //wts = _wts;
             showAll = _showAll;
 
             return itemsD
                 .Where(d => showAll || d.Usersel)
-                .Where(d => wts switch
+                .Where(d => _wts switch
                 {
                     WhatToShow.words => !d.Phrase,
                     WhatToShow.phrases => d.Phrase,
@@ -120,6 +120,7 @@ namespace IndDictionary
 
 		public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
+			this.wts = wts;
 			var result = itemsD.Where(u => u.Usersel == !allrec).ToList();
 			switch (wts)
 			{
@@ -319,7 +320,14 @@ namespace IndDictionary
 		{
 			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
 				if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
-			return database.Table<dict>().Where(d => d.Usersel == true && d.IsDeleted == false).ToList();
+			return itemsD.Where(d => d.Usersel == true && 
+									(wts switch
+									{
+										WhatToShow.phrases =>d.Phrase==true,
+										WhatToShow.words =>d.Phrase==false,
+										_=>true
+									}))
+				.ToList();
 		}
 		//------------forms list of dates or topics depending on T----------------------
 		public IEnumerable<T> showTopicsDates<T>(bool _showAll) where T : new()
@@ -356,6 +364,7 @@ namespace IndDictionary
 		}
 
 		//------------------selects records from dict which are selected by user on form 
+		string sql;
 		public int selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
 		{
 			List<object> args = new();
@@ -382,30 +391,25 @@ namespace IndDictionary
 									? $"UserSel=true or {Filter}"
 									: $"UserSel=true and {Filter}";
 
-			string PhraseFilter = wts switch
+			/*string PhraseFilter = wts switch
 			{
 				WhatToShow.phrases => "phrase = true",
 				WhatToShow.words => "phrase = false",
 				_ => "true"
-			};
+			};*/
 
 
-			string sql = $"update dict " +
+			sql = $"update dict " +
 				$"set usersel=case " +
 				$"when isDeleted=false " +
 				$" AND {MainFilter} " +
-				$" AND {PhraseFilter}" +
+				//$" AND {PhraseFilter}" +
 				$" THEN true ELSE false" +
 				$" END";
 			database.Execute(sql, args.ToArray());
 
             itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 			return itemsD.Where(i => i.Usersel == true).Count();
-        }
-
-		public int NarrowDownSelected()
-		{
-			
         }
 
 		public IEnumerable<DictVM> ListDictToPost()
