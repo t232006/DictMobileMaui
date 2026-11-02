@@ -356,45 +356,57 @@ namespace IndDictionary
 		}
 
 		//------------------selects records from dict which are selected by user on form 
-		public void selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
+		public int selectDatesOrTopics(IEnumerable<DateOrTopicClassAux> datesList, WhatToSelect wtsel)
 		{
-			IEnumerable<string> l = from sl in datesList
-									where sl.Spoted == true
-									select sl.DaOrTo;		//selected items
-
-			IEnumerable<dict> pool;
+			List<object> args = new();
+			string Filter;
+			var selectedList = datesList.Where(s => s.Spoted == true)
+										.Select(s =>s.DaOrTo)
+										.ToList();
+			
 			if (wtsel == WhatToSelect.dates)
 			{
-				pool = itemsD.Where(d => showAll	?(d.Usersel || l.Contains(d.DateRec)) //select from all records
-													:(d.Usersel && l.Contains(d.DateRec)))
-							;//select from selected 	
+				Filter = $"DateRec in ({string.Join(",",Enumerable.Repeat("?",selectedList.Count))})";
+				args.AddRange(selectedList.Cast<object>());
 			}
-				
 			else
 			{
-				IEnumerable<int?> topicNum = from top in itemsT
-											 where l.Contains(top.Name)
-											 select (int?)top.id;
-				pool = itemsD.Where(t => showAll	? (t.Usersel || topicNum.Contains(t.Topic))
-													: (t.Usersel && topicNum.Contains(t.Topic)));
+				var topicsId = itemsT.Where(i => selectedList.Contains(i.Name))
+										.Select(i => i.id)
+										.ToList();
+				Filter = $"Topic in ({string.Join(",", Enumerable.Repeat("?", topicsId.Count))})";
+				args.AddRange(topicsId.Cast<object>());
 			}
-			pool = pool.Where(d => wts switch
+			
+			string MainFilter = (showAll==true)
+									? $"UserSel=true or {Filter}"
+									: $"UserSel=true and {Filter}";
+
+			string PhraseFilter = wts switch
 			{
-				WhatToShow.words => !d.Phrase,
-				WhatToShow.phrases => d.Phrase,
-				_ => true
-			}).ToList();
+				WhatToShow.phrases => "phrase = true",
+				WhatToShow.words => "phrase = false",
+				_ => "true"
+			};
 
-            database.Execute("Update Dict set Usersel=false");  //eliminate selection
-            database.Commit();
 
-            foreach (dict d in pool)
-            {
-                d.Usersel = true;
-                database.Update(d);
-            }
+			string sql = $"update dict " +
+				$"set usersel=case " +
+				$"when isDeleted=false " +
+				$" AND {MainFilter} " +
+				$" AND {PhraseFilter}" +
+				$" THEN true ELSE false" +
+				$" END";
+			database.Execute(sql, args.ToArray());
+
             itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
-		}
+			return itemsD.Where(i => i.Usersel == true).Count();
+        }
+
+		public int NarrowDownSelected()
+		{
+			
+        }
 
 		public IEnumerable<DictVM> ListDictToPost()
 		{

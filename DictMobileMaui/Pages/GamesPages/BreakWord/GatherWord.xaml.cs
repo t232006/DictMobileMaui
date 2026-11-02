@@ -29,6 +29,7 @@ public partial class GatherWord : BaseGamePage
 	//Dictionary<string, byte> WordsDict = new();
 	//Dictionary<char, byte> LettersDict = new();
 	private List<LetterBorder> borders;
+    private int columns; int rows;
 	private void TextColor()
     {
         if (theWord == null) return;
@@ -105,14 +106,37 @@ public partial class GatherWord : BaseGamePage
         manualInput = true;
         TextColor();
     }
-    private void ConfigureWorkingArea(bool isPortrait)
+    private void ConfigureWorkingArea()
     {
         WorkingArea.Clear();
         WorkingArea.RowDefinitions.Clear();
         WorkingArea.ColumnDefinitions.Clear();
+        
+        bool isPortrait = DeviceDisplay.MainDisplayInfo.Orientation
+                  == DisplayOrientation.Portrait;
 
-        int columns = isPortrait ? 5 : 9;
-        int rows = isPortrait ? 9 : 5;
+        if (isPortrait)
+        {
+            if (theWord.Phrase)
+            {
+                columns = 4; rows = 9;
+            }
+            else
+            {
+                columns = 9; rows = 5;
+            }
+        }
+        else
+        {
+            if (theWord.Phrase)
+            {
+                columns = 7; rows = 5;
+            }
+            else
+            {
+                columns = 15; rows = 4;
+            }
+        }
 
         for (int i = 0; i < columns; i++)
             WorkingArea.ColumnDefinitions.Add(
@@ -121,48 +145,42 @@ public partial class GatherWord : BaseGamePage
         for (int i = 0; i < rows; i++)
             WorkingArea.RowDefinitions.Add(
                 new RowDefinition { Height = GridLength.Star });
+
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < columns; j++)
+            {
+                int index = i * columns + j;
+                LetterBorder border;
+                if (theWord.Phrase)
+                {
+                    if (index >= bw.Words.Length) break;
+
+                    border = new(bw.Words[index]);
+                    border.LetterTapped += PrintText;
+                }
+                else
+                {
+                    if (index >= bw.Letters.Length) break;
+                    border = new(bw.Letters[index]);
+                    border.LetterTapped += PrintLetter;
+                }
+
+                borders.Add(border);
+                WorkingArea.Add(border.Shape, j, i);
+            }
     }
 
     private void Init()
 	{
 		bw = new();
 		borders = new();
-		WorkingArea.Clear();
+		//WorkingArea.Clear();
         EnterSpace.Text = "";
         EnterSpace.TextColor = Colors.LightPink;
 		theWord = bw.TheWord;
 		WordSpace.Text = theWord.Word;
         //WordsDict = bw.Words.Select((word, index) => new { word, index }).ToDictionary(x => x.word, x => (byte)x.index);
-        bool isPortrait = DeviceDisplay.MainDisplayInfo.Orientation
-                  == DisplayOrientation.Portrait;
-
-        ConfigureWorkingArea(isPortrait);
-
-        int columns = isPortrait ? 5 : 10;
-        int rows = isPortrait ? 10 : 5;
-
-        for (int i = 0; i < rows; i++)
-        for (int j = 0; j < columns; j++)
-        {
-            int index = i * columns + j;
-            LetterBorder border;
-            if (theWord.Phrase)
-            {
-                if (index >= bw.Words.Length) break;
-
-                border = new(bw.Words[index]);
-                border.LetterTapped += PrintText;
-            }
-            else
-            {
-                if (index >= bw.Letters.Length) break;
-                border = new(bw.Letters[index]);
-                border.LetterTapped += PrintLetter;
-            }
-
-            borders.Add(border);
-            WorkingArea.Add(border.Shape, j, i);
-        }
+        ConfigureWorkingArea();
 	}
 	public GatherWord()
 	{
@@ -177,6 +195,7 @@ public partial class GatherWord : BaseGamePage
                     : (Color)Application.Current.Resources["BackgroundLight"],
             RowDefinitions =
             {
+                
                 new RowDefinition { Height = new GridLength(0.3, GridUnitType.Star) },
                 new RowDefinition { Height = new GridLength(0.60, GridUnitType.Star) },
                 new RowDefinition { Height = new GridLength(0.1, GridUnitType.Star) }
@@ -204,7 +223,7 @@ public partial class GatherWord : BaseGamePage
         EnterSpace = new Editor
         {
             BackgroundColor = Colors.LightYellow,
-            Margin = new Thickness(50),
+            Margin = new Thickness(25),
             AutoSize = EditorAutoSizeOption.TextChanges,
             HorizontalOptions = LayoutOptions.Fill
             
@@ -218,38 +237,11 @@ public partial class GatherWord : BaseGamePage
         topStack.Children.Add(WordSpace);
         topStack.Children.Add(EnterSpace);
 
+        WorkingArea = new Grid();
+
         mainGrid.Add(topStack, 0, 0);
 
         // ===== WorkingArea (Row 1) =====
-        WorkingArea = new Grid
-        {
-            ColumnDefinitions =
-            {
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star },
-                new ColumnDefinition { Width = GridLength.Star }
-            },
-            RowDefinitions =
-            {
-                new RowDefinition { Height = GridLength.Star },
-                new RowDefinition { Height = GridLength.Star },
-                new RowDefinition { Height = GridLength.Star },
-                new RowDefinition { Height = GridLength.Star },
-                new RowDefinition { Height = GridLength.Star }
-            },
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Start,
-            Padding = new Thickness(5),
-            ColumnSpacing = 2,
-            RowSpacing = 2
-        };
 
         mainGrid.Add(WorkingArea, 0, 1);
 
@@ -272,7 +264,7 @@ public partial class GatherWord : BaseGamePage
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            Init();
+            ConfigureWorkingArea();
         });
     }
 
