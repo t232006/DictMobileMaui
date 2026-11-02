@@ -12,13 +12,53 @@
                      IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.add1.png}"/>
         
     </ContentPage.ToolbarItems>
-    <Grid x:Name="MainStack" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
-                                                                Light={StaticResource BackgroundLight}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="6*"/>
-            <RowDefinition Height="83*"/>
-            <RowDefinition Height="11*"/>
-        </Grid.RowDefinitions>
+    <Grid x:Name="MainStack"
+      BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
+                                        Light={StaticResource BackgroundLight}}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+
+                <!-- Portrait -->
+                <VisualState x:Name="Portrait">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="601"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter TargetName="MainStack"
+                            Property="RowDefinitions">
+                            <Setter.Value>
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="6*"/>
+                                    <RowDefinition Height="88*"/>
+                                    <RowDefinition Height="6*"/>
+                                </RowDefinitionCollection>
+                            </Setter.Value>
+                        </Setter>
+                    </VisualState.Setters>
+                </VisualState>
+
+                <!-- Landscape -->
+                <VisualState x:Name="Landscape">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="601"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter TargetName="MainStack"
+                            Property="RowDefinitions">
+                            <Setter.Value>
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="6*"/>
+                                    <RowDefinition Height="80*"/>
+                                    <RowDefinition Height="12*"/>
+                                </RowDefinitionCollection>
+                            </Setter.Value>
+                        </Setter>
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
     </Grid>
 
