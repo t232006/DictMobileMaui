@@ -5,6 +5,8 @@ using TextAlignment = Microsoft.Maui.TextAlignment;
 using Button = Microsoft.Maui.Controls.Button;
 using DictMobile.addition;
 using System.Text.RegularExpressions;
+//using static System.Net.Mime.MediaTypeNames;
+
 
 
 
@@ -106,6 +108,23 @@ public partial class GatherWord : BaseGamePage
         manualInput = true;
         TextColor();
     }
+    private void adjastBorder(out byte rowcount, out int paddingSize)
+    {
+        double height = DeviceDisplay.MainDisplayInfo.Height;
+        int unitsamount = theWord.Phrase ?
+            theWord.Translation.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length
+            :theWord.Translation.Length;
+        paddingSize = height < 800 ? 8 : 10; 
+        if (theWord.Phrase)
+        {
+            if (unitsamount>21) { rowcount = (byte)(unitsamount / 7); paddingSize=3; }
+            else { rowcount = 3; }
+        } else
+        {
+            if (unitsamount>45) { rowcount = (byte)(unitsamount / 15); paddingSize = 3; }
+            else { rowcount = 3; }
+        }
+    }
     private void ConfigureWorkingArea()
     {
         WorkingArea.Clear();
@@ -115,6 +134,8 @@ public partial class GatherWord : BaseGamePage
         bool isPortrait = DeviceDisplay.MainDisplayInfo.Orientation
                   == DisplayOrientation.Portrait;
 
+        byte _rowcount; int _paddingSize;
+        adjastBorder(out _rowcount, out _paddingSize);
         if (isPortrait)
         {
             if (theWord.Phrase)
@@ -130,11 +151,11 @@ public partial class GatherWord : BaseGamePage
         {
             if (theWord.Phrase)
             {
-                columns = 7; rows = 5;
+                columns = 7; rows = _rowcount;
             }
             else
             {
-                columns = 15; rows = 4;
+                columns = 15; rows = _rowcount;
             }
         }
 
@@ -151,17 +172,18 @@ public partial class GatherWord : BaseGamePage
             {
                 int index = i * columns + j;
                 LetterBorder border;
+                //bool small = false;
                 if (theWord.Phrase)
                 {
                     if (index >= bw.Words.Length) break;
 
-                    border = new(bw.Words[index]);
+                    border = new(bw.Words[index], _paddingSize);
                     border.LetterTapped += PrintText;
                 }
                 else
                 {
                     if (index >= bw.Letters.Length) break;
-                    border = new(bw.Letters[index]);
+                    border = new(bw.Letters[index], _paddingSize);
                     border.LetterTapped += PrintLetter;
                 }
 
@@ -188,6 +210,16 @@ public partial class GatherWord : BaseGamePage
         Title = "GatherWord";
 
         // Основной Grid: 3 строки, 1 колонка
+        ConfigureMainArea();
+        //Content = mainGrid;
+        Init(); 
+        DeviceDisplay.MainDisplayInfoChanged += OnDisplayInfoChanged;
+    }
+
+    private void ConfigureMainArea()
+    {
+        bool isPortrait = DeviceDisplay.MainDisplayInfo.Orientation
+                  == DisplayOrientation.Portrait;
         var mainGrid = new Grid
         {
             BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
@@ -195,10 +227,9 @@ public partial class GatherWord : BaseGamePage
                     : (Color)Application.Current.Resources["BackgroundLight"],
             RowDefinitions =
             {
-                
-                new RowDefinition { Height = new GridLength(0.3, GridUnitType.Star) },
-                new RowDefinition { Height = new GridLength(0.60, GridUnitType.Star) },
-                new RowDefinition { Height = new GridLength(0.1, GridUnitType.Star) }
+                new RowDefinition { Height = new GridLength(isPortrait? 0.3 : 0.4, GridUnitType.Star) },
+                new RowDefinition { Height = new GridLength(isPortrait? 0.6 : 0.45, GridUnitType.Star) },
+                new RowDefinition { Height = new GridLength(isPortrait? 0.1 : 0.15, GridUnitType.Star) }
             },
             ColumnDefinitions =
             {
@@ -209,7 +240,7 @@ public partial class GatherWord : BaseGamePage
         // ===== Верхняя часть (Row 0) =====
         var topStack = new VerticalStackLayout
         {
-            
+
             HorizontalOptions = LayoutOptions.Fill,
         };
 
@@ -223,10 +254,10 @@ public partial class GatherWord : BaseGamePage
         EnterSpace = new Editor
         {
             BackgroundColor = Colors.LightYellow,
-            Margin = new Thickness(25),
+            Margin = isPortrait? new Thickness(25,30,25,30):new Thickness(25,15,25,15),
             AutoSize = EditorAutoSizeOption.TextChanges,
             HorizontalOptions = LayoutOptions.Fill
-            
+
         };
         EnterSpace.TextChanged += onTextChanged;
 #if ANDROID
@@ -254,16 +285,15 @@ public partial class GatherWord : BaseGamePage
         AgainButton.Pressed += onAgainPress;
         mainGrid.Add(AgainButton, 0, 2);
         SetPageContent(mainGrid);
-        //Content = mainGrid;
-        Init(); 
-        DeviceDisplay.MainDisplayInfoChanged += OnDisplayInfoChanged;
     }
+
     private void OnDisplayInfoChanged(
     object sender,
     DisplayInfoChangedEventArgs e)
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
+            ConfigureMainArea();
             ConfigureWorkingArea();
         });
     }

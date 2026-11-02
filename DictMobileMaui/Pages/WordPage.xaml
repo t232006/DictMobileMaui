@@ -16,8 +16,8 @@
                                                                 Light={StaticResource BackgroundLight}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
-            <RowDefinition Height="88*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="83*"/>
+            <RowDefinition Height="11*"/>
         </Grid.RowDefinitions>
 
     </Grid>

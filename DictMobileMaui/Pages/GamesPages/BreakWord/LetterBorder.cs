@@ -20,13 +20,13 @@ namespace DictMobile.Pages.GamesPages.BreakWord
         }
         //public Point coord { get; set; }
         
-        private void Init()
+        private void Init(int paddingSize)
         {
             //_page.onEnterText += textFound;
             Shape = new Border
             {
                 Style = (Style)Application.Current.Resources["var6"],
-                Padding = new Thickness(10)
+                Padding =  new Thickness(paddingSize)
             };
             Shape.GestureRecognizers.Add(new TapGestureRecognizer
             {
@@ -41,15 +41,15 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             };
             Shape.Content = l;
         }
-        public LetterBorder(char Letter)
+        public LetterBorder(char Letter, int paddingSize)
         {
-            Init();
+            Init(paddingSize);
             
             l.Text = Letter.ToString();
         }
-        public LetterBorder(string Word)
+        public LetterBorder(string Word, int paddingSize)
         {
-            Init();
+            Init(paddingSize);
             
             l.Text = Word;
         }
