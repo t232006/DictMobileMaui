@@ -83,7 +83,14 @@ public partial class GatherWord : BaseGamePage
 		}
 		else
 		{
-			s = s.Remove(s.LastIndexOf(Text), Text.Length+1);
+            try
+            {
+                s = s.Remove(s.LastIndexOf(Text), Text.Length + 1);
+            }
+            catch
+            {
+                s = s.Remove(s.LastIndexOf(Text), Text.Length);
+            }
 		}
         manualInput = false;
 		EnterSpace.Text = s;

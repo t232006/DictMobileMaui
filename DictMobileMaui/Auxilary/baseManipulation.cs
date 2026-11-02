@@ -68,11 +68,15 @@ namespace IndDictionary
 			database = new SQLiteConnection(databasePath);
 			itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
 			itemsT = database.Table<topic>().Where(d => d.IsDeleted == false).ToList();
-			DateTime last1 = DateTime.Parse(database.Table<dict>().Max(mt => mt.Modification_Time));
-			DateTime last2 = DateTime.Parse(database.Table<topic>().Max(mt => mt.Modification_Time));
-			LastGetUpdate = (last1 > last2) ? last1 : last2;
-			LastPostUpdate = LastGetUpdate;
-			if (itemsD.Count > 0) FBDID = itemsD.Select(d => d.DBID).First();
+
+			if (itemsD.Any())
+			{
+                DateTime last1 = DateTime.Parse(itemsD.Max(mt => mt.Modification_Time)!);
+                DateTime last2 = DateTime.Parse(itemsT.Max(mt => mt.Modification_Time)!);
+                LastGetUpdate = (last1 > last2) ? last1 : last2;
+                LastPostUpdate = LastGetUpdate;
+                FBDID = itemsD.Select(d => d.DBID).First();
+			}
 			else
 			{
 				Random r = new Random();
@@ -121,7 +125,7 @@ namespace IndDictionary
 		public async Task<IEnumerable<dict>> showTableDictAsync(bool allrec, WhatToShow wts)
 		{
 			this.wts = wts;
-			var result = itemsD.Where(u => u.Usersel == !allrec).ToList();
+			var result = itemsD.Where(u => u.Usersel || allrec).ToList();
 			switch (wts)
 			{
 				case WhatToShow.words:
@@ -318,8 +322,12 @@ namespace IndDictionary
 
 		public IEnumerable<dict> getSelected()
 		{
-			int count = database.Table<dict>().Where(d => d.Usersel == true).Count();
-				if (count < 6) database.Execute("Update Dict set Usersel=true where isDeleted=false");
+			int count = itemsD.Where(d => d.Usersel == true).Count();
+			if (count < 6)
+			{
+				database.Execute("Update Dict set Usersel=true where isDeleted=false");
+				database.Commit();
+			}
 			return itemsD.Where(d => d.Usersel == true && 
 									(wts switch
 									{

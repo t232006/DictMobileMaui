@@ -147,8 +147,6 @@ namespace IndDictionary
         }
 		protected async void SaveToCloud(object sender, EventArgs e)
 		{
-            //App.CopyFilesFromResource(Path.Combine(App.APPFOLDER, App.SECRETFILE), App.SECRETFILE);
-
             string currentDB = Preferences.Get("current", "");
 			string DBName = Path.GetFileName(currentDB);
 			string? DBPath = Path.GetDirectoryName(currentDB);
