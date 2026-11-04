@@ -85,11 +85,12 @@ namespace IndDictionary.Pages
 			Preferences.Set("current", Path.Combine(App.APPFOLDER, filename));
 			FList.SelectedItem = Items.FindIndex(x => x.filename == filename);
 			App.Database.toReboot = true;
-			Task.Run(async ()=> { await App.GetAsync();});
 			PageRefresh();
+			
+			
 			App.TopicsViewModel.GetTopicList();
 			App.Database.ResetSelection();
-			
+			Task.Run(async ()=> { await App.GetAsync();});
 			Navigation.PopAsync();
 			//App.MainPage = new NavigationPage(new MainPage());
 		}
