@@ -1,4 +1,4 @@
-﻿using DictMobile.Auxilary;
+﻿//using DictMobile.Auxilary;
 using SQLite;
 
 namespace DictMobile.models

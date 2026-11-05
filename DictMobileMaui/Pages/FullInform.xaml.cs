@@ -1,4 +1,5 @@
 ﻿
+//using //Android.Content.Res;
 using DictMobile.addition;
 using DictMobile.models;
 using DictMobile.ViewModels;
@@ -64,8 +65,19 @@ namespace IndDictionary
 				ToolbarItems.Add(DeleteItem);
 			}
 			else ToolbarItems.Add(EditItem);
+            DeviceDisplay.Current.MainDisplayInfoChanged += OnMainDisplayInfoChanged;
+            string visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+            VisualStateManager.GoToState(ContentSpace, visualState);
+        }
+        private void OnMainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
+		{
+			string visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+			VisualStateManager.GoToState(ContentSpace, visualState);
 		}
-		protected void onEditBut(object sender, EventArgs e)
+
+
+
+        protected void onEditBut(object sender, EventArgs e)
 		{
 			EditBox.IsToggled = !EditBox.IsToggled;
 			

@@ -1,5 +1,4 @@
-﻿//using DictMobile.Auxilary;
-using DictMobile.Auxilary;
+﻿
 using DictMobile.models;
 using DictMobile.ViewModels;
 using Microsoft.Maui.Layouts;
@@ -85,27 +84,7 @@ namespace IndDictionary
 					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "id");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
-					
-					SectorComponent diagram = new SectorComponent();
-                    diagram.SetBinding(SectorComponent.AlphaProperty, "Grade");
-
-                    
-                     MainField.SizeChanged += (s, e) =>
-                     {
-                         if (MainField.Height > 0)
-                         {
-                             // немного отступа, подстраивайте коэффициент под ваш дизайн
-                             double target = MainField.Height * 0.9;
-                             diagram.WidthRequest = target;
-                             diagram.HeightRequest = target;
-
-                             // обновляем layout bounds: X,Y пропорциональные, W/H — абсолютные
-                             AbsoluteLayout.SetLayoutBounds(diagram, new Rect(.95, 0.5, diagram.WidthRequest, diagram.HeightRequest));
-
-                             // заставляем перерисовать компонент (если у вашего SectorComponent есть Invalidate/InvalidateMeasure)
-                             diagram.Invalidate();
-                         }
-                     };
+					 
                     var cellLayout = new Grid
                     {
                         ColumnDefinitions =
@@ -113,15 +92,13 @@ namespace IndDictionary
 							new ColumnDefinition { Width = GridLength.Star },   // Main
 							new ColumnDefinition { Width = GridLength.Auto },   // Second
 							new ColumnDefinition { Width = GridLength.Auto },   // Switch
-							new ColumnDefinition { Width = GridLength.Auto },    // Diagram
-
-                            new ColumnDefinition { Width = 50 }    // Diagram
+							new ColumnDefinition { Width = 30}
 						}
                     };
                     cellLayout.Add(MainField, 0, 0);
                     cellLayout.Add(SecondField, 1, 0);
                     cellLayout.Add(extswitch, 2, 0);
-                    cellLayout.Add(diagram, 3, 0);
+                    
                    
                     
                     return new ViewCell { View = cellLayout };

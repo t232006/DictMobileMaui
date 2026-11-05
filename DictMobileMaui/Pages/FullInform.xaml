@@ -5,9 +5,16 @@
              xmlns:viewmodels="clr-namespace:DictMobile.ViewModels"
              xmlns:inddictionary="clr-namespace:IndDictionary"
              xmlns:res="clr-namespace:IndDictionary.addition"
-             x:Class="IndDictionary.FullInform">
+             x:Class="IndDictionary.FullInform"
+             >
     <ContentPage.Resources>
         <ResourceDictionary>
+            <Style TargetType="Border">
+                <Setter Property="Stroke" Value="LightGray"/>
+                <Setter Property="FlexLayout.Grow" Value="0"/>
+                <Setter Property="FlexLayout.Basis" Value="50%"/>
+                <Setter Property="FlexLayout.Shrink" Value="1"/>
+            </Style>
             <Style TargetType="Label">
                 <Setter Property="FontSize" Value="Medium"/>
                 <Setter Property="Margin" Value="10, 7, 2, 10"/>
@@ -36,15 +43,50 @@
             <loc:stringToDate x:Key="StringToDate"/>
         </ResourceDictionary>
     </ContentPage.Resources>
+    
 
     <ContentPage.Content>
         <Grid x:Name="BaseLayout" BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundDark},
                                                                 Light={StaticResource BackgroundLight}}">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="Portrait">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowHeight="0"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Property="RowDefinitions">
+                                <Setter.Value>
+                                    <RowDefinitionCollection>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="3*"/>
+                                        <RowDefinition Height="*"/>
+                                    </RowDefinitionCollection>
+                                </Setter.Value> 
+                            </Setter>
+                        
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Landscape">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowHeight="800"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Property="RowDefinitions">
+                                <Setter.Value>
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="7*"/>
+                                    <RowDefinition Height="*"/>
+                                </RowDefinitionCollection>
+                                </Setter.Value>
+                            </Setter>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="*"/>
+                
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -64,20 +106,43 @@
                 <Label x:Name="DateSpaceLabel" Text="{Binding DateRec}"
                             Margin="10,7,10,10"     />
             </FlexLayout>
-            <Editor x:Name="WordSpace" Text="{Binding Word}" Style="{StaticResource MainSpace}" 
-                    Placeholder="Слово"
-                    IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled, 
-                                 Converter={StaticResource boolConverter}}"  
-                    Grid.Row="1" Grid.Column="0"
-                    TextChanged="onTextChanged"/>
-            <Editor x:Name="TransSpace" Text="{Binding Translation}" Style="{StaticResource forEntrys}" 
-                         Placeholder="Translation"
-                        IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled,
-                    Converter={StaticResource boolConverter}}"
-                    Grid.Row="2" Grid.Column="0"
-                    TextChanged="onTextChanged"/>
+            <FlexLayout x:Name="ContentSpace" Grid.Column="0" Grid.Row="1" Wrap="NoWrap">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="Portrait">
+                        <VisualState.Setters>
+                            <Setter Property="FlexLayout.Direction"
+                                    Value="Column"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Landscape">
+                        <VisualState.Setters>
+                            <Setter Property="FlexLayout.Direction"
+                                    Value="Row"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups> 
+                <Border x:Name="WordSpace" StrokeShape="Rectangle">
+                    
+                    <Editor  Text="{Binding Word}" Style="{StaticResource MainSpace}" 
+                            Placeholder="Слово"
+                            IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled, 
+                                            Converter={StaticResource boolConverter}}"
+                            TextChanged="onTextChanged"/>
+            
+                </Border>
+                <Border x:Name="TransSpace">
+                    <Editor  Text="{Binding Translation}" Style="{StaticResource MainSpace}" 
+                                Placeholder="Translation"
+                            IsReadOnly="{Binding Source={x:Reference EditBox}, Path=IsToggled,
+                        Converter={StaticResource boolConverter}}"     
+                        TextChanged="onTextChanged" />
+                </Border>
+            </FlexLayout>
+
             <FlexLayout x:Name="LabelSpace" Style="{StaticResource forFlex}"
-                        Grid.Row="3" Grid.Column="0">
+                        Grid.Row="2" Grid.Column="0">
                 <Label x:Name="RelSpace" Text="{Binding Relevation, StringFormat='Открывалось {0} раз'}"/>
                 <Label x:Name="GradeSpace" Text="{Binding Grade, StringFormat='Оценка {0}'}" Margin="5,8,50,5"/>
             </FlexLayout>

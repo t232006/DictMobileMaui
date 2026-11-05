@@ -2,7 +2,7 @@
 using DictMobile.games;
 
 using System.ComponentModel;
-using DictMobile.Auxilary;
+//using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
 using DictMobile.Pages.GamesPages.Accordance;
 
