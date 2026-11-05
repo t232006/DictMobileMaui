@@ -92,8 +92,8 @@ namespace IndDictionary
 							new ColumnDefinition { Width = GridLength.Star },   // Main
 							new ColumnDefinition { Width = GridLength.Auto },   // Second
 							new ColumnDefinition { Width = GridLength.Auto },   // Switch
-							new ColumnDefinition { Width = 30}
-						}
+							new ColumnDefinition { Width = new GridLength(0.1, GridUnitType.Star) }
+                        }
                     };
                     cellLayout.Add(MainField, 0, 0);
                     cellLayout.Add(SecondField, 1, 0);

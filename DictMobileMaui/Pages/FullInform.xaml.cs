@@ -66,7 +66,10 @@ namespace IndDictionary
 			}
 			else ToolbarItems.Add(EditItem);
             DeviceDisplay.Current.MainDisplayInfoChanged += OnMainDisplayInfoChanged;
-            string visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+			string visualState = "Portrait";
+#if ANDROID
+            visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+#endif
             VisualStateManager.GoToState(ContentSpace, visualState);
         }
         private void OnMainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
