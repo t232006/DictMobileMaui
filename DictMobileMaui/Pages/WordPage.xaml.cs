@@ -111,9 +111,16 @@ namespace IndDictionary
 			ListTable.ItemTapped += OnPress;
 			MainStack.Add(searchBar, 0, 0);
 			MainStack.Add(ListTable, 0, 1);
-			MainStack.Add(navButtons, 0, 2);  
+			MainStack.Add(navButtons, 0, 2);
+            string visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+            VisualStateManager.GoToState(MainStack, visualState);
         }
-		public void PassParams(bool _showAll, WhatToShow _wts)
+        private void OnMainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
+        {
+            string visualState = DeviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape ? "Landscape" : "Portrait";
+            VisualStateManager.GoToState(MainStack, visualState);
+        }
+        public void PassParams(bool _showAll, WhatToShow _wts)
 		{
 			showall=_showAll;
 			wts=_wts;

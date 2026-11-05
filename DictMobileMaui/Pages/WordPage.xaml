@@ -21,9 +21,7 @@
 
                 <!-- Portrait -->
                 <VisualState x:Name="Portrait">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="601"/>
-                    </VisualState.StateTriggers>
+                    
                     <VisualState.Setters>
                         <Setter TargetName="MainStack"
                             Property="RowDefinitions">
@@ -40,9 +38,6 @@
 
                 <!-- Landscape -->
                 <VisualState x:Name="Landscape">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="601"/>
-                    </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter TargetName="MainStack"
                             Property="RowDefinitions">
