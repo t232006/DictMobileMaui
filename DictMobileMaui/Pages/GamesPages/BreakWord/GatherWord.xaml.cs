@@ -184,13 +184,13 @@ public partial class GatherWord : BaseGamePage
                 {
                     if (index >= bw.Words.Length) break;
 
-                    border = new(bw.Words[index], _paddingSize);
+                    border = new(bw.Words[index], _paddingSize,"var6","var6Text");
                     border.LetterTapped += PrintText;
                 }
                 else
                 {
                     if (index >= bw.Letters.Length) break;
-                    border = new(bw.Letters[index], _paddingSize);
+                    border = new(bw.Letters[index], _paddingSize, "var6", "var6Text");
                     border.LetterTapped += PrintLetter;
                 }
 

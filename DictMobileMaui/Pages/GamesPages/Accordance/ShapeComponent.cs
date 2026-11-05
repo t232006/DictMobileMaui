@@ -1,4 +1,5 @@
-﻿using IndDictionary;
+﻿using DictMobile.Pages.GamesPages.BreakWord;
+using IndDictionary;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
@@ -6,6 +7,15 @@ namespace DictMobile.Pages.GamesPages.Accordance
 {
     public class ShapeComponent : ContentView
     {
+        public MyBorder Shape;
+        private readonly bool isWord;
+        private string translation;
+        private string word;
+        private int id;
+
+        // ключ реестра для этого экземпляра
+        private readonly string dragKey;
+
         // Регистр для сопоставления текстового ключа -> ShapeComponent (чтобы передавать ссылки между платформами)
         private static readonly ConcurrentDictionary<string, ShapeComponent> DragRegistry = new();
         double MakeShapeSizeX()
@@ -41,33 +51,25 @@ namespace DictMobile.Pages.GamesPages.Accordance
             string curStyle = _true ? "var2" : "var21";
             string curTextStyle = _true ? "var2Text" : "var1TextStrike";
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
-                Shape.Style = (Style)style;
+                Shape.Shape.Style = (Style)style;
             if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
                 (Shape.Content as Label).Style = (Style)textstyle;
             App.Database.GetReward(id, _true);
         }
-        public ShapeComponent(bool _isWord, int _id)
+        public ShapeComponent(bool _isWord, string _Word, string _Translation)
         {
             bool put = false;
-            string curStyle = _isWord ? "var41" : "var3Round";
-            string curTextStyle = _isWord ? "var4Text" : "var3Text";
-            if (Application.Current.Resources.TryGetValue(curStyle, out var style))
-                Shape.Style = (Style)style;
-            if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
-                (Shape.Content as Label).Style = (Style)textstyle;
+            Shape = _isWord ? new MyBorder(_Word, "var41", "var4Text") : new MyBorder(_Translation, "var3Round", "var3Text");
             isWord = _isWord;
-            id = _id;
-            Translation = App.Database.findOneRecord(_id)!.Translation;
-            Word = App.Database.findOneRecord(_id)!.Word;
-            Content = Shape;
+            translation = _Translation;
+            word = _Word;
+            Content = Shape.Shape;
             Content.WidthRequest = MakeShapeSizeX();
             Content.HeightRequest = MakeShapeSizeY();
-            if (Shape.Content is Label label)
-            {
-                //label.Text = isWord ? word : translation;
-                label.HorizontalOptions = LayoutOptions.Center;
-                label.VerticalOptions = LayoutOptions.Center;
-            }
+            
+            Shape.Content.HorizontalOptions = LayoutOptions.Center;
+            Shape.Content.VerticalOptions = LayoutOptions.Center;
+            
 
             // уникальный ключ для передачи через DataPackage
             dragKey = System.Guid.NewGuid().ToString();
@@ -139,53 +141,7 @@ namespace DictMobile.Pages.GamesPages.Accordance
                 }
             };
             GestureRecognizers.Add(drop);
-
         }
-
-        public Border Shape = new Border
-        {
-            Content = new Label(),
-
-        };
-        private readonly bool isWord;
-        private string translation;
-        private string word;
-        private int id;
-
-        // ключ реестра для этого экземпляра
-        private readonly string dragKey;
-
-
-        public string Word
-        {
-            set
-            {
-                if (isWord)
-                {
-                    var label = Shape.Content as Label;
-                    label.Text = value;
-                    //Shape.WidthRequest = label.Text.Length * 10;
-                    Shape.HorizontalOptions = LayoutOptions.Fill;
-                }
-            }
-            get => word;
-        }
-        public string Translation
-        {
-            set
-            {
-                if (!isWord)
-                {
-                    var label = Shape.Content as Label;
-                    label.Text = value;
-                    //Shape.WidthRequest = label.Text.Length * 10;
-                    Shape.HorizontalOptions = LayoutOptions.Fill;
-                }
-                translation = value;
-            }
-            get => translation;
-        }
-
 
     }
 }

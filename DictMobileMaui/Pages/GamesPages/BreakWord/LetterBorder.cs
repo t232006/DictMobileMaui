@@ -3,12 +3,14 @@ using Application = Microsoft.Maui.Controls.Application;
 
 namespace DictMobile.Pages.GamesPages.BreakWord
 {
-    public class LetterBorder
+    public class MyBorder
     {
         public delegate void MethodLetterTapped(bool toWrite, string Text);
         public event MethodLetterTapped LetterTapped;
         public Border Shape;
         Label l;
+        public Label Content { get => l; }
+        string BorderStyleName; string TextStyleName;
         //private int number;
         private bool selected = false;
         public bool Selected 
@@ -20,13 +22,12 @@ namespace DictMobile.Pages.GamesPages.BreakWord
         }
         //public Point coord { get; set; }
         
-        private void Init(int paddingSize)
+        protected void Init()
         {
             //_page.onEnterText += textFound;
             Shape = new Border
             {
-                Style = (Style)Application.Current.Resources["var6"],
-                Padding =  new Thickness(paddingSize)
+                Style = (Style)Application.Current.Resources[BorderStyleName],
             };
             Shape.GestureRecognizers.Add(new TapGestureRecognizer
             {
@@ -37,31 +38,37 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             });
             l = new Label
             {
-                Style = (Style)Application.Current.Resources["var6Text"],
+                Style = (Style)Application.Current.Resources[TextStyleName],
             };
             Shape.Content = l;
         }
-        public LetterBorder(char Letter, int paddingSize)
+        public MyBorder(char Letter, string _BorderStyleName, string _TextStyleName)
         {
-            Init(paddingSize);
-            
+            BorderStyleName = _BorderStyleName;
+            TextStyleName = _TextStyleName;
+            Init();
+
             l.Text = Letter.ToString();
-        }
-        public LetterBorder(string Word, int paddingSize)
-        {
-            Init(paddingSize);
             
+        }
+        public MyBorder(string Word,string _BorderStyleName, string _TextStyleName)
+        {
+            BorderStyleName = _BorderStyleName;
+            TextStyleName = _TextStyleName;
+            Init();
+
             l.Text = Word;
         }
-        private void selectOn()
+
+        protected void selectOn()
         {
                 Shape.Style = (Style)Application.Current.Resources["var6Selected"];
                 l.Style = (Style)Application.Current.Resources["var6TextSelected"];
         }
-        private void selectOff()
+        protected void selectOff()
         {
-                Shape.Style = (Style)Application.Current.Resources["var6"];
-                l.Style = (Style)Application.Current.Resources["var6Text"];
+                Shape.Style = (Style)Application.Current.Resources[BorderStyleName];//"var6"
+                l.Style = (Style)Application.Current.Resources[TextStyleName];//"var6Text"
         }
         public void OnLetterTapped()
         {
@@ -75,6 +82,18 @@ namespace DictMobile.Pages.GamesPages.BreakWord
                 selectOn();
             }
             LetterTapped?.Invoke(Selected, l.Text);
+        }
+        
+    }
+    public class LetterBorder: MyBorder
+    {
+        public LetterBorder(char Letter, int paddingSize, string _BorderStyleName, string _TextStyleName) : base(Letter, _BorderStyleName, _TextStyleName)
+        {  
+            Shape.Padding = new Thickness(paddingSize);
+        }
+        public LetterBorder(string Word, int paddingSize, string _BorderStyleName, string _TextStyleName) : base(Word, _BorderStyleName, _TextStyleName)
+        {
+            Shape.Padding = new Thickness(paddingSize);
         }
         
     }

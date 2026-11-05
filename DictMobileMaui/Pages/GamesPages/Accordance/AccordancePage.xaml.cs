@@ -29,8 +29,8 @@ namespace IndDictionary
             FlexLayout.SetGrow(newFl2, 1);
             for (byte i = 0; i < 6; i++)
             {
-                newFl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].id));
-                newFl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].id));
+                newFl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Word, accordance.PoolWord[i].Translation));
+                newFl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Word, accordance.PoolWord[i].Translation));
             }
             MainStack.Children.Clear();
             MainStack.Children.Add(newFl1);

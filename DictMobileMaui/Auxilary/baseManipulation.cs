@@ -328,7 +328,8 @@ namespace IndDictionary
 				database.Execute("Update Dict set Usersel=true where isDeleted=false");
 				database.Commit();
 			}
-			return itemsD.Where(d => d.Usersel == true && 
+            itemsD = database.Table<dict>().Where(d => d.IsDeleted == false).ToList();
+            return itemsD.Where(d => d.Usersel == true && 
 									(wts switch
 									{
 										WhatToShow.phrases =>d.Phrase==true,

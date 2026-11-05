@@ -104,6 +104,7 @@ namespace IndDictionary
                     return new ViewCell { View = cellLayout };
                 }
 				)
+				
 			};
             NavigationButtons navButtons = new NavigationButtons(this);
 			searchBar = new SearchBar();
