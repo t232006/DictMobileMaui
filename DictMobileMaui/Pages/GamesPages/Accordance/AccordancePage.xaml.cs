@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Microsoft.Maui.Layouts;
 using DictMobile.Pages.GamesPages.Accordance;
 using static DictMobile.Pages.GamesPages.Accordance.ShapeComponent;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 
@@ -13,6 +14,7 @@ namespace IndDictionary
 {	
 	public partial class AccordancePage : BaseGamePage
 	{
+        Accordance accordance;
         FlexLayout MainStack = new()
         {
             BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
@@ -23,7 +25,7 @@ namespace IndDictionary
         FlexLayout fl2 = new FlexLayout { Direction = FlexDirection.Column };
         void DrawNewPage()
         {
-            Accordance accordance = new Accordance();
+            accordance = new Accordance();
             var newFl1 = new FlexLayout { Direction = FlexDirection.Column };
             var newFl2 = new FlexLayout { Direction = FlexDirection.Column };
             FlexLayout.SetGrow(newFl1, 1);
@@ -49,10 +51,52 @@ namespace IndDictionary
         }
         protected void onAnswerGave(object Sender, AnswerEventArgs e)
         {
+            
             var target = (ShapeComponent)Sender;
             //if (target.Translaiton==e.Source.Translaiton) target.an
-            target.Answer(target.Translaiton == e.Source.Translaiton);
+            target.CanDrag = false;
+            e.Source.CanDrag = false;
+            e.Source.IsEnabled = false;
+            target.IsEnabled = false;
+            if (target.Translaiton == e.Source.Translaiton)
+            { 
+                target.Answer(1);
+                RemoveSource(e.Source); 
+                accordance.GetReward(true, target.Translaiton);
+            }
+
+            else
+            {
+                target.Answer(0);
+                e.Source.Answer(0);
+                accordance.GetReward(false, target.Translaiton);
+                SearchRightAnswer(fl1, target.Translaiton, target, e.Source);
+                SearchRightAnswer(fl2, target.Translaiton, target, e.Source);
+                SearchRightAnswer(fl1, e.Source.Translaiton, target, e.Source);
+                SearchRightAnswer(fl2, e.Source.Translaiton, target, e.Source);
+            }
+
+            void RemoveSource(ShapeComponent source)
+            {
+                if (source.Parent is FlexLayout parent)
+                    parent.Children.Remove(source);
+            }
+
+            void SearchRightAnswer(FlexLayout fl, string translation, ShapeComponent selectedTarget, ShapeComponent selectedSource)
+            {
+                foreach (var temp in fl.Children.OfType<ShapeComponent>())
+                {
+                    if (temp == selectedTarget || temp == selectedSource) continue;
+                    if (temp.Translaiton == translation)
+                    {
+                        temp.Answer(2); //underlining it
+                        temp.CanDrag = false;
+                        temp.IsEnabled = false;
+                    }
+                }
+            }
         }
+        
         public AccordancePage()
 		{
             InitializeComponent();

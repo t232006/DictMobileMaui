@@ -12,11 +12,7 @@ namespace DictMobile.games
             string _Word; string _Trans;
             public string Word { get => _Word; }
             public string Trans { get => _Trans; }
-            public PairById(int id)
-            {
-                _Word = App.Database.findOneRecord(id)!.Word;
-				_Trans = App.Database.findOneRecord(id)!.Translation;
-            }
+            
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

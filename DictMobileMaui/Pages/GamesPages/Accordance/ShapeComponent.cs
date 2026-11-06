@@ -12,7 +12,8 @@ namespace DictMobile.Pages.GamesPages.Accordance
         private string translation;
         public string Translaiton { get => translation; }
         private string word;
-        private int id;
+        private DragGestureRecognizer drag;
+        public bool CanDrag { set => drag.CanDrag =value; }
         public class AnswerEventArgs: EventArgs
         {
             public ShapeComponent Source { get; }
@@ -52,16 +53,30 @@ namespace DictMobile.Pages.GamesPages.Accordance
             //else return this.Window.Height * 0.15;
                 
         }
-        public void Answer(bool _true)
+        public void Answer(byte selector) //0 - false, 1 - true, 2 - right but not selected answer
         {
 
-            string curStyle = _true ? "var2" : "var21";
-            string curTextStyle = _true ? "var2Text" : "var1TextStrike";
+            //string curStyle = selector==1 ? "var2" : "var21";
+            string curStyle; string curTextStyle;
+                switch (selector)
+                {
+                case 1: curStyle = "var2";
+                    curTextStyle = "var2Text";
+                    break;
+                case 0: curStyle = "var21";
+                    curTextStyle = "var1TextStrike";
+                    break;
+                case 2: curTextStyle = "var1Text";
+                    curStyle = "var21";
+                    break;
+                default: curStyle = "";
+                    curTextStyle = "";
+                    break;
+                }
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))
                 Shape.Shape.Style = (Style)style;
             if (Application.Current.Resources.TryGetValue(curTextStyle, out var textstyle))
-                (Shape.Content as Label).Style = (Style)textstyle;
-            App.Database.GetReward(id, _true);
+                (Shape.Shape.Content as Label).Style = (Style)textstyle;
         }
         public ShapeComponent(bool _isWord, string _Word, string _Translation)
         {
@@ -83,7 +98,7 @@ namespace DictMobile.Pages.GamesPages.Accordance
             // регистрируем текущий компонент в реестре
             DragRegistry[dragKey] = this;
 
-            var drag = new DragGestureRecognizer
+            drag = new DragGestureRecognizer
             {
                 CanDrag = true,
             };
@@ -129,10 +144,6 @@ namespace DictMobile.Pages.GamesPages.Accordance
                         if (put) return;
                         put = true;
                         var label = Shape.Content as Label;
-                        if (source.Parent is FlexLayout parent)
-                        {
-                            parent.Children.Remove(source);
-                        }
                         label.Text = source.isWord
                             ? label.Text + "=" + (source as ShapeComponent).word
                             : label.Text + "=" + (source as ShapeComponent).translation;
