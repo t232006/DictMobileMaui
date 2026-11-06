@@ -10,8 +10,15 @@ namespace DictMobile.Pages.GamesPages.Accordance
         public MyBorder Shape;
         private readonly bool isWord;
         private string translation;
+        public string Translaiton { get => translation; }
         private string word;
         private int id;
+        public class AnswerEventArgs: EventArgs
+        {
+            public ShapeComponent Source { get; }
+            public AnswerEventArgs(ShapeComponent source) => Source = source;
+        }
+        public EventHandler<AnswerEventArgs> onAnswer;
 
         // ключ реестра для этого экземпляра
         private readonly string dragKey;
@@ -45,7 +52,7 @@ namespace DictMobile.Pages.GamesPages.Accordance
             //else return this.Window.Height * 0.15;
                 
         }
-        void Answer(bool _true)
+        public void Answer(bool _true)
         {
 
             string curStyle = _true ? "var2" : "var21";
@@ -129,8 +136,8 @@ namespace DictMobile.Pages.GamesPages.Accordance
                         label.Text = source.isWord
                             ? label.Text + "=" + (source as ShapeComponent).word
                             : label.Text + "=" + (source as ShapeComponent).translation;
-                        if (source.translation == this.translation) Answer(true); else Answer(false);
-
+                        //if (source.translation == this.translation) Answer(true); else Answer(false);
+                        onAnswer?.Invoke(this,new AnswerEventArgs(source));
                         // удаляем из реестра после использования
                         DragRegistry.TryRemove(key, out _);
                     }

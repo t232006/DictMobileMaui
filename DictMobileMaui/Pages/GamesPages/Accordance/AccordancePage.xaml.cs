@@ -5,6 +5,7 @@ using System.ComponentModel;
 //using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
 using DictMobile.Pages.GamesPages.Accordance;
+using static DictMobile.Pages.GamesPages.Accordance.ShapeComponent;
 
 
 
@@ -29,8 +30,13 @@ namespace IndDictionary
             FlexLayout.SetGrow(newFl2, 1);
             for (byte i = 0; i < 6; i++)
             {
-                newFl1.Children.Add(new ShapeComponent(false, accordance.PoolWord[i].Word, accordance.PoolWord[i].Translation));
-                newFl2.Children.Add(new ShapeComponent(true, accordance.PoolTrans[i].Word, accordance.PoolTrans[i].Translation));
+                var newShape1 = new ShapeComponent(false, accordance.PoolWord[i].Word, accordance.PoolWord[i].Translation);
+                var newShape2 = new ShapeComponent(true, accordance.PoolTrans[i].Word, accordance.PoolTrans[i].Translation);
+                newShape1.onAnswer += onAnswerGave;
+                newShape2.onAnswer += onAnswerGave;
+                newFl1.Children.Add(newShape1);
+                newFl2.Children.Add(newShape2);
+
             }
             MainStack.Children.Clear();
             MainStack.Children.Add(newFl1);
@@ -40,6 +46,12 @@ namespace IndDictionary
             fl2.InvalidateMeasure();
             MainStack.InvalidateMeasure();
 
+        }
+        protected void onAnswerGave(object Sender, AnswerEventArgs e)
+        {
+            var target = (ShapeComponent)Sender;
+            //if (target.Translaiton==e.Source.Translaiton) target.an
+            target.Answer(target.Translaiton == e.Source.Translaiton);
         }
         public AccordancePage()
 		{
