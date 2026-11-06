@@ -151,12 +151,12 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
     <Style x:Key="var6Selected" TargetType="Border">
-        <Setter Property="Stroke" Value="Turquoise"/>
+        <Setter Property="Stroke" Value="#2A7F7A"/>
         <Setter Property="StrokeThickness" Value="4"/>
-        <Setter Property="BackgroundColor" Value="#E8E4F3"/>
+        <Setter Property="BackgroundColor" Value="#E0F1F0"/>
     </Style>
     <Style x:Key="var6TextSelected" TargetType="Label" BasedOn="{StaticResource var6Text}">
-        <Setter Property="TextColor" Value="Violet"/>
+        <Setter Property="TextColor" Value="#2A7F7A"/>
     </Style>
 
 </ResourceDictionary>
