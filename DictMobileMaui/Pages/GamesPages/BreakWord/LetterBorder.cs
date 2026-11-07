@@ -5,8 +5,17 @@ namespace DictMobile.Pages.GamesPages.BreakWord
 {
     public class MyBorder
     {
-        public delegate void MethodLetterTapped(bool toWrite, string Text);
-        public event MethodLetterTapped LetterTapped;
+        //public delegate void MethodLetterTapped(bool toWrite, string Text);
+        public class LetterTappedEventArgs:EventArgs
+        {
+            public bool Selected;
+            public string Text;
+            public LetterTappedEventArgs (bool selected, string text)
+            {
+                Selected = selected; Text = text;
+            }
+        }
+        public EventHandler <LetterTappedEventArgs>LetterTapped;
         public Border Shape;
         Label l;
         public Label Content { get => l; }
@@ -18,6 +27,7 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             get => selected; set
             {
                 if (value == true) selectOn(); else selectOff();
+                selected = value;
             }
         }
         //public Point coord { get; set; }
@@ -81,7 +91,7 @@ namespace DictMobile.Pages.GamesPages.BreakWord
             {
                 selectOn();
             }
-            LetterTapped?.Invoke(Selected, l.Text);
+            LetterTapped?.Invoke(this, new LetterTappedEventArgs(selected, l.Text));
         }
         
     }

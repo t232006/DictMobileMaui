@@ -66,11 +66,8 @@ namespace DictMobile.Pages.GamesPages.Accordance
                 case 0: curStyle = "var21";
                     curTextStyle = "var1TextStrike";
                     break;
-                case 2: curTextStyle = "var1Text";
+                default: curTextStyle = "var1Text";
                     curStyle = "var21";
-                    break;
-                default: curStyle = "";
-                    curTextStyle = "";
                     break;
                 }
             if (Application.Current.Resources.TryGetValue(curStyle, out var style))

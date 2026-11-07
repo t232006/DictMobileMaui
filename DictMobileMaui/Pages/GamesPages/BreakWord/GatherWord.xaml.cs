@@ -5,6 +5,8 @@ using TextAlignment = Microsoft.Maui.TextAlignment;
 using Button = Microsoft.Maui.Controls.Button;
 using DictMobile.addition;
 using System.Text.RegularExpressions;
+using static DictMobile.Pages.GamesPages.BreakWord.MyBorder;
+
 //using static System.Net.Mime.MediaTypeNames;
 
 
@@ -73,23 +75,24 @@ public partial class GatherWord : BaseGamePage
         }
         TextColor();
     }
-	private void PrintText(bool toPrint, string Text)
+	private void PrintText(object Sender, LetterTappedEventArgs e)
 	{
-        
+
+
         string s = EnterSpace.Text ?? "";
-		if (toPrint)
+		if (e.Selected)
 		{
-			s += $" {Text}";
+			s += $" {e.Text}";
 		}
 		else
 		{
             try
             {
-                s = s.Remove(s.LastIndexOf(Text), Text.Length + 1);
+                s = s.Remove(s.LastIndexOf(e.Text), e.Text.Length + 1);
             }
             catch
             {
-                s = s.Remove(s.LastIndexOf(Text), Text.Length);
+                s = s.Remove(s.LastIndexOf(e.Text), e.Text.Length);
             }
 		}
         manualInput = false;
@@ -98,17 +101,17 @@ public partial class GatherWord : BaseGamePage
         TextColor();
 	}
 
-    private void PrintLetter(bool toPrint, string Text)
+    private void PrintLetter(object Sender, LetterTappedEventArgs e)
     {
         
         string s = EnterSpace.Text ?? "";
-        if (toPrint)
+        if (e.Selected)
         {
-            s += $"{Text}";
+            s += $"{e.Text}";
         }
         else
         {
-            s = s.Remove(s.LastIndexOf(Text), Text.Length);
+            s = s.Remove(s.LastIndexOf(e.Text), e.Text.Length);
         }
         manualInput = false;
         EnterSpace.Text = s;

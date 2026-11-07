@@ -7,6 +7,7 @@ using Microsoft.Maui.Layouts;
 using DictMobile.Pages.GamesPages.Accordance;
 using static DictMobile.Pages.GamesPages.Accordance.ShapeComponent;
 using System.ComponentModel.DataAnnotations.Schema;
+using static DictMobile.Pages.GamesPages.BreakWord.MyBorder;
 
 
 
@@ -38,6 +39,8 @@ namespace IndDictionary
                 newShape2.onAnswer += onAnswerGave;
                 newFl1.Children.Add(newShape1);
                 newFl2.Children.Add(newShape2);
+                newShape1.Shape.LetterTapped += (s,e) => onSelected(newShape1, e);
+                newShape2.Shape.LetterTapped += (s,e) => onSelected(newShape2, e);
 
             }
             MainStack.Children.Clear();
@@ -48,6 +51,15 @@ namespace IndDictionary
             fl2.InvalidateMeasure();
             MainStack.InvalidateMeasure();
 
+        }
+        protected void onSelected(object Sender, LetterTappedEventArgs e)
+        {
+            var fl = (FlexLayout)(Sender as ShapeComponent)!.Parent;
+            foreach (var temp in fl.Children.OfType<ShapeComponent>())
+            {
+                if (temp == Sender) continue;
+                temp.Shape.Selected = false;
+            }
         }
         protected void onAnswerGave(object Sender, AnswerEventArgs e)
         {
