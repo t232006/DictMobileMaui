@@ -72,13 +72,18 @@ namespace DictMobile.Pages.GamesPages.BreakWord
 
         protected void selectOn()
         {
-                Shape.Style = (Style)Application.Current.Resources["var6Selected"];
-                l.Style = (Style)Application.Current.Resources["var6TextSelected"];
+            Shape.Stroke = new SolidColorBrush(Color.FromArgb("#37474F"));
+            Shape.StrokeThickness = 4;
+            Shape.BackgroundColor = Color.FromArgb("#ECEFF1");
+            l.TextColor = Color.FromArgb("#2A7F7A");
         }
+
         protected void selectOff()
         {
-                Shape.Style = (Style)Application.Current.Resources[BorderStyleName];//"var6"
-                l.Style = (Style)Application.Current.Resources[TextStyleName];//"var6Text"
+            Shape.ClearValue(Border.StrokeProperty);
+            Shape.ClearValue(Border.StrokeThicknessProperty);
+            Shape.ClearValue(VisualElement.BackgroundColorProperty);
+            l.ClearValue(Label.TextColorProperty);
         }
         public void OnLetterTapped()
         {

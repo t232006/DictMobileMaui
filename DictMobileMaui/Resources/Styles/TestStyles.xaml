@@ -31,7 +31,7 @@
         <Setter Property="TextColor" Value="#E65100"/>
         <Setter Property="HorizontalOptions" Value="Start"/>
         <Setter Property="VerticalOptions" Value="Center"/>
-        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Padding" Value="0"/>
         
     </Style>
     <Style x:Key="var1TextStrike" TargetType="Label" BasedOn="{StaticResource var1Text}">
@@ -151,9 +151,11 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
     <Style x:Key="var6Selected" TargetType="Border">
-        <Setter Property="Stroke" Value="#2A7F7A"/>
+        <!--Setter Property="Stroke" Value="#2A7F7A"/--> 
+        <Setter Property="Stroke" Value="#37474F"/>
         <Setter Property="StrokeThickness" Value="4"/>
-        <Setter Property="BackgroundColor" Value="#E0F1F0"/>
+        <!-- Setter Property="BackgroundColor" Value="#E0F1F0"/--> 
+        <Setter Property="BackgroundColor" Value="#ECEFF1"/>
     </Style>
     <Style x:Key="var6TextSelected" TargetType="Label" BasedOn="{StaticResource var6Text}">
         <Setter Property="TextColor" Value="#2A7F7A"/>

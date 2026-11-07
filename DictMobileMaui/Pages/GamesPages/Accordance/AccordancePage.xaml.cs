@@ -61,7 +61,7 @@ namespace IndDictionary
             var another_fl = fl == fl1 ? fl2 : fl1;
             foreach (var temp in another_fl.Children.OfType<ShapeComponent>())
             {
-                if (temp.Shape.Selected == true)
+                if (temp.Shape.Selected)
                 {
                     (Sender as ShapeComponent).Shape.Selected = false;
                     temp.Shape.Selected = false;
@@ -104,7 +104,11 @@ namespace IndDictionary
             void RemoveSource(ShapeComponent source)
             {
                 if (source.Parent is FlexLayout parent)
+                {
                     parent.Children.Remove(source);
+                    //parent.InvalidateMeasure();
+                    //MainStack.InvalidateMeasure();
+                }
             }
 
             void SearchRightAnswer(FlexLayout fl, string translation, ShapeComponent selectedTarget, ShapeComponent selectedSource)
