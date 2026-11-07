@@ -1,12 +1,9 @@
 ﻿using DictMobile;
 using DictMobile.games;
-
-using System.ComponentModel;
+using DictMobile.Pages.GamesPages.Accordance;
 //using DictMobile.Auxilary;
 using Microsoft.Maui.Layouts;
-using DictMobile.Pages.GamesPages.Accordance;
 using static DictMobile.Pages.GamesPages.Accordance.ShapeComponent;
-using System.ComponentModel.DataAnnotations.Schema;
 using static DictMobile.Pages.GamesPages.BreakWord.MyBorder;
 
 
@@ -58,7 +55,19 @@ namespace IndDictionary
             foreach (var temp in fl.Children.OfType<ShapeComponent>())
             {
                 if (temp == Sender) continue;
-                temp.Shape.Selected = false;
+                if (temp.IsEnabled)
+                    temp.Shape.Selected = false;
+            }
+            var another_fl = fl == fl1 ? fl2 : fl1;
+            foreach (var temp in another_fl.Children.OfType<ShapeComponent>())
+            {
+                if (temp.Shape.Selected == true)
+                {
+                    (Sender as ShapeComponent).Shape.Selected = false;
+                    temp.Shape.Selected = false;
+                    onAnswerGave(Sender, new AnswerEventArgs(temp));
+                    break;
+                }
             }
         }
         protected void onAnswerGave(object Sender, AnswerEventArgs e)
@@ -70,22 +79,26 @@ namespace IndDictionary
             e.Source.CanDrag = false;
             e.Source.IsEnabled = false;
             target.IsEnabled = false;
-            if (target.Translaiton == e.Source.Translaiton)
+            if (target.Translation == e.Source.Translation)
             { 
                 target.Answer(1);
+                var label = target.Shape.Content;
+                label.Text = e.Source.IsWord
+                    ? label.Text + "=" + target.Word
+                    : label.Text + "=" + target.Translation;
                 RemoveSource(e.Source); 
-                accordance.GetReward(true, target.Translaiton);
+                accordance.GetReward(true, target.Translation);
             }
 
             else
             {
                 target.Answer(0);
                 e.Source.Answer(0);
-                accordance.GetReward(false, target.Translaiton);
-                SearchRightAnswer(fl1, target.Translaiton, target, e.Source);
-                SearchRightAnswer(fl2, target.Translaiton, target, e.Source);
-                SearchRightAnswer(fl1, e.Source.Translaiton, target, e.Source);
-                SearchRightAnswer(fl2, e.Source.Translaiton, target, e.Source);
+                accordance.GetReward(false, target.Translation);
+                SearchRightAnswer(fl1, target.Translation, target, e.Source);
+                SearchRightAnswer(fl2, target.Translation, target, e.Source);
+                SearchRightAnswer(fl1, e.Source.Translation, target, e.Source);
+                SearchRightAnswer(fl2, e.Source.Translation, target, e.Source);
             }
 
             void RemoveSource(ShapeComponent source)
@@ -99,7 +112,7 @@ namespace IndDictionary
                 foreach (var temp in fl.Children.OfType<ShapeComponent>())
                 {
                     if (temp == selectedTarget || temp == selectedSource) continue;
-                    if (temp.Translaiton == translation)
+                    if (temp.Translation == translation)
                     {
                         temp.Answer(2); //underlining it
                         temp.CanDrag = false;

@@ -9,9 +9,11 @@ namespace DictMobile.Pages.GamesPages.Accordance
     {
         public MyBorder Shape;
         private readonly bool isWord;
+        public bool IsWord { get => isWord; }
         private string translation;
-        public string Translaiton { get => translation; }
+        public string Translation { get => translation; }
         private string word;
+        public string Word { get => word; }
         private DragGestureRecognizer drag;
         public bool CanDrag { set => drag.CanDrag =value; }
         public class AnswerEventArgs: EventArgs
