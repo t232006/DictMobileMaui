@@ -1,4 +1,4 @@
-﻿
+
 using DictMobile.models;
 using DictMobile.ViewModels;
 using Microsoft.Maui.Layouts;
