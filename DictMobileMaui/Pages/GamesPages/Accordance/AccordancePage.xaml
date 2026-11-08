@@ -8,6 +8,6 @@
 
     <loc:BaseGamePage.ToolbarItems>
         <ToolbarItem x:Name="NextBut" Clicked="NextBlock" IsEnabled="True"
-          IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.arrow_right.png}"/>
+          IconImageSource="arrow_right.png"/>
     </loc:BaseGamePage.ToolbarItems>
 </loc:BaseGamePage>

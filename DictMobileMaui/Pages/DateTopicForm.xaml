@@ -7,14 +7,17 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="onApplyPress"        
-             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.ok.png}"
-             x:Name="EditBut"/>
+             IconImageSource="ok.png"
+             x:Name="EditBut" />
         <ToolbarItem Clicked="onDeletePress"
-             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.trash_bin_small.png}"
-             x:Name="DeleteBut"/>
+             IconImageSource="trash_bin_small.png"
+             x:Name="DeleteBut" IsEnabled="False"/>
         <ToolbarItem Clicked="onAddPress"
-             IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.add1.png}"
-             x:Name="AddBut"/>        
+             IconImageSource="add1.png"
+             x:Name="AddBut" IsEnabled="False"/>
+        <ToolbarItem Clicked="onSortPress"
+                IconImageSource="sort.png"
+                x:Name="SortBut"/>
         <!--ToolbarItem Text="Cancel" Clicked="OnCancel" Priority="1" Order="Primary"/-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>

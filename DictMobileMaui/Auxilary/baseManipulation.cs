@@ -347,13 +347,13 @@ namespace IndDictionary
 			{
 				request = "select distinct DateRec from Dict where isDeleted=false";
 				if (showAll == false) request += " and Usersel=true ";
-				return (IEnumerable<T>)database.Query<dict>(request).OrderBy(t => DateTime.Parse(t.DateRec));
+				return (IEnumerable<T>)database.Query<dict>(request).OrderByDescending(t => DateTime.Parse(t.DateRec));
 			}
 			else
 			{
 				request = "SELECT DISTINCT Name FROM Topic left JOIN Dict ON Topic.ID=Dict.Topic where topic.isDeleted=false";
 				if (showAll == false) request += " and Usersel=true";
-				return (IEnumerable<T>)database.Query<topic>(request).OrderBy(t => t.id);
+				return (IEnumerable<T>)database.Query<topic>(request).OrderByDescending(t => t.id);
 			}
 		}
 		public bool AnySelection(WhatToShow wts)

@@ -10,11 +10,15 @@ namespace IndDictionary
 	{
 		WhatToSelect wts;
 		ObservableCollection<DateOrTopicClassAux> PassedList;
+		bool asc = false;
 		public DateTopicForm(ObservableCollection<DateOrTopicClassAux> _passedList, WhatToSelect _wts)
 		{
 			PassedList = _passedList;
 			wts=_wts;
-			InitializeComponent();
+            bool isEnabled = (wts != WhatToSelect.dates);
+            DeleteBut.IsEnabled = isEnabled;
+            AddBut.IsEnabled = isEnabled;
+            InitializeComponent();
 		}
 		protected override void OnAppearing()
 		{
@@ -33,6 +37,12 @@ namespace IndDictionary
 			App.Database.selectDatesOrTopics(PassedList, wts);
 			Navigation.PopAsync();
 			//OnAppearing();
+		}
+		public void onSortPress(object sender, EventArgs e)
+		{
+			var _PassedList =asc? PassedList.OrderBy(d => d.DaOrTo): PassedList.OrderByDescending(d => d.DaOrTo);
+			asc = !asc;
+            DataList.ItemsSource = _PassedList;
 		}
         public void onDeletePress(object sender, EventArgs e)
         {

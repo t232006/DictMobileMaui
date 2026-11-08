@@ -9,7 +9,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem x:Name="showSecond" Clicked="OnShowTranslation" Text="W"/>
         <ToolbarItem Clicked="OnAddPressed"
-                     IconImageSource="{res:ImageResourceExt DictMobile.Resources.Images.add1.png}"/>
+                     IconImageSource="add1.png"/>
         
     </ContentPage.ToolbarItems>
     <Grid x:Name="MainStack"
