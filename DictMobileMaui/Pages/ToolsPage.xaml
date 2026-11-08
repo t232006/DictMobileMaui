@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:loc="clr-namespace:IndDictionary"
+             xmlns:loc="clr-namespace:IndDictionary.Converters"
              xmlns:res="clr-namespace:IndDictionary.addition"
              x:Class="IndDictionary.ToolsPage"
              Title="Tools">
@@ -14,6 +14,7 @@
                         <Setter Property="Margin" Value="10"/>
                         <Setter Property="FontSize" Value="Subtitle"/>
                     </Style>
+                    <loc:BoolConverter x:Key="boolConverter"/>
                 </ResourceDictionary>
             </StackLayout.Resources>
             <VisualStateManager.VisualStateGroups>
@@ -51,10 +52,6 @@
             </VisualStateManager.VisualStateGroups>
             <StackLayout x:Name="SelectSpace">
                 <StackLayout>
-                    <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
-                        <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
-                        <Label Text="Show Selected"/>
-                    </StackLayout>
                     <StackLayout Orientation="Vertical"   
                                  Spacing="0">
                         <Label Text="Show" />
@@ -66,7 +63,13 @@
                     </StackLayout>
                 </StackLayout>
                 <StackLayout Orientation="Vertical">
-                    <Label Text="Select"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Select"/>
+                        <StackLayout Orientation="Horizontal" Padding="10,0,0,0">
+                            <CheckBox x:Name="ShowSelected" Color="Magenta"  CheckedChanged="OnChecking"/>
+                            <Label Text="Show Selected"/>
+                        </StackLayout>
+                    </StackLayout>
                     <Button Text="By dates" BackgroundColor="#28a1d1" Style="{StaticResource ButtonStyle}" Pressed="onDates"/>
                     <Button Text="By topics" BackgroundColor="#8db51c" Style="{StaticResource ButtonStyle}" Pressed="onTopics"/>
                     <Button Text="Reset selection" BackgroundColor="#e75012" Style="{StaticResource ButtonStyle}" Pressed="onReset"/>
@@ -110,16 +113,21 @@
                 </FlexLayout>
                 
             </StackLayout >
-            <HorizontalStackLayout x:Name="BaseInfo">
-                <Label x:Name="CountLabel" Padding="0,0,100,0"  />
-                <Label x:Name="DateLabel" />
+            <HorizontalStackLayout>
+                
+                <Button Text="+New dictionary" 
+                        WidthRequest="140" HeightRequest="35"
+                        BackgroundColor="Thistle" 
+                        Margin="10,0,0,0" 
+                        HorizontalOptions="Start" 
+                        Pressed="onNewDict"/>
+                <VerticalStackLayout x:Name="BaseInfo" Spacing="0">
+                    <Label x:Name="SelectCountLabel" Margin="10,0,0,0" IsVisible="{Binding Source={x:Reference ShowSelected}, Path=IsChecked}"/>
+                    <Label x:Name="CountLabel" Margin="10,0,0,0" IsVisible="{Binding Source={x:Reference ShowSelected}, Path=IsChecked,
+                                                                                Converter={StaticResource boolConverter}}"/>
+                    <Label x:Name="DateLabel" Margin="10,0,0,0"/>
+                </VerticalStackLayout>
             </HorizontalStackLayout>
-            <Button Text="+New dictionary" 
-                    WidthRequest="140" HeightRequest="35"
-                    BackgroundColor="Thistle" 
-                    Margin="10,0,0,0" 
-                    HorizontalOptions="Start" 
-                    Pressed="onNewDict"/>
         </StackLayout>
         <StackLayout Grid.Row="1"  x:Name="forNavButtons" VerticalOptions="EndAndExpand"/>
     </Grid>

@@ -286,7 +286,7 @@ namespace IndDictionary
 			else return null;
 		}
 
-		public string? getInfo(byte WhatExectly) //1-date, 2-count
+		public string? getInfo(byte WhatExectly) //1-date, 2-count, 3-selected
 		{
 			string result = "";
 			switch (WhatExectly)
@@ -308,6 +308,12 @@ namespace IndDictionary
 						}
 						break;
 					}
+				case 3:
+					{
+						result = showTableDict(true, WhatToShow.alltogether).Where(s => s.Usersel == true).Count().ToString();
+						break;
+					}
+
 			}
 
 			return result;

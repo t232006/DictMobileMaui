@@ -40,6 +40,7 @@ namespace IndDictionary
 			ShowSelected.IsChecked = App.Database.AnySelection(wts);
             DateLabel.Text = "Last record: " + App.Database.getInfo(2);
 			CountLabel.Text = "Records count: " + App.Database.getInfo(1);
+			SelectCountLabel.Text = "Selected count: " + App.Database.getInfo(3);
 			CopyToTopic.ItemsSource = App.Database.showTableTopic().Select(n=>n.Name).ToList();
 
 			base.OnAppearing();
