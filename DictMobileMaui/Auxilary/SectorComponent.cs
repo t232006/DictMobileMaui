@@ -1,72 +1,71 @@
 ﻿
-
 namespace DictMobileMaui.Auxilary
 {
-    public class SectorComponent: GraphicsView
-    {
-        private readonly SectorDrawable sector;
-        public static readonly BindableProperty AlphaProperty = BindableProperty.Create
-            ("alpha",
+    public class RateComponent: GraphicsView
+    { 
+        private readonly RateDrawable Rate;
+        public static readonly BindableProperty rateValueProperty = BindableProperty.Create
+            ("rateValue",
             typeof(byte),
-            typeof(SectorComponent),
+            typeof(RateComponent),
             (byte)0,
             propertyChanged: OnChanged
             );
-        public byte alpha 
+        public byte rateValue 
         {
-            get => (byte)GetValue(AlphaProperty);
-            set => SetValue(AlphaProperty, value); 
+            get => (byte)GetValue(rateValueProperty);
+            set => SetValue(rateValueProperty, value); 
         }
-        public SectorComponent()
+        public RateComponent(byte _Rate)
         {
-            sector = new SectorDrawable();
-            Drawable = sector;
+            Rate = new RateDrawable(_Rate);
+            Drawable = Rate;
         }
         private static void OnChanged(BindableObject bindable, object OldValue, object NewValue)
         {
-            var view = (SectorComponent)bindable;
-            view.sector.alphaValue = (byte)NewValue;
+            var view = (RateComponent)bindable;
+            view.Rate.rateValue = (byte)NewValue;
             view.Invalidate();
         }
 
     }
-    public class SectorDrawable:IDrawable
+    public class RateDrawable:IDrawable
     {
-        public byte alphaValue { set {
-                _alpha = value;
+        private byte totalAmount;
+        Color RatedColor = Colors.SandyBrown;
+        Color DefaultColor = Colors.LightGray;
+        private const byte padding = 5;
+        public RateDrawable(byte _totalAmount)
+        {
+            totalAmount = _totalAmount;
+        }
+        public byte rateValue { set {
+                _rateValue = value;
                 //Draw();
             } }
-        private byte _alpha;
+        private byte _rateValue;
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
+            
+            
             if (dirtyRect.Width <= 0 || dirtyRect.Height <= 0)
                 return;
-            float centerX = dirtyRect.Center.X;
-            float centerY = dirtyRect.Center.Y;
-            float radius = Math.Min(dirtyRect.Width, dirtyRect.Height) / 2;
+            int space = 5;
+            int sqWidth = (int)(dirtyRect.Width / totalAmount) - space;
+            int selector = 0;
+            void PrintSquere(byte i , Color color)
+            {
+                canvas.FillColor = color;
+                canvas.FillRectangle(selector, dirtyRect.Height/2, sqWidth, dirtyRect.Height/3-padding);
+                selector = selector + space + sqWidth;
+            }
 
-            canvas.FillColor = Colors.DarkSeaGreen;
-            canvas.FillCircle(centerX, centerY, radius);
+            for (byte i = 0; i < _rateValue; i++)
+                PrintSquere(i, RatedColor);
 
-            var path = new PathF();
-
-            path.MoveTo(centerX, centerY);
-            path.LineTo(centerX + radius, centerY);
+            for (byte i = _rateValue; i < totalAmount; i++)
+                PrintSquere(i, DefaultColor);              
             
-
-            canvas.FillColor = Colors.Orange;
-            path.AddArc(
-                centerX - radius,
-                centerY - radius,
-                radius * 2,
-                radius * 2,
-                0,
-                60 * _alpha,
-                true);
-
-            path.Close();
-
-            canvas.FillPath(path);
         }
     }
 }

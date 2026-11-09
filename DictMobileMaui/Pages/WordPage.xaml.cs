@@ -1,6 +1,8 @@
 
+
 using DictMobile.models;
 using DictMobile.ViewModels;
+using DictMobileMaui.Auxilary;
 using Microsoft.Maui.Layouts;
 using System.Collections.ObjectModel;
 using static System.Net.Mime.MediaTypeNames;
@@ -84,21 +86,26 @@ namespace IndDictionary
 					extswitch.Toggled += OnToggled!;
 					extswitch.SetBinding(ExtSwitch.IDProperty, "id");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
+
+					RateComponent rateIndicator = new(6);
+					rateIndicator.SetBinding(RateComponent.rateValueProperty, "Grade");
 					 
                     var cellLayout = new Grid
                     {
                         ColumnDefinitions =
 						{
 							new ColumnDefinition { Width = GridLength.Star },   // Main
-							new ColumnDefinition { Width = GridLength.Auto },   // Second
-							new ColumnDefinition { Width = GridLength.Auto },   // Switch
-							new ColumnDefinition { Width = new GridLength(0.1, GridUnitType.Star) }
+							new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) },   // Second
+							new ColumnDefinition { Width = new GridLength(0.1, GridUnitType.Star) },   // Switch
+							new ColumnDefinition { Width = new GridLength(0.2, GridUnitType.Star) },   // Indicators
+							new ColumnDefinition { Width = new GridLength(0.03, GridUnitType.Star) },   // Indicators
+
                         }
                     };
                     cellLayout.Add(MainField, 0, 0);
                     cellLayout.Add(SecondField, 1, 0);
                     cellLayout.Add(extswitch, 2, 0);
-                    
+					cellLayout.Add(rateIndicator, 3, 0);
                    
                     
                     return new ViewCell { View = cellLayout };
