@@ -45,7 +45,7 @@
         <Setter Property="Stroke" Value="#4CAF50"/>
         <Setter Property="StrokeThickness" Value="3"/>
         <Setter Property="BackgroundColor" Value="#E8F5E9"/>
-        <Setter Property="StrokeShape" Value="RoundRectangle 40,15"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 25,10"/>
         <Setter Property="WidthRequest" Value="300"/>
         <Setter Property="HeightRequest" Value="100"/>
      </Style>

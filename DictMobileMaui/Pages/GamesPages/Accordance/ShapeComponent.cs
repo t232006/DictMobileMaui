@@ -142,10 +142,6 @@ namespace DictMobile.Pages.GamesPages.Accordance
                     {
                         if (put) return;
                         put = true;
-                        var label = Shape.Content as Label;
-                        label.Text = source.isWord
-                            ? label.Text + "=" + (source as ShapeComponent).word
-                            : label.Text + "=" + (source as ShapeComponent).translation;
                         //if (source.translation == this.translation) Answer(true); else Answer(false);
                         onAnswer?.Invoke(this,new AnswerEventArgs(source));
                         // удаляем из реестра после использования
