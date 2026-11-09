@@ -15,6 +15,9 @@ namespace IndDictionary
             // === Нижний Grid (Yes_No_Progress) ===
             Yes_No_Progress = new Grid
             {
+                BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["BackgroundDark"]
+                    : (Color)Application.Current.Resources["BackgroundLight"],
                 ColumnDefinitions =
                 {
                     new ColumnDefinition { Width = GridLength.Auto },
@@ -57,7 +60,8 @@ namespace IndDictionary
             TimerBar = new ProgressBar
             {
                 //Progress = 0.9,
-                HeightRequest = 10
+                HeightRequest = 10,
+                Style = (Style)Application.Current.Resources["ProgressBarStyle"]
             };
             Grid.SetColumn(TimerBar, 4);
             Yes_No_Progress.Children.Add(TimerBar);
@@ -111,28 +115,14 @@ namespace IndDictionary
         {
             //contentLabel.BindingContext = _Cards.CurrentItem;
             contentLabel.SetBinding(Label.TextProperty, "Quantor");
-            
-            if (Application.Current.RequestedTheme == AppTheme.Dark)
-            {
-                if (Application.Current.Resources.TryGetValue("CardStyle_Yes_No_Night", out object StyleObj) && StyleObj is Style CurrentStyle)
-                    cardBorder.Style = CurrentStyle;
-            }
-            else
-            {
-                if (Application.Current.Resources.TryGetValue("CardStyle_Yes_No_Day", out object StyleObj) && StyleObj is Style CurrentStyle)
-                    cardBorder.Style = CurrentStyle;
-            };
-            if (Application.Current.RequestedTheme == AppTheme.Dark)
-            {
-                if (Application.Current.Resources.TryGetValue("CardTextStyle_Yes_No_Night", out object StyleObj) && StyleObj is Style CurrentStyle)
-                    (cardBorder.Content as Label).Style = CurrentStyle;
-            }
-            else
-            {
-                if (Application.Current.Resources.TryGetValue("CardTextStyle_Yes_No_Day", out object StyleObj) && StyleObj is Style CurrentStyle)
-                    (cardBorder.Content as Label).Style = CurrentStyle;
-            };
+            cardBorder.Style = Application.Current.RequestedTheme == AppTheme.Dark
+                   ? (Style)Application.Current.Resources["CardStyle_Yes_No_Night"]
+                   : (Style)Application.Current.Resources["CardStyle_Yes_No_Day"];
+            contentLabel.Style = Application.Current.RequestedTheme == AppTheme.Dark
+                ? (Style)Application.Current.Resources["CardTextStyle_Yes_No_Night"]
+                   : (Style)Application.Current.Resources["CardTextStyle_Yes_No_Day"];
         }
+
         protected override async Task OnCardSwiped(SwipeDirection dir, Border CardBorder)
         {
             ta = Int16.Parse(TrueAnswers.Text);

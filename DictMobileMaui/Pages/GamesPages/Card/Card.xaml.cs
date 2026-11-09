@@ -53,7 +53,8 @@ namespace IndDictionary
                 var contentLabel = new Label
                 {
                     HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center
+                    VerticalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(10,0)
                 };
 
                 var overlayGrid = new Grid();
