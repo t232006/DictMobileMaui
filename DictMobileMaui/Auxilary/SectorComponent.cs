@@ -1,13 +1,14 @@
-﻿
+﻿using static DictMobileMaui.Auxilary.IndicatorDrawable;
+
 namespace DictMobileMaui.Auxilary
 {
-    public class RateComponent: GraphicsView
+    public abstract class BaseIndicatior: GraphicsView
     { 
-        private readonly RateDrawable Rate;
+        protected IndicatorDrawable Rate;
         public static readonly BindableProperty rateValueProperty = BindableProperty.Create
             ("rateValue",
             typeof(byte),
-            typeof(RateComponent),
+            typeof(BaseIndicatior),
             (byte)0,
             propertyChanged: OnChanged
             );
@@ -16,26 +17,38 @@ namespace DictMobileMaui.Auxilary
             get => (byte)GetValue(rateValueProperty);
             set => SetValue(rateValueProperty, value); 
         }
-        public RateComponent(byte _Rate)
-        {
-            Rate = new RateDrawable(_Rate);
-            Drawable = Rate;
-        }
+        
         private static void OnChanged(BindableObject bindable, object OldValue, object NewValue)
         {
-            var view = (RateComponent)bindable;
+            var view = (BaseIndicatior)bindable;
             view.Rate.rateValue = (byte)NewValue;
             view.Invalidate();
         }
-
     }
-    public class RateDrawable:IDrawable
+    public class Indicator : BaseIndicatior
+    {
+        public Indicator(byte _Rate)
+        {
+            Rate = new IndicatorDrawable(_Rate);
+            Drawable = Rate;
+        }
+    }
+    public class GradeIndicator : Indicator 
+    {
+        public GradeIndicator(byte _Rate):base(_Rate)
+        {
+            Rate = new GradeDrawable(_Rate);
+            Drawable = Rate;
+        }
+    }
+    public class IndicatorDrawable:IDrawable
     {
         private byte totalAmount;
+        int space = 5;
+        int sqWidth;
         Color RatedColor = Colors.SandyBrown;
-        Color DefaultColor = Colors.LightGray;
         private const byte padding = 5;
-        public RateDrawable(byte _totalAmount)
+        public IndicatorDrawable(byte _totalAmount)
         {
             totalAmount = _totalAmount;
         }
@@ -44,28 +57,38 @@ namespace DictMobileMaui.Auxilary
                 //Draw();
             } }
         private byte _rateValue;
-        public void Draw(ICanvas canvas, RectF dirtyRect)
+        private int selector = 0;
+        public virtual void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            
-            
             if (dirtyRect.Width <= 0 || dirtyRect.Height <= 0)
                 return;
-            int space = 5;
-            int sqWidth = (int)(dirtyRect.Width / totalAmount) - space;
-            int selector = 0;
-            void PrintSquere(byte i , Color color)
-            {
-                canvas.FillColor = color;
-                canvas.FillRectangle(selector, dirtyRect.Height/2, sqWidth, dirtyRect.Height/3-padding);
-                selector = selector + space + sqWidth;
-            }
-
+            sqWidth = (int)(dirtyRect.Width / totalAmount) - space;
             for (byte i = 0; i < _rateValue; i++)
-                PrintSquere(i, RatedColor);
+            {
+                canvas.FillColor = RatedColor;
+                canvas.FillRectangle(selector, 0, sqWidth, dirtyRect.Height/3-padding);
+                selector = selector + space + sqWidth;    
+            }
+        }
 
-            for (byte i = _rateValue; i < totalAmount; i++)
-                PrintSquere(i, DefaultColor);              
-            
+        public class GradeDrawable : IndicatorDrawable
+        {
+            Color DefaultColor = Colors.LightGray;
+            public GradeDrawable(byte _totalAmount) : base(_totalAmount)
+            {
+            }
+            public override void Draw(ICanvas canvas, RectF dirtyRect)
+            {
+                base.Draw(canvas, dirtyRect);
+                //int selector = 0;    
+                for (byte i = _rateValue; i<totalAmount; i++)
+                {
+                    canvas.FillColor = DefaultColor;
+                    canvas.FillRectangle(selector, 0, sqWidth, dirtyRect.Height / 3 - padding);
+                    selector = selector + space + sqWidth;
+                }
+            }
         }
     }
+
 }
