@@ -87,10 +87,12 @@ namespace DictMobile.Pages.GamesPages.Accordance
             Content = Shape.Shape;
             Content.WidthRequest = MakeShapeSizeX();
             Content.HeightRequest = MakeShapeSizeY();
-            
-            Shape.Content.HorizontalOptions = LayoutOptions.Center;
+
+            Shape.Content.HorizontalOptions = LayoutOptions.Fill;
+            Shape.Content.Padding = 10;
             Shape.Content.VerticalOptions = LayoutOptions.Center;
-            
+            Shape.Content.HorizontalTextAlignment = TextAlignment.Center;
+
 
             // уникальный ключ для передачи через DataPackage
             dragKey = System.Guid.NewGuid().ToString();
@@ -106,7 +108,7 @@ namespace DictMobile.Pages.GamesPages.Accordance
                 // На Android/Android WebView нельзя хранить произвольный объект в Data.Properties — используем текстовый ключ
                 e.Data.Text = dragKey;
             };
-            GestureRecognizers.Add(drag);
+            Shape.Shape.GestureRecognizers.Add(drag);
             var drop = new DropGestureRecognizer();
 
             drop.DragOver += (s, e) =>

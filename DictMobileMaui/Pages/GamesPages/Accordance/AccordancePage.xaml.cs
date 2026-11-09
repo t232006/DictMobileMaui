@@ -86,7 +86,6 @@ namespace IndDictionary
                 label.Text = e.Source.IsWord
                     ? label.Text + "=" + target.Word
                     : label.Text + "=" + target.Translation;
-                target.Shape.Shape.Content.HorizontalOptions = LayoutOptions.Start;
                 RemoveSource(e.Source); 
                 accordance.GetReward(true, target.Translation);
             }
