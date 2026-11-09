@@ -31,4 +31,22 @@
     <Style x:Key="CardTextStyle2" TargetType="Label" BasedOn="{StaticResource  CardTextStyle}">
         <Setter Property="TextColor" Value="#F57C00"/>
     </Style>
+    <Style x:Key="CardStyle_Yes_No_Day" TargetType="Border">
+        <Setter Property="Stroke" Value="#000000"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="BackgroundColor" Value="AliceBlue"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+    </Style>
+    <Style x:Key="CardStyle_Yes_No_Night" TargetType="Border" BasedOn="{StaticResource CardStyle_Yes_No_Day}">
+        <Setter Property="Stroke" Value="AliceBlue"/>
+        <Setter Property="BackgroundColor" Value="#000000"/>
+    </Style>
+    <Style x:Key="CardTextStyle_Yes_No_Day" TargetType="Label" BasedOn="{StaticResource  CardTextStyle}">
+        <Setter Property="TextColor" Value="#000000"/>
+    </Style>
+    <Style x:Key="CardTextStyle_Yes_No_Night" TargetType="Label" BasedOn="{StaticResource  CardTextStyle}">
+        <Setter Property="TextColor" Value="AliceBlue"/>
+    </Style>
+
+
 </ResourceDictionary>

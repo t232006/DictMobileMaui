@@ -30,7 +30,7 @@ namespace IndDictionary
             TrueAnswers = new Label
             {
                 Text = "0",
-                Style = (Style)Application.Current.Resources["var5Text"]   // или из Resources страницы, если определено там
+                Style = (Style)Application.Current.Resources["var5Text"]   
             };
             Grid.SetColumn(TrueAnswers, 0);
             Yes_No_Progress.Children.Add(TrueAnswers);
@@ -111,11 +111,28 @@ namespace IndDictionary
         {
             //contentLabel.BindingContext = _Cards.CurrentItem;
             contentLabel.SetBinding(Label.TextProperty, "Quantor");
-            cardBorder.Style = (Style)App.Current.Resources["var5"];
-            contentLabel.Style = (Style)App.Current.Resources["var5Text"];
-            MainStack.BackgroundColor = Colors.AliceBlue;
+            
+            if (Application.Current.RequestedTheme == AppTheme.Dark)
+            {
+                if (Application.Current.Resources.TryGetValue("CardStyle_Yes_No_Night", out object StyleObj) && StyleObj is Style CurrentStyle)
+                    cardBorder.Style = CurrentStyle;
+            }
+            else
+            {
+                if (Application.Current.Resources.TryGetValue("CardStyle_Yes_No_Day", out object StyleObj) && StyleObj is Style CurrentStyle)
+                    cardBorder.Style = CurrentStyle;
+            };
+            if (Application.Current.RequestedTheme == AppTheme.Dark)
+            {
+                if (Application.Current.Resources.TryGetValue("CardTextStyle_Yes_No_Night", out object StyleObj) && StyleObj is Style CurrentStyle)
+                    (cardBorder.Content as Label).Style = CurrentStyle;
+            }
+            else
+            {
+                if (Application.Current.Resources.TryGetValue("CardTextStyle_Yes_No_Day", out object StyleObj) && StyleObj is Style CurrentStyle)
+                    (cardBorder.Content as Label).Style = CurrentStyle;
+            };
         }
-
         protected override async Task OnCardSwiped(SwipeDirection dir, Border CardBorder)
         {
             ta = Int16.Parse(TrueAnswers.Text);

@@ -68,7 +68,7 @@ namespace IndDictionary
                     TextColor = Colors.Green,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Start,
-                    Margin = new Thickness(0, 10, 0, 0)
+                    Margin = new Thickness(0, 10, 0, 0),
                 });
 
                 // "-" снизу
@@ -82,7 +82,9 @@ namespace IndDictionary
                     VerticalOptions = LayoutOptions.End,
                     Margin = new Thickness(0, 0, 0, 10)
                 });
-                var cardBorder = new Border { Content = overlayGrid };
+                var cardBorder = new Border 
+                {  Content = overlayGrid,
+                };
                 //cardBorder.ScaleX = 1; cardBorder.ScaleY = 1;
 
                 AddCommonSwipeGestures(cardBorder);
@@ -169,7 +171,10 @@ namespace IndDictionary
                 VerticalOptions = LayoutOptions.Start,
                 IsSwipeEnabled = false,
                 Loop = false,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Never
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
+                BackgroundColor = Application.Current.RequestedTheme == AppTheme.Dark
+                    ? (Color)Application.Current.Resources["BackgroundDark"]
+                    : (Color)Application.Current.Resources["BackgroundLight"]
             };
             _Cards.ItemTemplate = CreateCardTemplate();
             MainStack.Add(_Cards);

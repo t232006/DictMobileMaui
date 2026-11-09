@@ -65,6 +65,7 @@ namespace DictMobileMaui.Auxilary
         protected int selector = 0;
         public virtual void Draw(ICanvas canvas, RectF dirtyRect)
         {
+            selector = 0; //to prevent shift in future
             if (dirtyRect.Width <= 0 || dirtyRect.Height <= 0)
                 return;
             sqWidth = (int)(dirtyRect.Width / totalAmount) - space;
@@ -93,7 +94,7 @@ namespace DictMobileMaui.Auxilary
                     canvas.FillRectangle(selector, padding, sqWidth, dirtyRect.Height / 3);
                     selector = selector + space + sqWidth;
                 }
-                selector = 0; //to prevent shift in future
+                
             }
         }
     }
