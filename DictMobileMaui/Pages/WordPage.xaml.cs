@@ -87,32 +87,27 @@ namespace IndDictionary
 					extswitch.SetBinding(ExtSwitch.IDProperty, "id");
 					extswitch.SetBinding(ExtSwitch.IsToggledProperty, "Usersel");
 
-					GradeIndicator rateIndicator = new(6) { HeightRequest=12, WidthRequest=90};
-					Indicator relevationIndicator = new(7) { HeightRequest=12};
+					GradeIndicator rateIndicator = new(6);
+					Indicator relevationIndicator = new(7);
 					rateIndicator.SetBinding(GradeIndicator.rateValueProperty, "Grade");
                     relevationIndicator.SetBinding(Indicator.rateValueProperty, "Relevation");
-					Grid indicators = new()
+					
+					VerticalStackLayout indicators = new()
 					{
-                        HeightRequest = 28,
-                        RowSpacing = 4, BackgroundColor=Colors.Red,
-                        RowDefinitions = 
-						{ 
-							new RowDefinition { Height = 12} ,
-							new RowDefinition { Height = 12} 
-						},
-					};
-					indicators.Add(rateIndicator, 0, 0);
-                    indicators.Add(relevationIndicator, 0, 1);
-
+                       Children = {relevationIndicator, rateIndicator} 
+                    };
+					//indicators.Children.Add(indicators);
+					//indicators.Children.Add(relevationIndicatior);
+					 
                     var cellLayout = new Grid
                     {
-						ColumnDefinitions =
+                        ColumnDefinitions =
 						{
 							new ColumnDefinition { Width = GridLength.Star },   // Main
 							new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) },   // Second
 							new ColumnDefinition { Width = new GridLength(0.1, GridUnitType.Star) },   // Switch
 							new ColumnDefinition { Width = new GridLength(0.2, GridUnitType.Star) },   // Indicators
-							new ColumnDefinition { Width = new GridLength(0.03, GridUnitType.Star) },   // Edge
+							new ColumnDefinition { Width = GridLength.Auto },   // Edge
 
                         }
                     };

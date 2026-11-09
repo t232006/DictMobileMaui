@@ -17,6 +17,11 @@ namespace DictMobileMaui.Auxilary
             get => (byte)GetValue(rateValueProperty);
             set => SetValue(rateValueProperty, value); 
         }
+        protected BaseIndicatior(IndicatorDrawable drawable)
+        {
+            Rate = drawable;
+            Drawable = Rate;
+        }
         
         private static void OnChanged(BindableObject bindable, object OldValue, object NewValue)
         {
@@ -27,37 +32,37 @@ namespace DictMobileMaui.Auxilary
     }
     public class Indicator : BaseIndicatior
     {
-        public Indicator(byte _Rate)
+        public Indicator(byte _Rate):base(new IndicatorDrawable(_Rate))
         {
-            Rate = new IndicatorDrawable(_Rate);
-            Drawable = Rate;
+            HeightRequest = 18;
         }
     }
-    public class GradeIndicator : Indicator 
+    public class GradeIndicator : BaseIndicatior 
     {
-        public GradeIndicator(byte _Rate):base(_Rate)
+        public GradeIndicator(byte _Rate) : base(new GradeDrawable(_Rate))
         {
-            Rate = new GradeDrawable(_Rate);
-            Drawable = Rate;
+            HeightRequest = 18;
         }
     }
     public class IndicatorDrawable:IDrawable
     {
-        private byte totalAmount;
-        int space = 5;
+        protected byte totalAmount;
+        int space = 05;
         int sqWidth;
-        Color RatedColor = Colors.SandyBrown;
-        private const byte padding = 5;
+        protected Color RatedColor; //= Colors.SandyBrown;
+        protected byte padding;
         public IndicatorDrawable(byte _totalAmount)
         {
             totalAmount = _totalAmount;
+            padding = 11;
+            RatedColor = Colors.LightCoral;
         }
         public byte rateValue { set {
                 _rateValue = value;
                 //Draw();
             } }
-        private byte _rateValue;
-        private int selector = 0;
+        protected byte _rateValue;
+        protected int selector = 0;
         public virtual void Draw(ICanvas canvas, RectF dirtyRect)
         {
             if (dirtyRect.Width <= 0 || dirtyRect.Height <= 0)
@@ -66,7 +71,7 @@ namespace DictMobileMaui.Auxilary
             for (byte i = 0; i < _rateValue; i++)
             {
                 canvas.FillColor = RatedColor;
-                canvas.FillRectangle(selector, 0, sqWidth, dirtyRect.Height/3-padding);
+                canvas.FillRectangle(selector, padding, sqWidth, dirtyRect.Height/3);
                 selector = selector + space + sqWidth;    
             }
         }
@@ -76,17 +81,19 @@ namespace DictMobileMaui.Auxilary
             Color DefaultColor = Colors.LightGray;
             public GradeDrawable(byte _totalAmount) : base(_totalAmount)
             {
+                RatedColor = Colors.SandyBrown;
+                padding = 5;
             }
             public override void Draw(ICanvas canvas, RectF dirtyRect)
             {
-                base.Draw(canvas, dirtyRect);
-                //int selector = 0;    
+                base.Draw(canvas, dirtyRect);  
                 for (byte i = _rateValue; i<totalAmount; i++)
                 {
                     canvas.FillColor = DefaultColor;
-                    canvas.FillRectangle(selector, 0, sqWidth, dirtyRect.Height / 3 - padding);
+                    canvas.FillRectangle(selector, padding, sqWidth, dirtyRect.Height / 3);
                     selector = selector + space + sqWidth;
                 }
+                selector = 0; //to prevent shift in future
             }
         }
     }
