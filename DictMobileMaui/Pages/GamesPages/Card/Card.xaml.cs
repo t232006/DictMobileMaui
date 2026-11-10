@@ -50,18 +50,13 @@ namespace IndDictionary
                 supergrid.SetBinding(WidthRequestProperty, new Binding(nameof(CardWidth), source: this));
                 supergrid.SetBinding(HeightRequestProperty, new Binding(nameof(CardHeight), source: this));
 
-                var contentLabel = new Label
+                Label contentLabel = new Label
                 {
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     Margin = new Thickness(10,0)
                 };
-
-                var overlayGrid = new Grid();
-                overlayGrid.Children.Add(contentLabel);
-
-                // "+" сверху
-                overlayGrid.Children.Add(new Label
+                Label Yes_Label = new Label
                 {
                     //FontFamily = "Wingdings",
                     Text = "\u2713",
@@ -70,10 +65,8 @@ namespace IndDictionary
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Start,
                     Margin = new Thickness(0, 10, 0, 0),
-                });
-
-                // "-" снизу
-                overlayGrid.Children.Add(new Label
+                };
+                Label No_Label = new Label
                 {
                     //FontFamily = "Wingdings",
                     Text = "\u2717",
@@ -82,10 +75,27 @@ namespace IndDictionary
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.End,
                     Margin = new Thickness(0, 0, 0, 10)
-                });
+                };
+
+                var overlayGrid = new Grid();
+                overlayGrid.Children.Add(contentLabel);
+
+                // "+" сверху
+                overlayGrid.Children.Add(Yes_Label);
+
+                // "-" снизу
+                overlayGrid.Children.Add(No_Label);
                 var cardBorder = new Border 
                 {  Content = overlayGrid,
                 };
+                Yes_Label.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(async () => await SafeSwipe(SwipeDirection.Up, cardBorder))
+                });
+                No_Label.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(async () => await SafeSwipe(SwipeDirection.Down, cardBorder))
+                });
                 //cardBorder.ScaleX = 1; cardBorder.ScaleY = 1;
 
                 AddCommonSwipeGestures(cardBorder);

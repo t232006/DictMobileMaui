@@ -192,13 +192,14 @@ namespace IndDictionary
 				FileTypes = new FilePickerFileType
 				(new Dictionary<DevicePlatform, IEnumerable<string>>
 				{
-					{ DevicePlatform.Android, new[] { "*/*"} },
-					{ DevicePlatform.WinUI, new[] { ".db" } }
+                    { DevicePlatform.Android, new[] { "application/x-sqlite3", "application/vnd.sqlite3", "application/octet-stream" } },
+                    { DevicePlatform.WinUI, new[] { ".db" } }
 				}),
 				PickerTitle = "Please, select database file"
 			};
 			await PickAndShow(options);
 			await DisplayAlert("Success!", "Dictionary has been copied from cloud", "OK");
+			OnAppearing();
 
 		}
 		protected async void OpenLibrary(object sender, EventArgs e)

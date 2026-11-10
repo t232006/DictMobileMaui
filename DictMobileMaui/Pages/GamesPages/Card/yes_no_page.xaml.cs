@@ -61,7 +61,7 @@ namespace IndDictionary
             {
                 //Progress = 0.9,
                 HeightRequest = 10,
-                Style = (Style)Application.Current.Resources["ProgressBarStyle"]
+                //Style = (Style)Application.Current.Resources["ProgressBarStyle"]
             };
             Grid.SetColumn(TimerBar, 4);
             Yes_No_Progress.Children.Add(TimerBar);
