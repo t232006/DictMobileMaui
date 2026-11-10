@@ -13,12 +13,18 @@ namespace IndDictionary
 		bool asc = false;
 		public DateTopicForm(ObservableCollection<DateOrTopicClassAux> _passedList, WhatToSelect _wts)
 		{
+			InitializeComponent();
 			PassedList = _passedList;
 			wts=_wts;
             bool isEnabled = (wts != WhatToSelect.dates);
-            DeleteBut.IsEnabled = isEnabled;
-            AddBut.IsEnabled = isEnabled;
-            InitializeComponent();
+			if (wts == WhatToSelect.dates)
+			{
+				ToolbarItems.Remove(DeleteBut);
+				ToolbarItems.Remove(AddBut);
+			}
+			/*DeleteBut.IsEnabled = isEnabled;
+            AddBut.IsEnabled = isEnabled;*/
+            
 		}
 		protected override void OnAppearing()
 		{

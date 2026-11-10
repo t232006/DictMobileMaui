@@ -11,10 +11,10 @@
              x:Name="EditBut" />
         <ToolbarItem Clicked="onDeletePress"
              IconImageSource="trash_bin_small.png"
-             x:Name="DeleteBut" IsEnabled="False"/>
+             x:Name="DeleteBut" />
         <ToolbarItem Clicked="onAddPress"
              IconImageSource="add1.png"
-             x:Name="AddBut" IsEnabled="False"/>
+             x:Name="AddBut" />
         <ToolbarItem Clicked="onSortPress"
                 IconImageSource="sort.png"
                 x:Name="SortBut"/>
